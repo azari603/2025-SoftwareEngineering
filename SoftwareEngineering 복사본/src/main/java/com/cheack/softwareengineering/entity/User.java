@@ -18,22 +18,23 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "이메일은 필수입니다")
+    @NotBlank(message = "이메일은 필수입니다.")
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @NotBlank(message = "비밀번호는 필수입니다")
+    @NotBlank(message = "비밀번호는 필수입니다.")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\\\d)(?=.*[~!@#$%^&*+])[A-Za-z\\\\d~!@#$%^&*+]{8,20}$", message = "비밀번호는 8~16자 영문 대 소문자, 숫자, 특수문자가 적어도 하나 존재해야 합니다.")
     @Column(nullable = false)
     private String password;
 
-    @NotBlank(message = "아이디는 필수입니다")
-    @Size(min = 2, max = 10, message = "아이디는 2자 이상 10자 이하입니다")
+    @NotBlank(message = "아이디는 필수입니다.")
+    @Size(min = 2, max = 10, message = "아이디는 2자 이상 10자 이하입니다.")
     @Column(nullable = false, unique = true, length = 10)
     private String username;
 
     @Column(nullable = false)
     @Builder.Default
-    private String nickname = "익명의 책벌레";
+    private String nickname = "익명의 책벌레"; // 이부분은 id와
 
     @Column(name = "profile_image_url")
     private String profileImageUrl;

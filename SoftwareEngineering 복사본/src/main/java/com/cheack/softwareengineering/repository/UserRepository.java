@@ -1,6 +1,6 @@
 package com.cheack.softwareengineering.repository;
 
-import com.cheack.softwareengineering.entity.User;
+import com.cheack.softwareengineering.entity.
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
