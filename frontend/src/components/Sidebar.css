@@ -1,0 +1,45 @@
+/* Sidebar 전체 영역 */
+.sidebar {
+  width: 200px;                /* 사이드바 너비 */
+  height: 100vh;               /* 화면 전체 높이 */
+  background-color: #FDFBF4;   /* 연한 회색 배경 */
+  padding: 16px;               /* 내부 여백 */
+  border-right: 1px solid #ddd; /* 오른쪽 경계선 */
+  box-sizing: border-box;
+  padding-top:100px
+}
+
+/* 리스트 초기화 */
+.sidebar ul {
+  list-style: none; /* 점 없애기 */
+  padding: 0;
+  margin: 0;
+}
+
+/* 각 항목 간격 */
+.sidebar li {
+  margin-bottom: 12px;
+}
+
+/* 기본 링크 스타일 */
+.sidebar a {
+  display: block;         /* 박스 형태 */
+  padding: 10px 12px;     /* 내부 여백 */
+  border-radius: 6px;     /* 모서리 둥글게 */
+  color: #333;            /* 글자 색 */
+  text-decoration: none;  /* 밑줄 제거 */
+  font-size: 15px;
+  transition: background-color 0.2s;
+}
+
+/* 마우스 올렸을 때 */
+.sidebar a:hover {
+  background-color: #e5e7eb; /* hover 시 연한 회색 */
+}
+
+/* 현재 선택된 메뉴 */
+.sidebar a.active {
+  background-color: #299159; /* 초록색 */
+  color: white;
+  font-weight: bold;
+}
