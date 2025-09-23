@@ -1,5 +1,5 @@
 .btn {
-  font-weight: bold;
+  font-weight: medium;
   cursor: pointer;
   border: none;
   transition: 0.2s;
@@ -15,7 +15,6 @@
   background-color: #299159;
   color: #fff;
   border-radius: 12px;
-  padding: 10px 20px;
 }
 
 /*초록 테두리 + 둥근 원형 */
@@ -33,4 +32,17 @@
   border: 2px solid #299159;
   border-radius: 10px; 
   padding: 12px 24px;
+}
+.btn.small{
+  padding-inline: 20px;
+  padding-block: 8px;
+}
+.btn.medium {
+  font-size: 16px;
+  padding: 10px 20px;
+}
+
+.btn.large {
+  font-size: 16px;
+  padding-inline: 100px;
 }
