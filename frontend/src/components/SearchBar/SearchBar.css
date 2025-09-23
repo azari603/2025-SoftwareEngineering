@@ -1,0 +1,36 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  width: 400px;
+  font-size: 16px;
+  transition: all 0.2s ease-in-out;
+}
+
+.search-bar .search-icon {
+  margin-right: 8px;
+  width: 28px;
+  height: 28px;
+}
+
+.search-bar .search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  background: transparent;
+}
+
+/*테두리*/
+.search-bar.outlined {
+  border: 1px solid #A0A0A0;
+  border-radius: 12px;
+  padding-inline: 20px;
+  padding-block: 4px;
+}
+
+/*그림자*/
+.search-bar.filled {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
