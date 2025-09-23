@@ -1,10 +1,12 @@
 import "./Header.css";
 import logo from "../../assets/logo.png"
+import userIcon from "../../assets/user.png"
+import alarmIcon from "../../assets/alarm.png"
 import { Link } from "react-router-dom" 
 import SearchBar from "../SearchBar/SearchBar";
 import Button from "../Button/Button"
 
-const Header = () => {
+const Header = ({ isLoggedIn, user }) => {
   return (
     <header className="header">
       <div className="header-left">
@@ -27,11 +29,23 @@ const Header = () => {
 
       
       <div className="header-right">
-        {/* 회원가입/로그인 */}
-        <div className="auth">
-          <Link to="/signup" className="signup">회원가입</Link>
-          <Button variant="filled" to="/login" disabled={true}>로그인</Button>
-        </div>
+        {isLoggedIn ? (
+          // 로그인 후 UI
+          <div className="user-info">
+            <Button
+              variant="filled" to="/write" size="small">글쓰기</Button>
+            <img src={alarmIcon} alt="alarmIcon" className="alarm icon" />
+            <img src={userIcon} alt="userIcon" className="user icon" />
+          </div>
+        ) : (
+          // 로그인 전 UI
+          <div className="auth">
+            <Link to="/signup" className="signup">회원가입</Link>
+            <Button variant="filled" to="/login" size="small">
+              로그인
+            </Button>
+          </div>
+        )}
       </div>
       
     </header>
