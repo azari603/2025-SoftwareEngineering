@@ -39,9 +39,7 @@
 }
 
 
-/* ---------------------------
-   carousel 모드 버튼
---------------------------- */
+/*carousel 모드 버튼 */
 .book-list.carousel .nav-button {
   position: absolute;
   top: 50%; /* 세로 중앙 */
