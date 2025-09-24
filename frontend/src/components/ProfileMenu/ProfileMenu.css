@@ -6,21 +6,11 @@
   z-index: 1000;
 }
 
-/* 👤 버튼 */
-.profile-btn {
-  padding: 6px 10px;
-  border: none;
-  border-radius: 50%;
-  background-color: #ffffff;
-  color: #fff;
-  font-size: 18px;   
-  cursor: pointer;
-}
 
 /* 팝업 메뉴 박스 */
 .profile-popup {
   position: absolute;
-  top: 40px;  
+  top: 60px;  
   right: 0;
   width: 120px;  
   background: #fff;

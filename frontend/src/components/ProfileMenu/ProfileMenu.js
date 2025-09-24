@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "./ProfileMenu.css";
 
-const ProfileMenu = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const ProfileMenu = ({isOpen,setIsOpen}) => {
   const menuRef = useRef();
 
   // 바깥 클릭 시 닫히게 하기
   useEffect(() => {
     function handleClickOutside(e) {
-      if (menuRef.current && !menuRef.current.contains(e.target)) {
+      if (menuRef.current && !menuRef.current.contains(e.target) &&
+    !e.target.classList.contains("user")) {
         setIsOpen(false);
       }
     }
@@ -16,14 +16,12 @@ const ProfileMenu = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [setIsOpen]);
 
+  if(!isOpen) return null;
+  
   return (
     <div className="profile-wrapper" ref={menuRef}>
-      {/* 👤 버튼 */}
-      <button className="profile-btn" onClick={() => setIsOpen(!isOpen)}>
-        👤
-      </button>
 
       {/* 팝업 메뉴 */}
       {isOpen && (
