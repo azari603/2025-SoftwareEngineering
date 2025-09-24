@@ -1,18 +1,19 @@
+import React, { forwardRef } from "react";
 import "./BookCard.css";
 
-const BookCard = ({ title, author, imageUrl }) => {
+const BookCard = forwardRef(({ book }, ref) => {
   return (
-    <div className="book-card">
+    <div className="book-card" ref={ref}>
       <div className="book-image">
-        {imageUrl ? (<img src={imageUrl} alt={title} />) : (<div className="placeholder" />
-)}
+        <img src={book.image} alt={book.title} />
       </div>
       <div className="book-info">
-        <div className="book-title">{title || "책제목"}</div>
-        <div className="book-author">{author || "저자이름"}</div>
+        <h3>{book.title || "책제목"}</h3>
+        <p>{book.author || "저자이름"}</p>
       </div>
     </div>
   );
-};
+});
 
 export default BookCard;
+
