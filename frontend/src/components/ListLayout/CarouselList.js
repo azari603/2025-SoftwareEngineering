@@ -1,4 +1,3 @@
-// src/components/ListLayout/CarouselLayout.jsx
 import { useState, useRef, useEffect } from "react";
 import arrowRight from "../../assets/arrowRight.png";
 import arrowLeft from "../../assets/arrowLeft.png";

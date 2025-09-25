@@ -1,4 +1,3 @@
-// src/components/ListLayout/HorizontalList.jsx
 import "./HorizontalList.css";
 
 const HorizontalList = ({ items, renderItem }) => {

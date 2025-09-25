@@ -1,6 +1,5 @@
-// src/components/BookList/BookList.jsx
 import BookCard from "../BookCard/BookCard";
-import CarouselLayout from "../ListLayout/CarouselLayout";
+import CarouselLayout from "../ListLayout/CarouselList";
 import HorizontalList from "../ListLayout/HorizontalList";
 
 const BookList = ({ books, mode = "list", visibleCount = 3 }) => {
