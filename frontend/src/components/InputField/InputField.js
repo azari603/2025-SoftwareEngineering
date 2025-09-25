@@ -12,9 +12,12 @@ const InputField = ({
 }) => {
   return (
     <div className="input-field">
-      <label>
-        {label} {required && <span className="required">*</span>}
-      </label>
+      {label && ( //label이 있을 경우만 렌더링
+        <label>
+          {label} {required && <span className="required">*</span>}
+        </label>
+      )}
+      
       <input
         type={type}
         placeholder={placeholder}
