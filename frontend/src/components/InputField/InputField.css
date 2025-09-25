@@ -1,0 +1,29 @@
+.input-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+  max-width: 400px;   
+  width: 100%;        
+}
+
+.input-field label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-align: left;   
+  display: block;     
+  width: 100%;        
+}
+
+.input-field .required {
+  color: red;
+}
+
+.input-field input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+}
