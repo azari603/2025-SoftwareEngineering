@@ -1,9 +1,10 @@
-import React, { forwardRef } from "react";
+import { forwardRef } from "react";
+import { Link } from "react-router-dom";
 import "./BookCard.css";
 
 const BookCard = forwardRef(({ book }, ref) => {
   return (
-    <div className="book-card" ref={ref}>
+    <Link to={`/book/${book.isbn}`} className="book-card" ref={ref}>
       <div className="book-image">
         <img src={book.image} alt={book.title} />
       </div>
@@ -11,7 +12,7 @@ const BookCard = forwardRef(({ book }, ref) => {
         <h3>{book.title || "책제목"}</h3>
         <p>{book.author || "저자이름"}</p>
       </div>
-    </div>
+    </Link>
   );
 });
 
