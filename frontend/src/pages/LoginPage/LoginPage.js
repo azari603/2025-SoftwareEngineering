@@ -9,17 +9,40 @@ import naver_logo from "../../assets/naver_logo.png"
 import kakao_logo from "../../assets/kakao_logo.png"
 
 export default function LoginPage() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    console.log("아이디:", username, "비밀번호:", password);
-  };
+    // 에러 상태
+    const [usernameError,setUsernameError] =useState("");
+    const [passwordError,setPasswordError] =useState("");
 
-  return (
-    <div className="login-container">
-      <div className="login-box">
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        
+        //예시  등록된 계정 testuser/1234
+        if(username.trim() !== "testuser"){
+            setUsernameError("존재하지 않는 아이디입니다.");
+            setPasswordError("");  //아이디 틀리면 비밀번호 에러 초기화
+            return;
+        }else{
+            setUsernameError("");
+        }
+        if(password !=="1234"){
+            setPasswordError("비밀번호가 틀렸습니다.");
+        }else{
+            setPasswordError("");
+        }
+
+        //에러 없을 경우 로그인 성공
+        if(username.trim()==="testuser" && password ==="1234"){
+            console.log("로그인 성공");
+        }
+    };
+
+    return (
+        <div className="login-container">
+        <div className="login-box">
         <Link to="/" className="logo">
           <img src={logo} alt="logo" className="logo-icon" />
           <span className="logo-text">CHAECK</span>
@@ -34,13 +57,15 @@ export default function LoginPage() {
             placeholder="아이디를 입력하세요"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            required
+            error={usernameError}
+            quiredre
           />
           <InputField
             type="password"
             placeholder="비밀번호를 입력하세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            error={passwordError}
             required
           />
 
