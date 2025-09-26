@@ -7,7 +7,7 @@ export default function Button({
   to,                  // 이동할 경로
   onClick,             
   type = "button",
-  disabled = true,
+  disabled = false,
 }) {
   // case 1: 라우터 이동용 버튼
   if (to) {
