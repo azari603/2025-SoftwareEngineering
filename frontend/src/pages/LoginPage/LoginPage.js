@@ -3,12 +3,14 @@ import InputField from "../../components/InputField/InputField";
 import Button from "../../components/Button/Button";
 import "./LoginPage.css";
 import logo from "../../assets/logo.png"
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import google_logo from "../../assets/google_logo.png"
 import naver_logo from "../../assets/naver_logo.png"
 import kakao_logo from "../../assets/kakao_logo.png"
 
 export default function LoginPage() {
+    const navigate=useNavigate();
+
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
@@ -86,7 +88,8 @@ export default function LoginPage() {
           <span>|</span>
           <button type="button">비밀번호 찾기</button>
           <span>|</span>
-          <button type="button">회원가입</button>
+          <button type="button" variant="outlined" size="small"
+          onClick={() => navigate("/signup")}>회원가입</button>
         </div>
 
         {/* SNS 계정 로그인 */}

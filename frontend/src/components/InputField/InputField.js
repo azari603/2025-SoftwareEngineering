@@ -8,8 +8,15 @@ const InputField = ({
   placeholder, 
   required = false, 
   value, 
-  onChange 
+  onChange,
+  onBlur,
+  error,
+  status,  //error, success, default
 }) => {
+  let inputClass ="";
+  if(status==="error") inputClass="error-input";
+  if(status==="success") inputClass="success-input";
+
   return (
     <div className="input-field">
       {label && ( //label이 있을 경우만 렌더링
@@ -23,8 +30,11 @@ const InputField = ({
         placeholder={placeholder}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         required={required}
+        className={inputClass}
       />
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 };
