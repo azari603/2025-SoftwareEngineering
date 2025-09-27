@@ -17,6 +17,7 @@ export default function App() {
   const recommendedBooks = dummyBooks;
   const followingReviews = dummyReviews;
 
+
   return (
     <Router>
       <Routes>
@@ -44,6 +45,3 @@ export default function App() {
     
   );
 }
-
-
-
