@@ -5,11 +5,12 @@
 
 .carousel-container {
   display: flex;
-  gap: 16px;
+  gap: 24px;
   overflow: hidden;
   position: relative;
   flex: 1;
-  padding: 0 24px; 
+  padding-bottom: 12px;
+  padding-top: 12px;
   box-sizing: border-box;
 }
 
