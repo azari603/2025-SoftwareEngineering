@@ -1,0 +1,12 @@
+.horizontal-list {
+  display: flex;
+  flex-wrap: wrap;     
+  gap: 16px;            
+  overflow: visible;
+  justify-content: flex-start;
+}
+
+.horizontal-list .book-card {
+  width: 180px; 
+  flex: 0 0 auto;
+}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./Header.css";
 import logo from "../../assets/logo.png"
 import userIcon from "../../assets/user.png"
@@ -12,8 +12,7 @@ import ProfileMenu from "../ProfileMenu/ProfileMenu";
 
 
 
-const Header = () => {
-  const isLoggedIn=true;
+const Header = ({ isLoggedIn = false }) => {
   /* 알림창, 프로필 메뉴 열렸는지 상태 확인 배열 */
   const [isAlertOpen, setIsAlertOpen]=useState(false);
   const [isProfileOpen, setIsProfileOpen] =useState(false);
