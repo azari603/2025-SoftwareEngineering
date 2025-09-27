@@ -1,0 +1,111 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: center;
+}
+
+.home-main {
+  flex: 1;
+}
+
+.home-section {
+  margin: 0px auto;
+  margin-top: 40px;
+}
+
+
+.home-section .carousel-layout{
+  width: fit-content;
+  max-width: 100%;        
+  padding: 0;
+}
+.home-section .carousel-container{
+  width: fit-content;
+  max-width: 100%;       
+  padding-inline: 20px;
+}
+
+.home-section .wrapper{
+  width: fit-content;
+  margin: 0px auto;
+}
+
+.home-section .book.wrapper .book-card .book-info .book-author {
+  display: none;
+}
+
+.section-title {
+  width: fit-content;
+  font-size: 22px;
+  font-weight: bold;
+  margin-bottom: 12px;
+  padding-left: 12px;
+  color: #111;
+}
+
+.section-title__nickname{
+  color: #299159;
+}
+
+.review-list {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.main-hero {
+  width: 100%;
+  background: #FDFBF4;  
+            
+}
+
+.main-hero__inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 80px;
+  text-align: center;
+}
+
+.main-hero__title {
+  font-size: 32px;
+  line-height: 1.4;
+  font-weight: 800;
+  color: #222;
+  margin: 0 0 20px;
+}
+
+.main-hero__actions {
+  display: inline-flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.main-hero__actions .btn.squareOutline{
+  background-color: #FDFBF4;
+  border: 1px solid;
+}
+.main-hero__actions .btn{
+  height: 40px;
+}
+
+/*.main-hero__ghost {
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+}*/
+
+.main-hero__search {
+  display: flex;
+  justify-content: center;
+}
+
+.main-hero__search .search-bar {
+  padding-inline: 20px;
+  padding-block: 8px;
+}
+
+.main-hero__search .search-bar {
+  width: 560px;                      
+}
