@@ -7,11 +7,10 @@ import SignupEmail from "./pages/SignupPage/SignupEmail/SignupEmail";
 import Home from "./pages/Home/Home";
 import { dummyBooks } from "./mocks/dummyBooks";
 import { dummyReviews } from "./mocks/dummyReviews";
+import { AuthProvider } from "./context/AuthContext";
+import BaseLayout from "./components/Layout/BaseLayout";
 
 export default function App() {
-  const isLoggedIn = false;
-  const nickname = "빙봉";
-
   const todaysBooks = dummyBooks;
   const todaysReviews = dummyReviews;
   const recommendedBooks = dummyBooks;
@@ -19,29 +18,32 @@ export default function App() {
 
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              isLoggedIn={isLoggedIn}
-              nickname={nickname}
-              todayBooks={todaysBooks}
-              todayReviews={todaysReviews}
-              recommendedBooks={recommendedBooks}
-              followingReviews={followingReviews}
-            />
-          }
-        />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupLayout />}>
-        <Route index element={<SignupPage />} />
-        <Route path="success" element={<SignupSuccess />} />
-        <Route path="email" element={<SignupEmail />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <BaseLayout>
+                <Home
+                  todayBooks={todaysBooks}
+                  todayReviews={todaysReviews}
+                  recommendedBooks={recommendedBooks}
+                  followingReviews={followingReviews}
+                />
+              </BaseLayout>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupLayout />}>
+          <Route index element={<SignupPage />} />
+          <Route path="success" element={<SignupSuccess />} />
+          <Route path="email" element={<SignupEmail />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
+    
     
   );
 }
