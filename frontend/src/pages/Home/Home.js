@@ -30,7 +30,7 @@ const Home = ({
   return (
     <div className="home">
     
-      <main className="home-main">
+      <div className="home-main">
         <section className="main-hero">
           <div className="main-hero__inner">
             <h1 className="main-hero__title">
@@ -81,7 +81,7 @@ const Home = ({
             <BookList books={booksForSection} mode="carousel" visibleCount={6} cardSize="lg" />
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };
