@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./QuizPage.css";
 import bearImage from "../../../assets/bear2.png"; // 곰 이미지
-import Header from "../../../components/Header/Header";
 import {useNavigate} from "react-router-dom";
 import dummyOptions from "../../../mocks/dummyOptions";
 
@@ -71,8 +70,6 @@ export default function QuizPage({ isLoggedIn =   true }) {
 
   return (
     <div className="quizpage">
-      <Header isLoggedIn={isLoggedIn} />
-
       <main className="quizpage-main">
         <div className="quiz-card">
           <img src={bearImage} alt="곰" className="quiz-image" />

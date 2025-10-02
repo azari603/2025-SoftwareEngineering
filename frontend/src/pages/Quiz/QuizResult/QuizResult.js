@@ -1,5 +1,4 @@
 import { useLocation } from "react-router-dom";
-import Header from "../../../components/Header/Header";
 import quizResults from "../../../mocks/dummyResults";
 import "./QuizResult.css";
 import BookList from "../../../components/BookList/BookList"; 
@@ -51,8 +50,6 @@ export default function QuizResult({ isLoggedIn = false }) {
   // 📌 return은 함수 안에서 딱 한 번만!
   return (
     <div className="quizresult">
-      <Header isLoggedIn={isLoggedIn} />
-
       <main className="quizresult-main">
         <div className="quizresult-card">
           <h2 className="quizresult-title">당신의 책BTI는 ...</h2>
