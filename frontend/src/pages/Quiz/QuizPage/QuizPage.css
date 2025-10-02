@@ -1,0 +1,143 @@
+.quizpage {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+
+.quizpage-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #FDFBF4;
+  background-image: url("../../../assets/wave.png");
+  background-repeat: no-repeat;
+  background-position: top center;  /* 위쪽 중앙 */
+  background-size: 100% 55%;
+}
+
+.quiz-card {
+  position: relative;
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  width: 500px;
+  min-height:550px;
+  text-align: center;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+  margin-top: -42px;
+  box-sizing: border-box;
+}
+
+.quiz-image {
+  width: 60px;
+  margin-top: -22px;
+  margin-bottom: 0px;
+}
+
+.quiz-progress {
+  font-size: 14px;
+  color: #2e7d32;
+  margin-bottom: 10px;
+}
+
+.quiz-question {
+  font-size: 16px;
+  font-weight:400;
+  color: #000000;
+  margin-bottom: 30px;
+}
+
+.quiz-question-number {
+  display: block;           
+  font-size: 30px;         
+  font-weight: 700;      
+  color: #2e7d32;       
+  margin-bottom: 8px;  
+  margin-top: 0px;   
+}
+
+.quiz-options {
+  min-height:150px;
+  display: flex;
+  flex-direction: column;
+  font-weight:700;
+  gap: 16px;
+}
+
+.quiz-option {
+  padding: 14px;
+  border: 1px solid #299159;
+  border-radius: 8px;
+  background: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color:#299159;
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+  font-weight: 600;
+}
+
+.quiz-option:hover {
+  background: #2e7d32;
+  color: #fff;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* 뒤로가기 버튼 */
+.quiz-prev-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.quiz-prev-btn:hover {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.quiz-prev-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+
+/* 진행 바 전체 영역 */
+.quiz-progressbar-wrapper {
+  position: relative;
+  width: 100%;
+  margin: 10px 0 30px 0; 
+}
+
+.quiz-progressbar {
+  width: 100%;
+  height: 10px;
+  background: #eee;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.quiz-progressbar-fill {
+  height: 100%;
+  background: #2e7d32;
+  transition: width 0.3s ease;
+}
+
+/* 바 위 숫자 */
+.quiz-progress-text {
+  position: absolute;
+  top: -22px;         
+  right: 0;         
+  font-size: 14px;
+  font-weight: 600;
+  color: #a2a2a2;
+}

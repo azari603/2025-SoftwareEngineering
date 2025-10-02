@@ -9,7 +9,7 @@ const BookList = ({ books, mode = "list", visibleCount = 3, cardSize="md", cardW
         items={books}
         visibleCount={visibleCount}
         renderItem={(book, idx, ref) => (
-          <BookCard key={idx} book={book} ref={ref} cardSize={cardSize} cardWidth={cardWidth} imageHeight={imageHeight} />
+          <BookCard key={idx} book={book} ref={ref} size={cardSize} />
         )}
       />
     );
