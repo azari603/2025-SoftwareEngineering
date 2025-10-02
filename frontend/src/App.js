@@ -24,19 +24,22 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route element={<BaseLayout/>}>
           <Route
             path="/"
             element={
-              <BaseLayout>
                 <Home
                   todayBooks={todaysBooks}
                   todayReviews={todaysReviews}
                   recommendedBooks={recommendedBooks}
                   followingReviews={followingReviews}
-                />
-              </BaseLayout>
-            }
-          />
+                />}/>
+
+                <Route path="/quiz/start" element={<QuizStart/>}/>
+                <Route path="/quiz" element={<QuizPage/>}/>
+                <Route path="/quiz/result" element={<QuizResult/>}/>
+          </Route>
+          
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupLayout />}>
           <Route index element={<SignupPage />} />
