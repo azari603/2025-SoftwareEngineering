@@ -1,14 +1,12 @@
-import Header from "../../components/Header/Header";
 import BookList from "../../components/BookList/BookList";
 import ReviewList from "../../components/ReviewList/ReviewList";
 import Button from "../../components/Button/Button";
 import SearchBar from "../../components/SearchBar/SearchBar";
+import { useAuth } from "../../context/AuthContext";
 import "./Home.css";
 
 /**
  * props
- * - isLoggedIn: boolean
- * - nickname: string
  * - todaysBooks: Book[]              (비로그인: 오늘의 추천 도서)
  * - todaysReviews: Review[]          (비로그인: 오늘의 추천 서평)
  * - recommendedBooks: Book[]         (로그인: 개인화 추천 도서)
@@ -16,13 +14,14 @@ import "./Home.css";
  */
 
 const Home = ({ 
-  isLoggedIn = false, 
-  nickname="guest",
   todayBooks=[],
   todayReviews=[],
   recommendedBooks=[],
   followingReviews=[],
 }) => {
+
+  const {isLoggedIn, user}=useAuth();
+  const nickname=user?.nickname||"guest";
 
   const reviewSectionTitle=isLoggedIn?"팔로잉 서평":"오늘의 추천 서평";
   const reviewForSection=isLoggedIn?followingReviews:todayReviews;
@@ -30,9 +29,8 @@ const Home = ({
 
   return (
     <div className="home">
-      <Header isLoggedIn={isLoggedIn}/>
-
-      <main className="home-main">
+    
+      <div className="home-main">
         <section className="main-hero">
           <div className="main-hero__inner">
             <h1 className="main-hero__title">
@@ -80,10 +78,10 @@ const Home = ({
                 "오늘의 추천 도서"
               )}
             </h2>
-            <BookList books={booksForSection} mode="carousel" visibleCount={6} cardSize="sm" />
+            <BookList books={booksForSection} mode="carousel" visibleCount={6} cardSize="lg" />
           </div>
         </section>
-      </main>
+      </div>
     </div>
   );
 };

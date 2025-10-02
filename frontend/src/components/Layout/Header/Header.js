@@ -1,18 +1,18 @@
 import { useState } from "react";
 import "./Header.css";
-import logo from "../../assets/logo.png"
-import userIcon from "../../assets/user.png"
-import alarmIcon from "../../assets/alarm.png"
+import logo from "../../../assets/logo.png"
+import userIcon from "../../../assets/user.png"
+import alarmIcon from "../../../assets/alarm.png"
 import { Link } from "react-router-dom" 
-import SearchBar from "../SearchBar/SearchBar";
-import Button from "../Button/Button";
-import Alert from "../Alert/Alert";
-import ProfileMenu from "../ProfileMenu/ProfileMenu";
+import SearchBar from "../../SearchBar/SearchBar";
+import Button from "../../Button/Button";
+import Alert from "../../Alert/Alert";
+import ProfileMenu from "../../ProfileMenu/ProfileMenu";
+import {useAuth} from '../../../context/AuthContext'
 
-
-
-
-const Header = ({ isLoggedIn = false }) => {
+const Header = () => {
+  /*useAuth 훅을 사용하여 isLoggined랑 logout 함수 가져오기*/
+  const {isLoggedIn}=useAuth();
   /* 알림창, 프로필 메뉴 열렸는지 상태 확인 배열 */
   const [isAlertOpen, setIsAlertOpen]=useState(false);
   const [isProfileOpen, setIsProfileOpen] =useState(false);
@@ -27,10 +27,11 @@ const Header = ({ isLoggedIn = false }) => {
 
         {/* 메뉴 */}
         <nav className="nav">
-          <Link to="/myLibrary">나의 서재</Link>
-          <Link to="/explore">둘러보기</Link>
-          <Link to="/quiz/start">책BTI</Link>
+          <Link to={isLoggedIn ? "/myLibrary" : "/login"}>나의 서재</Link>
+          <Link to={isLoggedIn ? "/explore" : "/login"}>둘러보기</Link>
+          <Link to={isLoggedIn ? "/bookbt" : "/login"}>책BTI</Link>
         </nav>
+        
 
         {/*검색창*/}
         <SearchBar variant="outlined" className="searchBar"/>

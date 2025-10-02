@@ -10,13 +10,10 @@ import Home from "./pages/Home/Home";
 import QuizResult from "./pages/Quiz/QuizResult/QuizResult";
 import { dummyBooks } from "./mocks/dummyBooks";
 import { dummyReviews } from "./mocks/dummyReviews";
-
-
+import { AuthProvider } from "./context/AuthContext";
+import BaseLayout from "./components/Layout/BaseLayout";
 
 export default function App() {
-  const isLoggedIn = true;
-  const nickname = "빙봉";
-
   const todaysBooks = dummyBooks;
   const todaysReviews = dummyReviews;
   const recommendedBooks = dummyBooks;
@@ -24,34 +21,32 @@ export default function App() {
 
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <Home
-              isLoggedIn={isLoggedIn}
-              nickname={nickname}
-              todayBooks={todaysBooks}
-              todayReviews={todaysReviews}
-              recommendedBooks={recommendedBooks}
-              followingReviews={followingReviews}
-            />
-          }
-        />
-        <Route path="/login" element={<LoginPage />} />
-
-        <Route path="/signup" element={<SignupLayout />}>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <BaseLayout>
+                <Home
+                  todayBooks={todaysBooks}
+                  todayReviews={todaysReviews}
+                  recommendedBooks={recommendedBooks}
+                  followingReviews={followingReviews}
+                />
+              </BaseLayout>
+            }
+          />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupLayout />}>
           <Route index element={<SignupPage />} />
           <Route path="success" element={<SignupSuccess />} />
           <Route path="email" element={<SignupEmail />} />
-        </Route>
-
-        <Route path="/quiz/start" element ={<QuizStart/>}/>
-        <Route path="/quiz" element={<QuizPage/>}/>
-        <Route path="/quiz/result" element={<QuizResult/>} />
-      </Routes>
-    </Router>
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
+    
     
   );
 }

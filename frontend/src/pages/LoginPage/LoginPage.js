@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import InputField from "../../components/InputField/InputField";
 import Button from "../../components/Button/Button";
 import "./LoginPage.css";
@@ -10,6 +11,7 @@ import kakao_logo from "../../assets/kakao_logo.png"
 
 export default function LoginPage() {
     const navigate=useNavigate();
+    const {login}=useAuth();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -22,6 +24,7 @@ export default function LoginPage() {
     const handleLogin = (e) => {
         e.preventDefault();
         
+        //아이디 검증
         //예시  등록된 계정 testuser/1234
         if(username.trim() !== "testuser"){
             setUsernameError("존재하지 않는 아이디입니다.");
@@ -30,16 +33,26 @@ export default function LoginPage() {
         }else{
             setUsernameError("");
         }
+
+        //비밀번호 검증
         if(password !=="1234"){
             setPasswordError("비밀번호가 틀렸습니다.");
         }else{
             setPasswordError("");
         }
 
-        //에러 없을 경우 로그인 성공
+        //에러 없을 경우 로그인 성공 및 전역 상태 업데이트
         if(username.trim()==="testuser" && password ==="1234"){
             console.log("로그인 성공");
+
+            const userData={
+              id: "testuser",
+              nickname: "빙봉",
+            }
+
+            login(userData)
         }
+        navigate("/")
     };
 
     return (
