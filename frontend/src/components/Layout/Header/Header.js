@@ -29,7 +29,7 @@ const Header = () => {
         <nav className="nav">
           <Link to={isLoggedIn ? "/myLibrary" : "/login"}>나의 서재</Link>
           <Link to={isLoggedIn ? "/explore" : "/login"}>둘러보기</Link>
-          <Link to={isLoggedIn ? "/bookbt" : "/login"}>책BTI</Link>
+          <Link to={isLoggedIn ? "/quiz/start" : "/login"}>책BTI</Link>
         </nav>
         
 

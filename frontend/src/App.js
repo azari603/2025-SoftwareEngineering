@@ -4,7 +4,10 @@ import SignupPage from "./pages/SignupPage/SignupPage";
 import SignupLayout from "./pages/SignupPage/SignupLayout";
 import SignupSuccess from "./pages/SignupPage/SignupSuccess/SignupSuccess";
 import SignupEmail from "./pages/SignupPage/SignupEmail/SignupEmail";
+import QuizStart from "./pages/Quiz/QuizStart/QuizStart";
+import QuizPage from "./pages/Quiz/QuizPage/QuizPage";
 import Home from "./pages/Home/Home";
+import QuizResult from "./pages/Quiz/QuizResult/QuizResult";
 import { dummyBooks } from "./mocks/dummyBooks";
 import { dummyReviews } from "./mocks/dummyReviews";
 import { AuthProvider } from "./context/AuthContext";
@@ -21,19 +24,22 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route element={<BaseLayout/>}>
           <Route
             path="/"
             element={
-              <BaseLayout>
                 <Home
                   todayBooks={todaysBooks}
                   todayReviews={todaysReviews}
                   recommendedBooks={recommendedBooks}
                   followingReviews={followingReviews}
-                />
-              </BaseLayout>
-            }
-          />
+                />}/>
+
+                <Route path="/quiz/start" element={<QuizStart/>}/>
+                <Route path="/quiz" element={<QuizPage/>}/>
+                <Route path="/quiz/result" element={<QuizResult/>}/>
+          </Route>
+          
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupLayout />}>
           <Route index element={<SignupPage />} />

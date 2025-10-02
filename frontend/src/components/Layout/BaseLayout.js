@@ -1,4 +1,4 @@
-import { Children } from "react";
+import { Outlet } from "react-router-dom";
 import Header from "./Header/Header";
 
 const BaseLayout=({children})=>{
@@ -6,7 +6,7 @@ const BaseLayout=({children})=>{
         <div className="base-layout">
             <Header/>
             <main className="main-container">
-                {children}
+                <Outlet />
             </main>
             
         </div>
