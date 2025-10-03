@@ -1,5 +1,6 @@
 import { Outlet } from "react-router-dom";
 import Header from "./Header/Header";
+import Footer from "./Footer/Footer";
 
 const BaseLayout=({children})=>{
     return(
@@ -8,7 +9,7 @@ const BaseLayout=({children})=>{
             <main className="main-container">
                 <Outlet />
             </main>
-            
+            <Footer/>
         </div>
     )
 }
