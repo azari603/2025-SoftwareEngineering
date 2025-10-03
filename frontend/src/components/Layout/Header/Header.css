@@ -20,7 +20,8 @@
 .logo {
   display: flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
+  gap: 0px;
   text-decoration: none; 
   flex: 0 0 auto;
 }
