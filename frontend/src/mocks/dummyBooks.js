@@ -20,9 +20,12 @@ const author = [
   "일홍",
 ];
 
+const ratings = [5, 4, 3, 5, 2, 4,5];
+
 export const dummyBooks = titles.map((t, i) => ({
   isbn: String(i + 1),
   title: t,                          
   author: author[i%author.length],
   image: coverImages[i % coverImages.length], 
+  rating: ratings[i],
 }));
