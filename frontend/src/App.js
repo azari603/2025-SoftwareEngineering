@@ -13,6 +13,9 @@ import { dummyReviews } from "./mocks/dummyReviews";
 import { AuthProvider } from "./context/AuthContext";
 import BaseLayout from "./components/Layout/BaseLayout";
 import SearchPage from "./pages/SearchPage/SearchPage"
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import ProfileEditPage from "./pages/ProfilePage/ProfileEditPage/ProfileEditPage";
+import SettingsPage from "./pages/ProfilePage/SettingsPage/SettingsPage";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -40,6 +43,9 @@ export default function App() {
                 <Route path="/quiz" element={<QuizPage/>}/>
                 <Route path="/quiz/result" element={<QuizResult/>}/>
                 <Route path="/search" element={<SearchPage/>}></Route>
+                <Route path="/profile" element={<ProfilePage/>}/>
+                <Route path="/profile/settings" element={<SettingsPage/>}/>
+                <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
