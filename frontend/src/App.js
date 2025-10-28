@@ -12,6 +12,7 @@ import { dummyBooks } from "./mocks/dummyBooks";
 import { dummyReviews } from "./mocks/dummyReviews";
 import { AuthProvider } from "./context/AuthContext";
 import BaseLayout from "./components/Layout/BaseLayout";
+import SearchPage from "./pages/SearchPage/SearchPage"
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -38,6 +39,7 @@ export default function App() {
                 <Route path="/quiz/start" element={<QuizStart/>}/>
                 <Route path="/quiz" element={<QuizPage/>}/>
                 <Route path="/quiz/result" element={<QuizResult/>}/>
+                <Route path="/search" element={<SearchPage/>}></Route>
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
