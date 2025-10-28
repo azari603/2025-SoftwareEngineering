@@ -1,0 +1,84 @@
+.search-result-page {
+  background-color: #fDfBf4;
+  min-height: 100vh;
+  padding: 60px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.search-header {
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.search-header h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+}
+
+.search-header .highlight {
+  color: #299159; /* 초록 포인트 컬러 */
+}
+
+.search-result-container {
+  width: 100%;
+  max-width: 1200px;
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.non-result{
+    width: 100%;
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 18px;
+    color: #767676;
+}
+
+.non-result .book-img{
+    width: 200px;
+    height: 120px;
+}
+
+.horizontal-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 40px 32px;
+  justify-items: center;
+}
+
+.pagination {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.page-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ccc;
+  background-color: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.page-btn.active {
+  background-color: #111;
+  color: #fff;
+}
+
+.page-btn:hover {
+  border-color: #299159;
+}
