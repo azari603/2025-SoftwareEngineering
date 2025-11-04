@@ -7,13 +7,20 @@ import ReviewList from "../../components/ReviewList/ReviewList";
 import no_result from "../../assets/no_result.png";
 import BookList from "../../components/BookList/BookList";
 import settings_btn from "../../assets/option.png";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
+import { LayoutContext } from "../../context/LayoutContext";
 
 export default function ProfilePage() {
   const { user} = useAuth();
   const [selectedRating, setSelectedRating] = useState(5);
   const navigate = useNavigate();
+
+  const { setFooterColor } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setFooterColor("#FDFBF4"); // 흰색 테마
+  }, []);
 
   const filteredBooks = dummyBooks.filter(
     (book) => book.rating === selectedRating

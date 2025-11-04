@@ -27,7 +27,7 @@
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 10px;
-  margin-block: 40px;
+  margin-block: 60px;
   padding: 40px 40px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -46,4 +46,8 @@
 
 .review-wrapper .nav-button{
   top: 75%;
+}
+
+.book-wrapper .book-title-span{
+  color: #299159;
 }

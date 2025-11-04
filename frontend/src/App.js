@@ -18,6 +18,7 @@ import ProfileEditPage from "./pages/ProfilePage/ProfileEditPage/ProfileEditPage
 import SettingsPage from "./pages/ProfilePage/SettingsPage/SettingsPage";
 import { BookStatusProvider } from "./context/BookStatusContext";
 import BookDetailPage from "./pages/BookDetail/BookDetailPage";
+import { LayoutProvider } from "./context/LayoutContext";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -28,7 +29,7 @@ export default function App() {
 
   return (
     <AuthProvider>
-    
+    <LayoutProvider>
       <Router>
         <BookStatusProvider>
         <Routes>
@@ -62,7 +63,7 @@ export default function App() {
         </Routes>
         </BookStatusProvider>
       </Router>
-      
+      </LayoutProvider>
     </AuthProvider>
     
     
