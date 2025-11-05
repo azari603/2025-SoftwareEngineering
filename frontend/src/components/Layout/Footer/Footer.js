@@ -2,9 +2,9 @@ import { FaGithub } from "react-icons/fa6";
 import logo from "../../../assets/logo.png"
 import "./Footer.css"
 
-export default function Footer(){
+export default function Footer({bgColor="#FFFFFF"}){
     return(
-        <footer className="footer">
+        <footer className="footer" style={{backgroundColor:bgColor}}>
             <div className="footer-top">
                 <div className="footer-logo">
                     <img src={logo} alt="logo" className="logo-icon" />

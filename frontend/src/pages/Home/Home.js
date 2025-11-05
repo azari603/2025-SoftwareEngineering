@@ -4,6 +4,8 @@ import Button from "../../components/Button/Button";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { useAuth } from "../../context/AuthContext";
 import "./Home.css";
+import { LayoutContext } from "../../context/LayoutContext";
+import { useContext, useEffect } from "react";
 
 /**
  * props
@@ -26,6 +28,12 @@ const Home = ({
   const reviewSectionTitle=isLoggedIn?"팔로잉 서평":"오늘의 추천 서평";
   const reviewForSection=isLoggedIn?followingReviews:todayReviews;
   const booksForSection=isLoggedIn?recommendedBooks:todayBooks;
+
+  const { setFooterColor } = useContext(LayoutContext);
+
+  useEffect(() => {
+    setFooterColor("#FFFFFF"); // 흰색 테마
+  }, []);
 
   return (
     <div className="home">

@@ -279,11 +279,10 @@
     align-items: center;
 }
 
+
 .review-section h3{
     text-align: left;
     width: 100%;        
-    padding-left: 15px;  
-    margin-bottom: 16px;
 }
 
 .review-list {
@@ -293,7 +292,9 @@
   justify-items: center;
   width: 100%;
 }
-
+.review-list .review-book-section{
+  padding: 16px 30px;
+}
 .profile-container .review-book-image {
   width: 80px;  
   height: 110px;  
@@ -301,7 +302,11 @@
 }
 
 .profile-container .review-book-title {
+  width: 100%;
   font-size: 14px;  
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
 }
 

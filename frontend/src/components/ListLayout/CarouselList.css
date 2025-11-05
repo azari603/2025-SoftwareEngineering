@@ -11,6 +11,7 @@
   flex: 1;
   padding-bottom: 12px;
   padding-top: 12px;
+  padding-inline: 20px;
   box-sizing: border-box;
 }
 
@@ -27,4 +28,8 @@
 
 .carousel-layout .nav-button.left {
   left: 0px;
+}
+
+.carousel-layout .nav-button.right {
+  right: 0px;
 }
