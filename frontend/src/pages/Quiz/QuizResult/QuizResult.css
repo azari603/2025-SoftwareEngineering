@@ -1,0 +1,100 @@
+.quizresult {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: #fdfcf8;
+}
+
+.quizresult-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.quizresult-card {
+  background: #fff;
+  padding: 50px 60px;
+  border-radius: 12px;
+  width: 800px;
+  text-align: center;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 상단 제목 */
+.quizresult-title {
+  font-size: 20px;
+  color: #2e7d32;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.quizresult-subtitle {
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* 태그 영역 */
+.quizresult-tags {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.quizresult-tags span {
+  background: #f0f8f0;
+  color: #2e7d32;
+  font-size: 14px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+/* 결과 이미지 */
+.quizresult-image {
+  width: 200px;
+  margin: 20px auto;
+  display: block;
+  margin-top: 30px;
+  margin-bottom : 30px;
+}
+
+/* 설명 */
+.quizresult-desc {
+  font-size: 15px;
+  color: #444;
+  margin: 20px 0 36px;
+  line-height: 1.85;
+  letter-spacing: 0.3px;
+  text-align:center;
+  padding : 0 50px;
+}
+
+/* 구분선 */
+.quizresult-divider {
+  margin: 30px 0;
+  border: none;
+  border-top: 1px solid #eee;
+  margin-top: 15px;
+  margin-bottom : 45px;
+}
+
+/* 추천 책 타이틀 */
+.quizresult-recommend-title {
+  font-size: 18px;
+  margin-bottom: 24px;
+  color: #333;
+}
+
+.quizresult-recommend-title span {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+/* BookList가 차지하는 영역 */
+.quizresult-books {
+  margin-top: 20px;
+}

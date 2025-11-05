@@ -1,0 +1,41 @@
+.rating-container {
+  display: inline-block;
+  font-family: Arial, sans-serif;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.star-icon {
+  width: 50px;   /* 별 크기 */
+  height: 50px;
+  margin-right: 5px;
+  transition: fill 0.2s;
+}
+
+.score {
+  margin-left: 15px;
+  font-weight: bold;
+  font-size: 28px;
+  display: flex;
+  align-items: baseline;
+  pointer-events: none;
+}
+
+.score-number {
+  color: #299159; /* 선택된 숫자 */
+  pointer-events: none;
+  caret-color: transparent;
+  margin-right:6px ;
+}
+
+.score-total {
+  color: #999; /* /5는 회색 */
+  font-weight: normal;
+  font-size: 24px;
+  user-select: none;
+  pointer-events: none;
+}

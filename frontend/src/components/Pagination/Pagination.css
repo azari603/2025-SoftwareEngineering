@@ -1,0 +1,48 @@
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+/* 공통 버튼 스타일 */
+.page-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid #ccc;
+  background-color: white;
+  color: #999;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* hover 효과 */
+.page-btn:hover:not(:disabled) {
+  border-color: #000;
+  color: #000;
+}
+
+/* 활성화된(선택된) 페이지 */
+.page-btn.active {
+  background-color: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+/* 화살표 버튼 */
+.page-btn.arrow {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 비활성화된 버튼 (맨앞/맨뒤) */
+.page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

@@ -1,0 +1,80 @@
+.header {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 30px;
+  padding-right: 30px;
+  border-bottom: 1px solid #eee;
+  background-color: #fff;
+  user-select: none;
+}
+
+.header-left{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;
+  text-decoration: none; 
+  flex: 0 0 auto;
+}
+
+.logo-icon {
+  width: 31px;
+  height: 36px;
+}
+
+.logo-text {
+  font-weight: bold;
+  color: #299159;
+  font-size: 24px;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+  flex: 0 0 auto;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #000000;
+  font-size: 16px;
+}
+
+.user-info{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none; 
+  flex: 0 0 auto;
+  font-size : 0;
+}
+
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.signup {
+  color: #111111;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.user-info .icon{
+  display: block;
+  cursor:pointer;
+  width: 28px;
+  height: 28px;
+}
+

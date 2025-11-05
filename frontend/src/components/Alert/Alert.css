@@ -1,0 +1,114 @@
+.alert-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+  z-index: 1000;
+}
+
+
+.alert-popup {  /*알림창 전체 박스*/
+  position: absolute;
+  top: 35px; 
+  right: 0;
+  width: 320px;
+  background: #f5f5f5; /* 전체 회색 배경 */
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* 상단 헤더 */
+.popup-header {
+  background: #fff; /* 위쪽만 흰색 */
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+}
+
+/* 상단 알림 텍스트 */
+.popup-header h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* 알림 리스트 */
+.alert-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+/* 알림 카드 */
+.alert-item {
+  position: relative;
+  background: #fff;
+  margin: 8px 12px;
+  padding: 12px 25px 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  display : flex;
+  align-items:flex-start;
+  text-align: left;
+  gap:10px;
+  user-select: none;
+}
+
+/* 알림 앞쪽 이모지 */
+.alert-item .icon{
+    font-size:20px;
+    flex-shrink:0;
+    margin-top:15px
+}
+
+/* 알림 내용 전체 (시간 + 텍스트) */
+.alert-item .content{
+    flex :1;
+    margin-top:-10px;
+}
+
+/* 알림 시간 */
+.alert-item .time {
+  display: block;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 4px;
+  margin-left : -43px;
+}
+
+/* 알림 카드 안 본문 텍스트 */
+.alert-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #333;
+}
+
+/* X 버튼 */
+.delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.delete-btn:hover {
+  color: #ff4d4f;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+  font-size: 14px;
+}
+
+/* 알림창 등장 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
