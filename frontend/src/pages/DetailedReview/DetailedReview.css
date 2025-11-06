@@ -1,0 +1,509 @@
+.card{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;    
+  background-color: #FDFBF4;
+
+}
+.review-detail {
+  width: 808px;
+  min-height: 1287px;
+  margin-top: 40px;
+  padding: 1.5rem 1.5rem 3rem;
+  background-color: #fff;
+  font-family: "Noto Sans KR", sans-serif;
+  color: #222;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-left:315px;
+  margin-right:315px;
+  margin-bottom:100px;
+
+}
+
+/* ---------- 헤더 ---------- */
+.review-detail .review-header {
+  display:flex;
+  flex-direction: column;
+  align-items: flex-start;
+  position: relative;
+  margin-bottom: 1.8rem;
+  user-select: none;
+}
+
+.back-btn {
+  position: static;
+  left: 0;
+  top: 0;
+  border: none;
+  background: none;
+  font-size: 31px;
+  color: #333;
+  cursor: pointer;
+}
+
+.review-detail .review-title {
+  text-align: left;
+  font-size: 25px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.4;
+  margin-left:35px;
+}
+
+.review-detail  .review-title-row{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+
+/* ⋯ 버튼 */
+.menu-btn {
+  border: none;
+  background: none;
+  color: #777;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+}
+.menu-btn:hover {
+  color: #000;
+}
+
+/* 수정·삭제 드롭다운 */
+.menu-dropdown {
+  position: absolute;
+  top: 28px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 10;
+  min-width: 80px;
+  white-space: nowrap; 
+}
+
+.menu-item {
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  background: white;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-item:hover {
+  background: #f5f5f5;
+}
+
+.menu-item.delete {
+  color: #e74c3c;
+}
+
+/* 팔로우 버튼 */
+.follow-btn {
+  background: #299159;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.follow-btn.following {
+  background: white;
+  color: #299159;
+  border: 1.5px solid #299159;
+}
+
+.review-user_ {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-top: 1.2rem;
+  margin-left:35px;
+  width: calc(100% - 70px);
+}
+
+.review-user_ .follow-btn {
+  padding: 4px 12px;
+  background: #299159;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.review-user_ .follow-btn.following {
+  background: white;
+  color: #299159;
+  border: 1.5px solid #299159;
+}
+
+/* 프로필 묶음 */
+.review-user__profile {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.review-user__img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.review-user__info p {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.review-user__name {
+  font-weight: 500;
+  color:#000000;
+  font-size: 14px;
+}
+
+.review-user__date {
+  padding-top:5px;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+/* ---------- 책 정보 ---------- */
+.book-info-review {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem;
+  padding-bottom: 1rem;
+  border-radius: 12px;
+  border: 0.01px solid #d9d9d9;
+  background-color: #f8f9f8;
+  margin-bottom: 40px;
+  margin-left:30px;
+  margin-right:30px;
+  position:relative;
+  user-select: none;
+}
+
+.book-cover {
+  width: 80px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.book-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content:flex-start;
+}
+
+.book-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.book-author {
+  font-size: 0.9rem;
+  color: #555;
+
+}
+
+.book-read {
+  position:absolute;
+  top:12px;
+  right:16px;
+  font-size: 0.85rem;
+  color: #666;
+  margin:0;
+}
+
+.book-rating {
+  display:flex;
+  justify-content:flex-start;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #299159;
+  font-weight: 500;
+  margin-top:10px;
+}
+
+.book-rating .divider {
+  color: #bbb;
+  margin: 0 0.4rem;
+}
+
+.avg-count{
+  color:#767676;
+}
+/* 이 페이지(리뷰 상세) 안에서만 별 크기 줄이기 */
+.review-detail .star-icon {
+  width: 18px;   
+  height: 18px;
+}
+
+.review-detail .score {
+  font-size: 17px;
+  margin-left:0px;
+  margin-right:5px;
+}
+
+.review-detail .score .score-number {
+  font-size: 15px;
+  margin-left:2px;
+  margin-right:5px;
+}
+
+.review-detail .score .score-total {
+  font-size: 14px;
+  margin-left:0;
+}
+
+.book-rating__my{
+  display: flex;
+  margin-left:30px;
+  flex-direction:column;
+  align-items: flex-start;
+  margin-bottom: 20px;;
+  color:#767676;
+  font-size: 12px;
+}
+
+
+/* ---------- 본문 ---------- */
+.review-content {
+  line-height: 1.7;
+  font-size: 0.95rem;
+  color: #767676;
+  margin: 0 50px;
+  margin-bottom:50px;
+}
+
+.review-content p {
+  margin-bottom: 1.2rem; 
+  line-height: 1.7;
+  color: #767676;
+  text-indent: 0; 
+
+}
+
+.review-divider {
+  border: none;              
+  border-top: 1px solid #e0e0e0; 
+  margin: 2rem auto;           
+  width: 85%;              
+  align-self: center;     
+}
+
+/* ---------- 푸터 ---------- */
+.review-footer {
+  display: flex;
+  gap: 1rem;
+  margin-top: 30px;
+  margin-left:50px;
+  margin-right:50px;
+}
+
+.review-footer button {
+  background:#f6f6f6;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.review-footer button:hover {
+  background: #e7e7e7;
+}
+
+.like-btn, .comment-btn {
+  border: none;
+  font-size: 1rem;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.heart-wrapper {
+  position: relative;
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
+.heart.base {
+  color: #bbb;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.heart.overlay {
+  color: #e74c3c; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.2s ease;
+}
+
+.heart-wrapper.liked .heart.overlay {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.heart-wrapper.liked .heart.base {
+  opacity: 0;
+}
+
+
+.user-action-area {
+  margin-left: auto;
+  position: relative;
+}
+
+/* 댓글 전체 영역 */
+.comment-section {
+  margin: 1.5rem 50px 0;
+  padding-top: 1rem;
+}
+
+/* 댓글 리스트 */
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 10px;
+  user-select: none;
+}
+
+.comment-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  margin-bottom:10px;
+}
+
+.comment-user__img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.comment-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.comment-user__name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.2rem;
+}
+
+.comment-text {
+  color: #333;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  user-select: text;
+}
+
+.comment-date {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+/* 입력창 */
+.comment-input {
+  display: flex;
+  align-items: left;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.comment-input input {
+  flex: 1;
+  border: none;
+  padding: 0.8rem;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.comment-input button {
+  background: #299159;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.comment-input button:hover {
+  background: #267f4e;
+}
+
+/* 로그인 안내 문구 스타일 */
+.login-notice {
+  width: 100%;
+  text-align: start;
+  padding: 0.8rem;
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+  color: #777;
+  font-size:10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+
+.login-notice:hover {
+  background-color: #ebebeb;
+  color: #333;
+}
+
+.comment-section .pagination-wrapper{
+  margin-top:0;
+  margin-bottom:30px;
+}
+
+.no-comment {
+  text-align: center;
+  color: #999999;
+  font-size: 12px;
+  padding: 1rem 0;
+}

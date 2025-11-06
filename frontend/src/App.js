@@ -16,6 +16,7 @@ import SearchPage from "./pages/SearchPage/SearchPage"
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ProfileEditPage from "./pages/ProfilePage/ProfileEditPage/ProfileEditPage";
 import SettingsPage from "./pages/ProfilePage/SettingsPage/SettingsPage";
+import ReviewDetail from "./pages/DetailedReview/DetailedReview";
 import { BookStatusProvider } from "./context/BookStatusContext";
 import BookDetailPage from "./pages/BookDetail/BookDetailPage";
 import { LayoutProvider } from "./context/LayoutContext";
@@ -51,6 +52,7 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage/>}/>
                 <Route path="/profile/settings" element={<SettingsPage/>}/>
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
+                <Route path="/detail_review" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
           </Route>
           
