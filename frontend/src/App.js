@@ -17,6 +17,9 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ProfileEditPage from "./pages/ProfilePage/ProfileEditPage/ProfileEditPage";
 import SettingsPage from "./pages/ProfilePage/SettingsPage/SettingsPage";
 import ReviewDetail from "./pages/DetailedReview/DetailedReview";
+import { BookStatusProvider } from "./context/BookStatusContext";
+import BookDetailPage from "./pages/BookDetail/BookDetailPage";
+import { LayoutProvider } from "./context/LayoutContext";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -27,7 +30,9 @@ export default function App() {
 
   return (
     <AuthProvider>
+    <LayoutProvider>
       <Router>
+        <BookStatusProvider>
         <Routes>
           <Route element={<BaseLayout/>}>
           <Route
@@ -48,6 +53,7 @@ export default function App() {
                 <Route path="/profile/settings" element={<SettingsPage/>}/>
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/detail_review" element={<ReviewDetail/>}/>
+                <Route path="/book/:isbn" element={<BookDetailPage/>}/>
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
@@ -57,7 +63,9 @@ export default function App() {
           <Route path="email" element={<SignupEmail />} />
           </Route>
         </Routes>
+        </BookStatusProvider>
       </Router>
+      </LayoutProvider>
     </AuthProvider>
     
     
