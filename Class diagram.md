@@ -8,7 +8,7 @@
 
 ## 3. UserService
 <img width="1501" height="411" alt="image" src="https://github.com/user-attachments/assets/16bc11b4-8948-4b38-ae37-10acc76588a1" />
-<img width="625" height="1570" alt="image" src="https://github.com/user-attachments/assets/e4326c52-b06a-4eac-ac50-0432cdee1c08" />
+<img width="630" height="1570" alt="image" src="https://github.com/user-attachments/assets/05ee5935-a4e1-45ef-8ef8-8cde858f26f6" />
 
 ## 4. ProfileService
 <img width="1451" height="529" alt="image" src="https://github.com/user-attachments/assets/fc083beb-592d-487a-814c-4c7787d5b040" />
@@ -20,7 +20,8 @@
 
 ## 6. ReadingStatusService
 <img width="1351" height="364" alt="image" src="https://github.com/user-attachments/assets/f331cbd0-e8b9-430b-b69f-3fa8cb8bef68" />
-<img width="578" height="1400" alt="image" src="https://github.com/user-attachments/assets/301e358c-409e-42fb-a12d-ea089ace05ab" />
+<img width="580" height="1400" alt="image" src="https://github.com/user-attachments/assets/7e6f834f-db62-419e-ac5a-8f61fc376768" />
+
 
 ## 7. ReviewService
 <img width="1661" height="524" alt="image" src="https://github.com/user-attachments/assets/73e24b0c-8d06-461c-97be-58f0a041d81d" />
@@ -44,7 +45,8 @@
 
 ## 12. RecommendationService
 <img width="1891" height="1024" alt="image" src="https://github.com/user-attachments/assets/a40dfd1c-6d21-407d-9ea2-16631a6580e4" />
-<img width="588" height="1410" alt="image" src="https://github.com/user-attachments/assets/4fb0845a-e92e-4773-9b70-0d967c398550" />
+<img width="610" height="1410" alt="image" src="https://github.com/user-attachments/assets/b2a37813-aa37-400d-b376-a74722168299" />
+
 
 ## 13. StatsService
 <img width="1521" height="424" alt="image" src="https://github.com/user-attachments/assets/5acf3e73-a3a4-4697-96c5-e028e8be342c" />
@@ -60,7 +62,7 @@
 
 ## 16. BookBtiService
 <img width="1241" height="454" alt="image" src="https://github.com/user-attachments/assets/ba65271c-c235-4500-98c7-527d2559d349" />
-<img width="568" height="1510" alt="image" src="https://github.com/user-attachments/assets/40bd784f-6547-483a-9cb1-13b5b9e926ad" />
+<img width="570" height="1510" alt="image" src="https://github.com/user-attachments/assets/e4a0b641-40da-4834-8082-126113675494" />
 
 ## 17. BookIngestService
 <img width="711" height="344" alt="image" src="https://github.com/user-attachments/assets/002b9519-4f87-4ca0-872c-72736bfaf4d3" />
