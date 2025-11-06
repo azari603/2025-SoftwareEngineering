@@ -111,7 +111,8 @@
 
 ## 12. RecommendationController
 <img width="421" height="364" alt="image" src="https://github.com/user-attachments/assets/b6081162-9b89-4ee1-968a-18fd241c1681" /><br>
-<img width="586" height="1010" alt="image" src="https://github.com/user-attachments/assets/7230efc2-fc46-4076-a669-74a080625322" />
+<img width="600" height="1010" alt="image" src="https://github.com/user-attachments/assets/8c9b031f-da1a-4c5a-8f07-a8586fa64dba" />
+
 
 ## 13. NotificationController
 <img width="391" height="434" alt="image" src="https://github.com/user-attachments/assets/80eb5134-454f-47e6-93e9-5cf76c04b108" />
