@@ -93,18 +93,25 @@
 
 ## 8. ReadingStatusController
 <img width="601" height="384" alt="image" src="https://github.com/user-attachments/assets/925aa58f-7941-4945-9c3b-1661c2b696fd" />
+<img width="580" height="1250" alt="image" src="https://github.com/user-attachments/assets/f989e0bb-30f4-4b66-8585-a4ffeeac4062" />
+
 
 ## 9. LikeController
-<img width="411" height="424" alt="image" src="https://github.com/user-attachments/assets/db03fcea-06e7-4a9b-a8f3-f26e3c825707" />
+<img width="411" height="424" alt="image" src="https://github.com/user-attachments/assets/db03fcea-06e7-4a9b-a8f3-f26e3c825707" /><br>
+<img width="560" height="950" alt="image" src="https://github.com/user-attachments/assets/debd0fa9-2a87-498e-99e2-83e24ae26ee0" />
+
 
 ## 10. CommentController
 <img width="601" height="394" alt="image" src="https://github.com/user-attachments/assets/e40c9c0b-0665-4372-bfb6-03bacbc0609e" />
+<img width="590" height="970" alt="image" src="https://github.com/user-attachments/assets/0c586318-9eaa-4d81-8a53-c105e6886cf6" />
+
 
 ## 11. FeedController
 <img width="441" height="349" alt="image" src="https://github.com/user-attachments/assets/751bf3bb-576e-4bb9-9c9b-cd7933263210" />
 
 ## 12. RecommendationController
-<img width="421" height="364" alt="image" src="https://github.com/user-attachments/assets/b6081162-9b89-4ee1-968a-18fd241c1681" />
+<img width="421" height="364" alt="image" src="https://github.com/user-attachments/assets/b6081162-9b89-4ee1-968a-18fd241c1681" /><br>
+<img width="586" height="1010" alt="image" src="https://github.com/user-attachments/assets/7230efc2-fc46-4076-a669-74a080625322" />
 
 ## 13. NotificationController
 <img width="391" height="434" alt="image" src="https://github.com/user-attachments/assets/80eb5134-454f-47e6-93e9-5cf76c04b108" />
