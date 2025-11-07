@@ -187,8 +187,8 @@ const ReviewDetail = ({ review,currentUser }) => {
 
       <section className="book-info-review">
         <img src={book.image} alt={book.title} className="book-cover" />
-        <div className="book-meta">
-          <h3 className="book-title">{book.title}</h3>
+        <div className="review-book-meta">
+          <h3 className="book-title-review">{book.title}</h3>
           <p className="book-author">{book.author}</p>
           <p className="book-read">읽은 날짜 : {book.readPeriod}</p>
 
