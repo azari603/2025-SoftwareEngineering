@@ -30,7 +30,7 @@ export default function BookInfoSection({ book }) {
         </div>
 
         {/* 책 정보 */}
-        <div className="book-meta">
+        <div className="book-info-meta">
           <div className="book-meta-wrapper">
             <h2 className="book-title">{book.title}</h2>
             <p className="book-author">{book.author}</p>

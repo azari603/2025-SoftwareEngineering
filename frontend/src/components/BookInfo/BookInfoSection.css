@@ -27,7 +27,7 @@
   border-radius: 8px;
 }
 
-.book-meta {
+.book-info-meta {
   height: 260px;
   flex: 1;
   display: flex;
@@ -35,7 +35,7 @@
   justify-content: space-between;
 }
 
-.book-title {
+.book-info-meta .book-title {
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 4px;
@@ -51,14 +51,14 @@
   margin-bottom: 10px;
 }
 
-.book-rating {
+.book-rating-action-wrapper .book-rating {
   display: flex;
   align-items: center;
   gap: 8px;
   margin-bottom: 16px;
 }
 
-.book-rating .rating-container .star-icon{
+.book-rating-action-wrapper .book-rating .rating-container .star-icon{
   width: 40px;
   height: 40px;
 }
