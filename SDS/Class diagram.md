@@ -72,24 +72,31 @@
 # 2. Controller class diagram
 ## 1. AuthController
 <img width="727" height="544" alt="image" src="https://github.com/user-attachments/assets/d8dbfef1-c865-40fc-b2dd-1d6b3e821acd" />
+<img width="560" height="1680" alt="image" src="https://github.com/user-attachments/assets/4852d5d8-31ee-4c7d-9822-75e9b1527f68" />
 
 ## 2. UserController
-<img width="411" height="429" alt="image" src="https://github.com/user-attachments/assets/3e7fb393-fe54-4f79-b18a-e7c3a12d57e4" />
+<img width="411" height="429" alt="image" src="https://github.com/user-attachments/assets/3e7fb393-fe54-4f79-b18a-e7c3a12d57e4" /><br>
+<img width="560" height="950" alt="image" src="https://github.com/user-attachments/assets/7420b6d5-6100-4e0e-8566-8b70ea640a3c" />
 
 ## 3. ProfileController
 <img width="481" height="474" alt="image" src="https://github.com/user-attachments/assets/aed39560-ced0-47fc-865c-79b637a1239b" />
+<img width="560" height="1240" alt="image" src="https://github.com/user-attachments/assets/9668cc27-cd35-43ea-ac9b-3d1345c45207" />
 
 ## 4. FollowController
 <img width="821" height="564" alt="image" src="https://github.com/user-attachments/assets/a281ad9a-bf45-4891-a751-1b8f5fb12d5f" />
+<img width="580" height="1750" alt="image" src="https://github.com/user-attachments/assets/edbc1870-b218-4247-89be-f1e186407f47" />
 
 ## 5. BookController
 <img width="801" height="444" alt="image" src="https://github.com/user-attachments/assets/d09abbd8-3d6c-4f9c-a184-4ea4e9ad77dc" />
+<img width="560" height="1080" alt="image" src="https://github.com/user-attachments/assets/93207e64-0c80-484b-b83f-0aa7f3aef04c" />
 
 ## 6. SearchController
 <img width="491" height="374" alt="image" src="https://github.com/user-attachments/assets/49ebe237-254f-49f2-a056-937408b16778" />
+<img width="560" height="700" alt="image" src="https://github.com/user-attachments/assets/7b573a0a-e382-495f-8939-bf8a887b8198" />
 
 ## 7. ReviewController
 <img width="531" height="604" alt="image" src="https://github.com/user-attachments/assets/9d17b3c6-ce22-4804-8b98-0838f8619057" />
+<img width="600" height="1690" alt="image" src="https://github.com/user-attachments/assets/13409836-0529-49fc-97a2-1b73cc59e7d4" />
 
 ## 8. ReadingStatusController
 <img width="601" height="384" alt="image" src="https://github.com/user-attachments/assets/925aa58f-7941-4945-9c3b-1661c2b696fd" />
@@ -107,7 +114,8 @@
 
 
 ## 11. FeedController
-<img width="441" height="349" alt="image" src="https://github.com/user-attachments/assets/751bf3bb-576e-4bb9-9c9b-cd7933263210" />
+<img width="441" height="349" alt="image" src="https://github.com/user-attachments/assets/751bf3bb-576e-4bb9-9c9b-cd7933263210" />br>
+<img width="560" height="820" alt="image" src="https://github.com/user-attachments/assets/10f8ecf6-da7a-45dd-9ff1-a2bba2c0a43f" />
 
 ## 12. RecommendationController
 <img width="421" height="364" alt="image" src="https://github.com/user-attachments/assets/b6081162-9b89-4ee1-968a-18fd241c1681" /><br>
@@ -115,13 +123,16 @@
 
 
 ## 13. NotificationController
-<img width="391" height="434" alt="image" src="https://github.com/user-attachments/assets/80eb5134-454f-47e6-93e9-5cf76c04b108" />
+<img width="391" height="434" alt="image" src="https://github.com/user-attachments/assets/80eb5134-454f-47e6-93e9-5cf76c04b108" /><br>
+<img width="560" height="1180" alt="image" src="https://github.com/user-attachments/assets/b440b699-4f0a-4696-b20d-992bc2690c81" />
 
 ## 14. StatsController
-<img width="441" height="444" alt="image" src="https://github.com/user-attachments/assets/cc6a52f4-7df0-48ef-9f99-83b441e37ad1" />
+<img width="441" height="444" alt="image" src="https://github.com/user-attachments/assets/cc6a52f4-7df0-48ef-9f99-83b441e37ad1" /><br>
+<img width="560" height="1230" alt="image" src="https://github.com/user-attachments/assets/e03bfe18-3eaf-4999-8cca-44d9e651c619" />
 
 ## 15. BookBtiController
 <img width="531" height="424" alt="image" src="https://github.com/user-attachments/assets/53507fee-8e11-4399-9979-83ab1e68c66c" />
+<img width="660" height="1390" alt="image" src="https://github.com/user-attachments/assets/60a32074-56f2-4847-8518-ab725262dd80" />
 
 
 
