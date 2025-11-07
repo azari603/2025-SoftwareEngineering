@@ -1,3 +1,33 @@
+|#seq1|`회원가입`|
+|---|:--------------------------:|
+|_이미지_|<img width="1411" height="987" alt="image" src="https://github.com/user-attachments/assets/67c33348-2ca5-45da-bc45-2aa0327725f4" />|
+|_설명_|사용자가 새로 회원가입을 하는 과정을 나타낸다. 사용자가 POST /auth/signup으로 가입 요청을 보내면 AuthController가 이 요청을 받아서 먼저 중복 회원 여부를 검사한다. 여기서 아이디나 이메일이 이미 존재하면DuplicateUserException을 던지고 컨트롤러가 409 Conflict 응답을 돌려준다. 중복이 아니면 AuthService가 비밀번호를 PasswordEncoder로 암호화하고, 이 암호화된 비밀번호와 함께 사용자 정보를 UserRepository에 저장한다. 저장이 끝나면 가입한 사용자 ID로 ProfileService가 기본 프로필을 생성하고, 동시에 EmailService가 가입 확인/인증 메일을 전송한다. 모든 단계가 정상적으로 끝나면 컨트롤러는 사용자에게 “가입 완료, 이메일 인증 필요”라는 의미의 201 Created 응답을 보낸다. 그래서 최종 결과는 “새 사용자 + 기본 프로필 + 인증 메일 전송됨” 상태가 된다.|
+
+|#seq2|`로그인`|
+|---|:--------------------------:|
+|_이미지_|<img width="1531" height="2331" alt="image" src="https://github.com/user-attachments/assets/3b60af6f-da31-4894-9fc5-1791e7f30eb9" />|
+|_설명_|사용자가 로그인하는 두 가지 경우(일반 로그인과 소셜 로그인)를 한 장에 표현한 것이다. 먼저 사용자가 POST /auth/login 으로 아이디/비밀번호를 보내면 AuthController가 요청을 받고 AuthService에 로그인을 맡긴다. 서비스는 UserRepository에서 username으로 사용자를 찾는데, 없으면 AuthenticationException을 던져서 컨트롤러가 401 Unauthorized를 보낸다. 사용자가 있으면 입력한 비밀번호를 PasswordEncoder로 검증하고, 비밀번호까지 맞으면 JwtProvider가 액세스 토큰과 리프레시 토큰을 생성한다. 이 토큰들을 응답 본문에 담아서 컨트롤러가 200 OK를 내려주면 일반 로그인 흐름이 끝난다. 아래쪽 흐름은 소셜로그인 이다. 사용자가 POST /auth/login?provider=KAKAO ...처럼 소셜 토큰을 보내면 컨트롤러가 이를 AuthService로 넘기고, 서비스는 SocialAuthProvider로 실제 소셜 액세스 토큰이 유효한지 검증한다. 토큰이 유효하면 받은 소셜 프로필로 우리 시스템에 이미 가입된 사용자인지 이메일로 한 번 더 조회한다. 이미 있으면 그 사용자로 JWT 토큰을 만들어서 내려주고, 없으면 소셜 프로필 기반으로 새 사용자를 저장한 다음 똑같이 토큰을 만들어 준다. 이 과정 중에 소셜 토큰이 잘못됐거나 검증이 실패하면 예외가 발생하고 컨트롤러가 401을 내려서 “유효하지 않은 소셜 로그인”을 알려준다.|
+
+|#seq3|`로그아웃`|
+|---|:--------------------------:|
+|_이미지_|<img width="974" height="801" alt="image" src="https://github.com/user-attachments/assets/2b9c91d5-6ae4-4cd3-9ac3-fd0f45308f35" />|
+|_설명_|로그인돼 있는 사용자가 로그아웃을 요청할 때 토큰을 무효화하는 과정을 보여준다. 사용자가 POST /auth/logout을 호출하면 AuthController가 이 요청을 받아서 AuthService의 logout()을 호출한다. 서비스는 먼저 전달받은 액세스 토큰에서 JwtProvider를 이용해 실제 사용자 이름(또는 식별자)을 뽑아낸다. 여기서 토큰이 만료됐거나 위조된 경우에는 AuthenticationException이 발생하고 컨트롤러는 401 Unauthorized와 “유효하지 않은 토큰입니다.”라는 메시지를 응답한다. 토큰이 정상이라면 서비스는 TokenStore / RefreshTokenRepository 쪽에 가서 그 사용자 이름으로 저장돼 있던 리프레시 토큰을 삭제하거나 무효화한다. 이게 성공하면 서비스는 컨트롤러에 “로그아웃 성공”을 알리고, 컨트롤러는 사용자에게 200 OK와 “로그아웃되었습니다.”라는 메시지를 보낸다. 만약 이 중간에 저장소 오류 같은 내부 문제가 생기면 예외가 던져지고 컨트롤러가 500 SERVER_ERROR를 내려준다.|
+
+|#seq4|`아이디 찾기`|
+|---|:--------------------------:|
+|_이미지_|<img width="1291" height="1231" alt="image" src="https://github.com/user-attachments/assets/281fbad4-671f-4342-b6e4-9abdd8643995" />|
+|_설명_|사용자가 이메일만 알고 있고 아이디(username)를 까먹었을 때 아이디를 찾는 두 단계 과정을 표현한다. 1단계에서 사용자가 POST /auth/find-id로 본인 이메일을 보내면 AuthController가 이 요청을 받고 AuthService에 전달한다. 서비스는 UserRepository에서 그 이메일로 등록된 사용자를 찾는데, 없으면 UserNotFoundException을 던져서 컨트롤러가 404 Not Found와 “해당 이메일의 회원이 없습니다.”를 응답한다. 사용자가 있으면 EmailTokenService가 아이디 찾기용 토큰을 만들고, EmailService가 그 토큰(또는 토큰이 들어간 링크)과 함께 “당신의 아이디는 이겁니다”라는 메일을 보낸다. 이 단계가 끝나면 컨트롤러는 “메일을 보냈다”는 의미의 200 OK를 응답한다. 2단계에서는 사용자가 이메일로 받은 토큰을 POST /auth/find-id/verify로 보낸다. 컨트롤러가 이걸 받아서 AuthService에 검증을 맡기면, 서비스는 EmailTokenService로 토큰이 유효한지 확인하고 거기서 원래 username을 가져온다. 토큰이 유효하면 컨트롤러가 200 OK와 함께 { "username": "..." }를 돌려준다. 반대로 토큰이 만료됐거나 존재하지 않으면 예외가 던져지고 컨트롤러는 400이나 401 계열로 “유효하지 않은 요청”임을 알려준다.|
+
+|#seq5|`비밀번호 찾`|
+|---|:--------------------------:|
+|_이미지_|<img width="1531" height="1961" alt="image" src="https://github.com/user-attachments/assets/b17cb9f5-b494-4d00-a1ae-92db8b5b4030" />|
+|_설명_|비밀번호를 잊어버렸을 때의 전체 3단계 흐름을 자세히 그린 것이다.1단계(메일 보내기): 사용자가 POST /auth/forgot-password로 이메일이나 아이디를 보내면 AuthController가 이를 AuthService로 넘긴다. 서비스는 UserRepository에서 해당 사용자를 찾고, 없으면 UserNotFoundException을 던져 404를 돌려준다. 사용자가 있으면 EmailTokenService가 비밀번호 재설정용 토큰을 만들고, EmailService가 그 토큰이 담긴 메일을 사용자에게 전송한다. 이게 끝나면 컨트롤러는 “비밀번호 재설정 메일을 보냈다”는 200 OK를 보낸다.2단계(토큰 검증 화면 진입): 사용자가 메일에 있는 링크(보통 GET /auth/reset-password?token=...)를 열면 컨트롤러가 토큰을 받아서 AuthService에 검증을 맡긴다. 여기서 토큰이 유효하지 않으면 TokenInvalid 같은 예외를 던져서 400/401로 응답하고, 유효하면 “ok”를 내려 비밀번호를 바꿀 수 있는 상태임을 알려준다.3단계(새 비밀번호 저장): 사용자가 실제로 새 비밀번호와 토큰을 담아서 POST /auth/reset-password를 보내면 컨트롤러가 이걸 AuthService로 넘기고, 서비스는 먼저 토큰을 다시 한 번 검증한다. 토큰이 유효하면 그 토큰에 묶여 있던 사용자를 UserRepository에서 찾고, 새 비밀번호를 PasswordEncoder로 암호화해서 사용자 비밀번호를 업데이트한다. 저장이 끝나면 사용된 토큰은 더 못 쓰게 무효화한다. 모든 게 성공하면 컨트롤러는 200 OK와 “비밀번호가 변경되었습니다.” 같은 응답을 반환한다. 중간 어느 단계든 토큰이 잘못됐거나 내부 오류가 나면 예외가 던져지고 400~500대 응답으로 처리된다.|
+
+|#seq6|`계정 설정(프로필 수정)`|
+|---|:--------------------------:|
+|_이미지_|<img width="1215" height="1121" alt="image" src="https://github.com/user-attachments/assets/1e1ba50a-0fdf-439f-8d7d-3055bb819910" />|
+|_설명_|사용자가 내 프로필을 수정할 때의 과정을 보여준다. 사용자가 PATCH /profiles/me로 닉네임, 한 줄 소개(intro), 그리고 프로필 이미지 파일을 보내면 ProfileController가 이 요청을 받고 내부에서 handleUpdateProfileRequest()로 한 번 감싼 뒤 ProfileService의 updateProfile(userId, updateProfileRequest)를 호출한다. 서비스는 먼저 UserRepository에서 그 userId로 실제 사용자가 존재하는지 확인하는데, 여기서 없으면 UserNotFoundException을 던져서 컨트롤러가 404 Not Found와 “사용자를 찾을 수 없습니다.”라고 응답한다. 사용자가 있으면 다음으로 이미지가 같이 왔는지 보고, 이미지가 있다면 ImageStorage에 upload(profileImageFile)을 호출해 업로드를 시도한다. 업로드가 실패하면 FileUploadException을 던져서 컨트롤러가 400이나 500 계열 에러로 “이미지 업로드에 실패했습니다.”를 내려준다. 업로드가 성공해 이미지 URL을 받으면, 서비스는 그 URL과 함께 닉네임, intro를 ProfileRepository에 넘겨 실제 프로필 데이터를 업데이트한다. 리포지토리가 정상적으로 저장을 끝내면 서비스는 UpdatedProfileDto를 컨트롤러로 돌려주고, 컨트롤러는 이걸 다시 HTTP 응답 형태로 바꿔서 사용자에게 200 OK와 수정된 프로필 정보를 보낸다. 마지막에 “all internalError” 블록은 위 단계 중 어디서든 예상치 못한 예외가 터졌을 때 컨트롤러가 500 SERVER_ERROR를 내려주는 공통 에러 처리를 나타낸다.|
+
 |#seq7|`계정 탈퇴`|
 |---|:--------------------------:|
 |_이미지_|<img width="548" height="513" alt="image" src="https://github.com/user-attachments/assets/74109fbc-7993-423e-90ae-c77c9b96e800" />|
@@ -20,7 +50,7 @@
 
 |#seq11|`책BTI`|
 |---|:--------------------------:|
-|_이미지_<img width="1684" height="1111" alt="image" src="https://github.com/user-attachments/assets/bc00f999-91c0-45e5-b2cb-7896d88be19d" />|
+|_이미지_|<img width="1684" height="1111" alt="image" src="https://github.com/user-attachments/assets/bc00f999-91c0-45e5-b2cb-7896d88be19d" />|
 |_설명_|사용자가 BookBTI 테스트를 수행하고 결과와 함께 맞춤형 추천 도서가 자동으로 표시되는 과정을 나타내는 sequence diagram이다.사용자가 테스트를 시작하면 BookBtiController가 BookBtService를 호출하여 세션을 초기화하고, BookBtiService는 BtiQuestionRepository에서 질문 목록을 조회해 사용자에게 표시한다. 사용자가 각 질문에 답변할 때마다 BookBtiService는 세션 상태를 갱신하고 다음 질문을 반환한다.모든 답변이 완료되면 finish()가 호출되어 BookBtiService는 BtiQuestionRepository에서 문항을 불러와 calculateResult()로 결과를 계산하고, BtiResultRepository에 저장한다.이후 RecommendationService를 호출해 recommendForUser()를 실행하고, RecommendationEngine이 사용자의 활동 데이터를 분석해 추천 도서 ID 목록을 생성한다. BookRepository는 해당 도서 정보를 조회해 Page<BookCardDto> 형태로 반환한다. |
 
 |#seq12|`도서 상태 지정`|
