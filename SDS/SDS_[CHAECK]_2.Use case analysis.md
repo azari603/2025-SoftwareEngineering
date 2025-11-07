@@ -1,3 +1,5 @@
+# Use case diagram
+<img width="1195" height="1411" alt="image" src="https://github.com/user-attachments/assets/2df09426-a8c5-4e3f-807d-2f35cd99f83d" />
 
 
 
