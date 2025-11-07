@@ -52,7 +52,7 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage/>}/>
                 <Route path="/profile/settings" element={<SettingsPage/>}/>
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
-                <Route path="/detail_review" element={<ReviewDetail/>}/>
+                <Route path="/review/:id" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
           </Route>
           
