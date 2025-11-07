@@ -1,4 +1,4 @@
-![Uploading CHAECK_UseCase.png…]()
+
 
 
 # Use Case #<1> : <회원가입>
