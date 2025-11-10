@@ -8,12 +8,19 @@ import ReviewList from "../../components/ReviewList/ReviewList"
 import * as BookAPI from "../../api/bookAPI"
 import "./BookDetailPage.css"
 import { LayoutContext } from "../../context/LayoutContext";
+import { useBookStatus } from "../../context/BookStatusContext";
 
 export default function BookDetailPage(){
     const {isbn}=useParams();
     const [book, setBook]=useState(null)
     const [recommended, setRecommended]=useState([]);
     const { setFooterColor } = useContext(LayoutContext);
+    
+    const { updateStatus, bookStatusMap } = useBookStatus();
+    const currentStatus = bookStatusMap[isbn]; // 현재 상태
+    const handleStatusChange = (status) => {
+        updateStatus(isbn, status);
+    };
     //책 정보 요청
     useEffect(()=>{
         (async () => {
@@ -32,17 +39,14 @@ export default function BookDetailPage(){
     },[book])
 
     useEffect(() => {
-    setFooterColor("#FDFBF4"); // 흰색 테마
-  }, []);
+        setFooterColor("#FDFBF4"); // 흰색 테마
+    }, []);
 
     if(!book) return <p>로딩중..</p>
     return(
             <div className="book-detail-page">
                 <div className="book-detail-card">
                     <BookInfoSection book={book}/>
-
-                    
-
                     <div className="review-wrapper">
                         <h3>이 책의 서평</h3>
                         <ReviewList reviews={dummyReviews} mode="carousel" visibleCount={3} variant=""/>
