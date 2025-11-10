@@ -20,6 +20,8 @@ import ReviewDetail from "./pages/DetailedReview/DetailedReview";
 import { BookStatusProvider } from "./context/BookStatusContext";
 import BookDetailPage from "./pages/BookDetail/BookDetailPage";
 import { LayoutProvider } from "./context/LayoutContext";
+import MyLibrary from "./pages/MyLibraryPage/MyLibrary";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -33,6 +35,7 @@ export default function App() {
     <LayoutProvider>
       <Router>
         <BookStatusProvider>
+        <ScrollToTop />
         <Routes>
           <Route element={<BaseLayout/>}>
           <Route
@@ -54,6 +57,8 @@ export default function App() {
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:id" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
+                <Route path="/profile/library" element={<MyLibrary/>}/>
+                
           </Route>
           
           <Route path="/login" element={<LoginPage />} />

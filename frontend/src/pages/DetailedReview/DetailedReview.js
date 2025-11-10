@@ -1,4 +1,4 @@
-import React,{useState,useRef,useEffect } from "react";
+import React,{useState,useRef,useEffect,useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./DetailedReview.css";
 import { FaHeart,FaRegHeart, FaRegCommentDots } from "react-icons/fa";
@@ -14,6 +14,7 @@ import { getReviewDetail } from "../../api/detailedReview";
 import default_profile from "../../assets/profile_img.png";
 import GenericModal from "../../components/Modal/GenericModal";
 import { toggleLocalLikedReview } from "../../utils/likeStorage";
+import { LayoutContext } from "../../context/LayoutContext";
 
 const ReviewDetail = ({ review,currentUser }) => {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const ReviewDetail = ({ review,currentUser }) => {
   const [comments,setComments]=useState(null);
   const [newComment,setNewComment]=useState("");
   const [loading,setLoading]=useState(true);
+  const { setFooterColor } = useContext(LayoutContext);
+  
   
   // 팝업창
   const [showLoginModal, setShowLoginModal] = useState(false);
@@ -45,6 +48,11 @@ const ReviewDetail = ({ review,currentUser }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage=5;
 
+
+  useEffect(() => {
+    setFooterColor("#FDFBF4"); // 흰색 테마
+  }, [setFooterColor]);
+  
   // 더미 데이터 가져오기 -> 추후 변경
   useEffect(()=>{
     const loadData=async()=>{
