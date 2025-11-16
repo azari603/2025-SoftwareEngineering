@@ -3,6 +3,7 @@ package com.cheack.softwareengineering.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 @Table(
         name = "reviews",
         indexes = {
-                @Index(name = "idx_reviews_user", columnList = "user_id"),
-                @Index(name = "idx_reviews_book", columnList = "book_id")
+                @Index(name = "idx_reviews_user_deleted", columnList = "user_id, deleted"),
+                @Index(name = "idx_reviews_book_visibility_deleted", columnList = "book_id, visibility, deleted")
         }
 )
 public class Review {
@@ -31,28 +32,34 @@ public class Review {
     @Column(name = "book_id", nullable = false)
     private Long bookId;
 
+    @Column(name = "title", nullable = false, length = 300)
+    private String title;
+
+    @Column(name = "text", nullable = false, length = 4000)
+    private String text;
+
+    @Column(name = "star_rating", nullable = false)
+    private Double starRating;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "visibility", nullable = false, length = 20)
+    private Visibility visibility;
+
+    @Column(name = "start_date")
+    private LocalDate startDate;
+
+    @Column(name = "finish_date")
+    private LocalDate finishDate;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "start_date")
-    private LocalDateTime startDate;
-
-    @Column(name = "finish_date")
-    private LocalDateTime finishDate;
-
-    @Column(name = "star_rating")
-    private Double starRating;
-
     /**
-     * true = PUBLIC, false = PRIVATE 와 같이 쓸 수 있음.
-     * 나중에 Enum 으로 바꾸고 싶으면 visibilityType 같은 필드 하나 더 두고 마이그레이션 해도 됨.
+     * 소프트 삭제 플래그
      */
-    @Column(name = "visibility", nullable = false)
-    private Boolean visibility;
-
-    @Column(name = "text", columnDefinition = "TEXT")
-    private String text;
+    @Column(name = "deleted", nullable = false)
+    private boolean deleted;
 }
