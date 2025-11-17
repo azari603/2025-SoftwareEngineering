@@ -17,11 +17,13 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ProfileEditPage from "./pages/ProfilePage/ProfileEditPage/ProfileEditPage";
 import SettingsPage from "./pages/ProfilePage/SettingsPage/SettingsPage";
 import ReviewDetail from "./pages/DetailedReview/DetailedReview";
-import { BookStatusProvider } from "./context/BookStatusContext";
 import BookDetailPage from "./pages/BookDetail/BookDetailPage";
 import { LayoutProvider } from "./context/LayoutContext";
 import MyLibrary from "./pages/MyLibraryPage/MyLibrary";
 import ScrollToTop from "./components/ScrollToTop";
+import BookSelectorView from "./pages/ReviewWrite/BookSelectorView"
+import ReviewEditorView from "./pages/ReviewWrite/ReviewEditorView"
+import RequireAuth from "./components/RequireAuth";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -34,7 +36,7 @@ export default function App() {
     <AuthProvider>
     <LayoutProvider>
       <Router>
-        <BookStatusProvider>
+        
         <ScrollToTop />
         <Routes>
           <Route element={<BaseLayout/>}>
@@ -57,8 +59,11 @@ export default function App() {
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:id" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
-                <Route path="/profile/library" element={<MyLibrary/>}/>
+                <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
                 
+                <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>
+                <Route path="/write/review" element={<RequireAuth><ReviewEditorView/></RequireAuth>}/>
+
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
@@ -68,7 +73,7 @@ export default function App() {
           <Route path="email" element={<SignupEmail />} />
           </Route>
         </Routes>
-        </BookStatusProvider>
+        
       </Router>
       </LayoutProvider>
     </AuthProvider>

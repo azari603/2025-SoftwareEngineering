@@ -1,24 +1,61 @@
+import { useEffect } from "react";
 import { useBookStatus } from "../../context/BookStatusContext";
 import { useAuth } from "../../context/AuthContext";
 import StarRate from "../StarRate/StarRate";
 import "./BookInfoSection.css";
 import Button from "../Button/Button";
+import * as BookAPI from "../../api/bookAPI"
+import { useState } from "react";
+
+const CLIENT_TO_SERVER={
+  want:"WISHLIST",
+  reading: "READING",
+  finished: "COMPLETED"
+}
+
+const SERVER_TO_CLIENT={
+  WISHLIST: "want",
+  READING: "reading",
+  COMPLETED: "finished"
+}
 
 
 export default function BookInfoSection({ book }) {
-  const { bookStatusMap, updateStatus } = useBookStatus();
   const {isLoggedIn} =useAuth();
+  const [status, setStatus]=useState("none"); //현재 책 상태
+
+  //책 상태 초기 로딩
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setStatus("none");
+      return;
+    }
+
+    const map = JSON.parse(localStorage.getItem("statusMap") || "{}");
+    const serverStatus = map[book.isbn];
+
+    if (serverStatus) {
+      setStatus(SERVER_TO_CLIENT[serverStatus]); 
+    } else {
+      setStatus("none");
+    }
+  }, [book.isbn, isLoggedIn]);
 
   if (!book) return null;
 
-  const status = isLoggedIn?(bookStatusMap[book.isbn] || "none"):"none";
-
-  const handleStatusChange = (newStatus) => {
+  //상태 변경 버튼 클릭
+  const handleStatusChange = async (newStatus) => {
     if(!isLoggedIn){
       alert("로그인이 필요합니다")
       return
     }
-    updateStatus(book.isbn, newStatus);
+    const serverStatus=CLIENT_TO_SERVER[newStatus];
+    const res=await BookAPI.updateBookStatus(book.isbn, serverStatus);
+
+    if(res.success){
+      setStatus(newStatus);
+    }
+
   };
 
   return (
@@ -66,7 +103,7 @@ export default function BookInfoSection({ book }) {
           
         </div>
         {/* 서평쓰기 버튼 */}
-          <Button variant="filled" to="/write" size="small">서평 쓰기</Button> 
+          <Button variant="filled" to={`/write/review?bookId=${book.isbn}`} size="small">서평 쓰기</Button> 
       </div>
       
       <div className="book-description">

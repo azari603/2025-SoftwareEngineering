@@ -4,6 +4,7 @@ import { dummyBooks } from "../../mocks/dummyBooks";
 import BookList from "../../components/BookList/BookList";
 import bookImg from "../../assets/search_book.png"
 import Pagination from "../../components/Pagination/Pagination"
+import {searchBooks} from "../../api/bookAPI";
 import "./SearchPage.css"
 
 export default function SearchResult() {
@@ -16,23 +17,18 @@ export default function SearchResult() {
   const [totalCount, setTotalCount]=useState(0);//총 검색 결과 수
 
   // (4) 검색어(query)가 바뀔 때마다 실행
-  useEffect(() => {
-    if (query) {
-      //(임시) 검색 함수
-      const filtered = dummyBooks.filter(
-        (book) =>
-          book.title.includes(query) || book.author.includes(query)
-      );
-      setTotalCount(filtered.length) //전체 개수 저장
-      //현재 페이지에 해당 하는 범위만 slice하여 보여줌
-      const start=(page-1)*pageSize;
-      const end=start+pageSize;
-      const pageSlice=filtered.slice(start,end)
-
-      setResults(pageSlice);
+  useEffect(()=>{
+    const fetchResults = async()=>{
+      if(!query) return;
+      const res = await searchBooks({query, page, pageSize});
+      if(res.success){
+        setResults(res.books)
+        setTotalCount(res.totalCount)
+      }
     }
-  }, [query, page, pageSize]);
 
+    fetchResults()
+  },[query, page])
   return (
     <div className="search-result-page">
       <div className="search-header">
