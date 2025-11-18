@@ -49,7 +49,7 @@ const Home = ({
               {isLoggedIn?(
                 <>
                   <Button variant="squareOutline" size="medium" to="/feed">서평 둘러보기</Button>
-                  <Button variant="filled" size="medium" to="/write">책 기록하기</Button>
+                  <Button variant="filled" size="medium" to="/write/book">책 기록하기</Button>
                 </>
               ):(
                 <>

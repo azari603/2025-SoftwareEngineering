@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import "./StarRate.css"
 
-const StarRate = ({ value = 0, readOnly = false }) => {
+const StarRate = ({ value = 0, readOnly = false, onChange}) => {
   const [rating, setRating] = useState(value);
 
   // 외부에서 전달된 value 값이 바뀌면 내부 rating 동기화
@@ -24,6 +24,11 @@ const StarRate = ({ value = 0, readOnly = false }) => {
     // 클릭 위치가 왼쪽이면 0.5점, 오른쪽이면 1점 단위로 계산
     const newRating = half ? index + 0.5 : index + 1;
     setRating(newRating);
+
+    //부모에게 전달
+    if (onChange) {
+      onChange(newRating);
+    }
   };
 
   return (

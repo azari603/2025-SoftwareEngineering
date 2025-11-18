@@ -1,0 +1,218 @@
+/* 전체 페이지 레이아웃 */
+.review-write-view {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #FDFBF4;
+  display: flex;
+  justify-content: center;
+  padding-top: 60px;
+  padding-bottom: 80px;
+}
+
+.review-write-card {
+  width: 1000px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+/* 상단 책 정보 영역 */
+.review-write-header {
+  display: flex;
+  width: 100%;
+  align-items: flex-start;
+  gap: 24px;
+  padding: 40px 60px;
+}
+
+/* 책 썸네일 */
+.book-cover{
+  width: 180px;
+  height: 260px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #f5f5f5;
+}
+
+/* 책 정보 텍스트 */
+.book-info-meta {
+  flex: 1;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.book-info-meta h2 {
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.book-info-meta .author {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 14px;
+}
+
+/* 읽은 날짜 버튼 */
+.date-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.date-row button {
+  border: 1px solid #cccccc;
+  background: white;
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* 날짜 input 박스 */
+.date-input {
+  width: 240px;
+  height: 44px;
+
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 10px;
+
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: 0.15s;
+}
+
+.date-input:hover {
+  border-color: #299159;
+}
+
+/* 등록 버튼 */
+.submit-btn {
+  background: #299159;
+  border: none;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.submit-btn:hover {
+  background: #247f4e;
+}
+
+/* 공개/비공개 Dropdown 영역 */
+.visibility-row {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  background-color: #F5F5F5;
+  padding: 10px 60px
+}
+
+.write-area-wrapper{
+    padding: 40px 60px;
+}
+
+/* 제목 입력 */
+.title-input {
+  width: 100%;
+  padding: 12px 10px;
+  font-size: 20px;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.title-input:focus {
+  outline: none;
+  border-bottom: 2px solid #299159;
+}
+
+/* 내용 입력 textarea */
+.content-input {
+  width: 100%;
+  min-height: 100vh;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  resize: vertical;
+  font-size: 16px;
+  line-height: 1.4;
+  font-family: inherit;
+}
+
+.content-input:focus {
+  outline: none;
+  border-color: #299159;
+}
+
+/* 글자수 카운트 */
+.char-count {
+  text-align: right;
+  font-size: 14px;
+  color: #888;
+  margin-top: 6px;
+}
+
+/* 로딩 */
+.loading {
+  text-align: center;
+  font-size: 18px;
+  padding: 60px 0;
+}
+
+/* 달력 모달 스타일 */
+.datepicker-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.datepicker-box {
+  background: white;
+  padding: 18px;
+  border-radius: 10px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.datepicker-input {
+  padding: 8px 10px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.datepicker-close {
+  background: #299159;
+  border: none;
+  color: white;
+  padding: 8px 0;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.review-write-card .star-icon {
+  width: 45px ;
+  height: 45px ;
+}

@@ -17,13 +17,15 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import ProfileEditPage from "./pages/ProfilePage/ProfileEditPage/ProfileEditPage";
 import SettingsPage from "./pages/ProfilePage/SettingsPage/SettingsPage";
 import ReviewDetail from "./pages/DetailedReview/DetailedReview";
-import { BookStatusProvider } from "./context/BookStatusContext";
 import BookDetailPage from "./pages/BookDetail/BookDetailPage";
 import { LayoutProvider } from "./context/LayoutContext";
 import MyLibrary from "./pages/MyLibraryPage/MyLibrary";
 import ScrollToTop from "./components/ScrollToTop";
 import MyReview from "./pages/MyReview/MyReviewPage";
 import SidebarLayout from "./components/Layout/SidebarLayout";
+import BookSelectorView from "./pages/ReviewWrite/BookSelectorView"
+import RequireAuth from "./components/RequireAuth";
+import ReviewWrite from "./pages/ReviewWrite/ReviewWrite";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -36,7 +38,7 @@ export default function App() {
     <AuthProvider>
     <LayoutProvider>
       <Router>
-        <BookStatusProvider>
+        
         <ScrollToTop />
         <Routes>
           <Route element={<BaseLayout/>}>
@@ -64,6 +66,11 @@ export default function App() {
           <Route element={<SidebarLayout/>}>
             <Route path="/profile/library" element={<MyLibrary/>}/>
             <Route path="/profile/reviews" element={<MyReview/>}/>
+                <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
+                
+                <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>
+                <Route path="/write/review" element={<RequireAuth><ReviewWrite/></RequireAuth>}/>
+                
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
@@ -73,7 +80,7 @@ export default function App() {
           <Route path="email" element={<SignupEmail />} />
           </Route>
         </Routes>
-        </BookStatusProvider>
+        
       </Router>
       </LayoutProvider>
     </AuthProvider>

@@ -43,7 +43,7 @@ const Header = () => {
           // 로그인 후 UI
           <div className="user-info">
             <Button
-              variant="filled" to="/write" size="small">글쓰기</Button> 
+              variant="filled" to="/write/book" size="small">글쓰기</Button> 
             <div style={{position:"relative"}}> 
               <img src={alarmIcon} alt="alarmIcon" className="alarm icon" onClick={()=> setIsAlertOpen(!isAlertOpen)}/>
               {isAlertOpen && <Alert isOpen ={isAlertOpen} setIsOpen={setIsAlertOpen} />}

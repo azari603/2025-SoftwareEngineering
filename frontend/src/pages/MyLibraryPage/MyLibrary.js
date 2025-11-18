@@ -1,11 +1,22 @@
 import React, { useState, useEffect,useContext } from "react";
 import "./MyLibrary.css";
-import { getMyLibraryBooks } from "../../api/MyLibraryApi";
 import BookCard from "../../components/BookCard/BookCard";
 import { LayoutContext } from "../../context/LayoutContext";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useBookStatus } from "../../context/BookStatusContext";
+import { getBooksByStatus } from "../../api/bookAPI";
 
+function mapStatus(tab){
+  switch(tab){
+    case "reading":
+      return "READING"
+    case "finished":
+      return "COMPLETED"
+    case "want":
+      return "WISHILIST"
+    default:
+      return "READING"
+  }
+}
 
 export default function MyLibraryPage() {
   const [activeTab, setActiveTab] = useState("reading");
@@ -14,7 +25,6 @@ export default function MyLibraryPage() {
   const { setFooterColor } = useContext(LayoutContext);
   const navigate = useNavigate();
   const location= useLocation();
-  const { getBooksByStatus } = useBookStatus();
 
   const tabs = [
     { id: "reading", label: "읽고있는 책" },
@@ -25,21 +35,14 @@ export default function MyLibraryPage() {
   useEffect(() => {
     const loadBooks = async () => {
       setLoading(true);
-      const res = await getMyLibraryBooks(activeTab);
-      if (!res.success) return;
-      //책 여러권일때 테스트용
-      //  if (res.success) {
-      //    const manyBooks = Array(50).fill(res.books[0]);
-      //    setBooks(manyBooks);
-      // }
-
-      const isbns = getBooksByStatus(activeTab);
-      const filtered = res.books.filter((b) => isbns.includes(b.isbn));
-      setBooks(filtered);
+      const status=mapStatus(activeTab);
+      const res = await getBooksByStatus(status);
+      if (res.success)
+        setBooks(res.books);
       setLoading(false);
     };
     loadBooks();
-  }, [activeTab,getBooksByStatus]);
+  }, [activeTab]);
 
   useEffect(() => {
     setFooterColor("#FDFBF4"); // 흰색 테마
