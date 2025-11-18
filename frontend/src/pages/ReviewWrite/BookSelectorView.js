@@ -78,19 +78,19 @@ export default function BookSelectorView(){
             className={tab === "reading" ? "active" : ""}
             onClick={() => setTab("reading")}
             >
-            읽고 있어요
-            </button>
-            <button
-            className={tab === "finished" ? "active" : ""}
-            onClick={() => setTab("finished")}
-            >
-            다 읽었어요
+            읽고있는 책
             </button>
             <button
             className={tab === "want" ? "active" : ""}
             onClick={() => setTab("want")}
             >
-            읽고 싶어요
+            읽고싶은 책
+            </button>
+            <button
+            className={tab === "finished" ? "active" : ""}
+            onClick={() => setTab("finished")}
+            >
+            다 읽은 책
             </button>
             </div>
 

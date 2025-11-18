@@ -24,6 +24,7 @@ import ScrollToTop from "./components/ScrollToTop";
 import BookSelectorView from "./pages/ReviewWrite/BookSelectorView"
 import ReviewEditorView from "./pages/ReviewWrite/ReviewEditorView"
 import RequireAuth from "./components/RequireAuth";
+import ReviewWrite from "./pages/ReviewWrite/ReviewWrite";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -62,8 +63,8 @@ export default function App() {
                 <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
                 
                 <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>
-                <Route path="/write/review" element={<RequireAuth><ReviewEditorView/></RequireAuth>}/>
-
+                <Route path="/write/review" element={<RequireAuth><ReviewWrite/></RequireAuth>}/>
+                
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
