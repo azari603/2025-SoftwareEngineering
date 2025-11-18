@@ -38,7 +38,6 @@ export default function App() {
     <AuthProvider>
     <LayoutProvider>
       <Router>
-        
         <ScrollToTop />
         <Routes>
           <Route element={<BaseLayout/>}>
@@ -61,16 +60,14 @@ export default function App() {
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:id" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
-
-          </Route>
-          <Route element={<SidebarLayout/>}>
-            <Route path="/profile/library" element={<MyLibrary/>}/>
-            <Route path="/profile/reviews" element={<MyReview/>}/>
-                <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
                 
                 <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>
                 <Route path="/write/review" element={<RequireAuth><ReviewWrite/></RequireAuth>}/>
-                
+
+          </Route>
+          <Route element={<SidebarLayout/>}>
+            <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
+            <Route path="/profile/reviews" element={<RequireAuth><MyReview/></RequireAuth>}/>                
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
@@ -80,7 +77,6 @@ export default function App() {
           <Route path="email" element={<SignupEmail />} />
           </Route>
         </Routes>
-        
       </Router>
       </LayoutProvider>
     </AuthProvider>

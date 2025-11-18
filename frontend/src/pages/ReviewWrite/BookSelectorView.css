@@ -6,6 +6,7 @@
   align-items: flex-start;
   background-color: #FDFBF4;
   min-height: 100vh;
+  user-select: none;
 }
 .book-selector-card {
  width:1000px;
