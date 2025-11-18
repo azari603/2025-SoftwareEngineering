@@ -10,24 +10,24 @@ const Sidebar = () => {
       <ul>
         <li>
           <Link
-            to="/library"
-            className={location.pathname === "/library" ? "active" : ""}
+            to="/profile/library"
+            className={location.pathname === "/profile/library" ? "active" : ""}
           >
             나의 서재
           </Link>
         </li>
         <li>
           <Link
-            to="/reviews"
-            className={location.pathname === "/reviews" ? "active" : ""}
+            to="/profile/reviews"
+            className={location.pathname === "/profile/reviews" ? "active" : ""}
           >
             나의 서평
           </Link>
         </li>
         <li>
           <Link
-            to="/stats"
-            className={location.pathname === "/stats" ? "active" : ""}
+            to="/profile/stats"
+            className={location.pathname === "/profile/stats" ? "active" : ""}
           >
             독서 통계
           </Link>

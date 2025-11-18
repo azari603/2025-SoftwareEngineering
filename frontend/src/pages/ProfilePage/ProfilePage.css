@@ -285,14 +285,16 @@
     width: 100%;        
 }
 
-.review-list {
+ .review-list {
+  align-items: center;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 24px;
   justify-items: center;
   width: 100%;
+
 }
-.review-list .review-book-section{
+.tab-wrapper .review-list .review-book-section{
   padding: 16px 30px;
 }
 .profile-container .review-book-image {

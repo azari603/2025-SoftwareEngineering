@@ -1,0 +1,82 @@
+.myReview-container {
+  display: flex;
+  background-color: #fdfbf4;
+  min-height: 100vh;
+  font-family: "Noto Sans KR", sans-serif;
+  user-select: none;
+}
+
+.myReview-main {
+  flex: 1;
+  padding: 80px 100px;
+}
+
+.myReview-header h2 {
+  font-size: 22px;
+  color: #222;
+  font-weight: 600;
+}
+
+.myReview-breadcrumb {
+  color: #299159;
+  margin-left: 4px;
+}
+
+.myReview-wrapper {
+  margin-top: 25px;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 25px 40px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.myReview-tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #f0f0f0;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+}
+
+.myReview-tab-buttons {
+  display: flex;
+  gap: 25px;
+}
+
+.myReview-tab-btn {
+  background: none;
+  border: none;
+  font-size: 17px;
+  color: #555;
+  cursor: pointer;
+  padding-bottom: 8px;
+  transition: all 0.2s;
+}
+
+.myReview-tab-btn.active {
+  font-weight: 600;
+  color: #299159;
+  border-bottom: 2px solid #299159;
+}
+
+.myReview-count {
+  font-size: 14px;
+  color: #777;
+}
+
+/* 리뷰 리스트 */
+.myReview-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 20px 0;
+  align-items: center;
+}
+
+.myReview-empty {
+  text-align: center;
+  color: #777;
+  padding: 40px 0;
+}

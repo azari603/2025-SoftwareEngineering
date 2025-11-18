@@ -22,6 +22,8 @@ import BookDetailPage from "./pages/BookDetail/BookDetailPage";
 import { LayoutProvider } from "./context/LayoutContext";
 import MyLibrary from "./pages/MyLibraryPage/MyLibrary";
 import ScrollToTop from "./components/ScrollToTop";
+import MyReview from "./pages/MyReview/MyReviewPage";
+import SidebarLayout from "./components/Layout/SidebarLayout";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -57,8 +59,11 @@ export default function App() {
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:id" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
-                <Route path="/profile/library" element={<MyLibrary/>}/>
-                
+
+          </Route>
+          <Route element={<SidebarLayout/>}>
+            <Route path="/profile/library" element={<MyLibrary/>}/>
+            <Route path="/profile/reviews" element={<MyReview/>}/>
           </Route>
           
           <Route path="/login" element={<LoginPage />} />
