@@ -1,32 +1,30 @@
-import { createContext, useContext, useEffect, useState} from "react"
+/*import { createContext, useContext, useEffect, useState} from "react"
+import { updateBookStatus, removeBookStatus, getBooksByStatus } from "../api/bookAPI"
 
 const BookStatusContext = createContext(null)
 
 export function BookStatusProvider({children}){
-    const [bookStatusMap, setBookStatusMap] = useState(() =>{
-        const stored = localStorage.getItem("bookStatusMap")
-        return stored?JSON.parse(stored):{}
-    })
+    //책의 상태를 저장하는 객체
+    const [bookStatusMap, setBookStatusMap] = useState({})
 
-    //상태변경
-    const updateStatus=(isbn, newStatus) =>{
-        setBookStatusMap((prev)=>{
-            const currentStatus=prev[isbn];
-            let updated;
-            if(currentStatus === newStatus){
-                updated={...prev}
-                delete updated[isbn]
-            }else{
-                updated={...prev,[isbn]:newStatus}
-            }
-            return updated
-        })
+    //특정 책의 상태를 변경
+    const updateStatus=async(isbn, newStatus) =>{
+        const res=await updateBookStatus(isbn, newStatus);
+        if(res.success){
+            setBookStatusMap((prev)=>({...prev, [isbn]:newStatus}));
+        }
     }
 
-    //필터링
+    const removeStatusByISBN=async(isbn)=>{
+        const res = await removeBookStatus(isbn);
+        if(res.success)
+    }
+
+    //특정 상태에 해당하는 책들의 isbn 목록 반환
     const getBooksByStatus=(status)=>
         Object.entries(bookStatusMap).filter(([_,s])=>s===status).map(([isbn])=>isbn);
 
+    //상태가 바뀔때마다 localStorage에 저장
     useEffect(()=>{
         localStorage.setItem("bookStatusMap",JSON.stringify(bookStatusMap))
     },[bookStatusMap])
@@ -39,4 +37,4 @@ export function BookStatusProvider({children}){
     )
 }
 
-export const useBookStatus = () => useContext(BookStatusContext)
+export const useBookStatus = () => useContext(BookStatusContext)*/
