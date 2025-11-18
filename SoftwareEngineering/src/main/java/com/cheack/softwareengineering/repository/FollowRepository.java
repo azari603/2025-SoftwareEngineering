@@ -29,4 +29,5 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     // 내가 팔로우하는 사람들 (팔로잉 목록)
     Page<Follow> findByFollowerIdAndStatusTrue(Long userId, Pageable pageable);
+
 }
