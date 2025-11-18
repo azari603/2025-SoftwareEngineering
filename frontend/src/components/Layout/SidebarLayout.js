@@ -1,4 +1,4 @@
-import { Children } from "react";
+import { Outlet } from "react-router-dom";
 import Header from "./Header/Header";
 import Sidebar from "./Sidebar/Sidebar"
 import "./SidebarLayout.css"
@@ -10,7 +10,7 @@ const SidebarLayout=({children})=>{
             <div className="main-container">
                 <Sidebar/>
                 <main className="content">
-                    {children}
+                    <Outlet/>
                 </main>
             </div>
         </div>
