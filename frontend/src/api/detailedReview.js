@@ -8,8 +8,9 @@ import dummyComments from "../mocks/dummyComments";
 export async function getReviewDetail(reviewId) {
   return new Promise((resolve) => {
     setTimeout(() => {
+      const review=dummyReview.find((r)=>r.id===reviewId);
       resolve({
-        review: dummyReview,
+        review: review??dummyReview[0],
         comments: dummyComments,
       });
     }, 100); // 로딩 시각적 딜레이용

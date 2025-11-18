@@ -1,45 +1,69 @@
 import { dummyBooks } from "./dummyBooks";
+import default_profile from "../assets/profile_img.png";
 
-// 샘플 문구
 const TITLES = [
   "감동적인 책", "생각이 깊어지는 시간", "가볍게 읽기 좋아요",
   "몰입감 최고", "여운이 남는 책", "현실에 도움 되는 내용",
 ];
+
 const SUBTITLES = [
   "인생이 바뀐 순간", "밤새 읽게 됐어요", "한 줄 한 줄이 박힌다",
   "", "", "다시 읽고 싶은 책",
 ];
+
 const PREVIEWS = [
-  "읽는 내내 나를 돌아보게 만들었고, 책장을 덮고도 오랫동안 생각이 이어졌습니다.",
-  "짧지만 임팩트 있는 문장들이 인상적이고, 실생활에 바로 적용해볼 수 있었어요.",
-  "시간 가는 줄 모르고 읽었습니다. 주변 사람들에게도 추천하고 싶은 책이에요.",
-  "처음엔 평범해 보였지만, 뒤로 갈수록 몰입도가 장난 아니었습니다.",
-  "잔잔한 위로를 받는 느낌. 힘들 때 꺼내 읽고 싶은 문장들이 많았어요.",
+  "읽는 내내 나를 돌아보게 만들었고, 책장을 덮고도 오래 생각이 이어졌어요.",
+  "짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.짧지만 임팩트 있는 문장들이 많았어요.",
+  "추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.추천하고 싶은 책입니다.",
+  "몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다.몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다.몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다.몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다. 몰입감 최고였습니다.",
+  "위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.위로가 되는 책이었어요.",
 ];
-const USERS = ["booklover01", "readwithme", "sunny", "mint", "wave", "haru", "dawn"];
+
+const USERS = [
+  { nickname: "booklover01", profileImg: default_profile },
+  { nickname: "readwithme", profileImg: default_profile },
+  { nickname: "sunny", profileImg: default_profile },
+  { nickname: "mint", profileImg: default_profile },
+  { nickname: "wave", profileImg: default_profile },
+];
 
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
-const ratingRandom = () => Math.ceil(Math.random() * 5); // 1~5
+const ratingRandom = () => Math.ceil(Math.random() * 5);
 
-/* ithBook=true면 각 리뷰에 book 정보를 자동으로 반영
- */
 export function makeDummyReviews(count = 8, { withBook = true } = {}) {
   return Array.from({ length: count }, (_, i) => {
-    const review = {
-      id: String(i + 1),
+    const user = pick(USERS);
+    const book = dummyBooks[i % dummyBooks.length];
+
+    return {
+      id: `review_${i + 1}`, 
+
       title: pick(TITLES),
       subtitle: pick(SUBTITLES),
-      rating: ratingRandom(),
-      user: pick(USERS),
       preview: pick(PREVIEWS),
+
+      likes: Math.floor(Math.random() * 30),
+      date: "2시간 전",
+      content: `${pick(PREVIEWS)}\n\n자세한 내용이 이어집니다...`,
+
+      rating: ratingRandom(),
+
+      user: {
+        id: `user_${i + 1}`,
+        nickname: user.nickname,
+        profileImg: user.profileImg
+      },
+
+      book: withBook
+        ? {
+            ...book,
+            rating: ratingRandom(),
+            ratingCount: Math.floor(Math.random() * 200) + 10,
+            myRating: ratingRandom(),
+            readPeriod: "2024.01.01 ~ 2024.01.10",
+          }
+        : null
     };
-
-    if (withBook) {
-      // dummyBooks가 5권이면, 6번째 리뷰는 다시 1번째 책을 재사용
-      review.book = dummyBooks[i % dummyBooks.length];
-    }
-
-    return review;
   });
 }
 
