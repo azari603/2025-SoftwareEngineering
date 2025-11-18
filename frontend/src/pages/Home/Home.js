@@ -33,7 +33,7 @@ const Home = ({
 
   useEffect(() => {
     setFooterColor("#FFFFFF"); // 흰색 테마
-  }, []);
+  }, [setFooterColor]);
 
   return (
     <div className="home">

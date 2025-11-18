@@ -1,4 +1,3 @@
-// utils/likeStorage.js (새 파일)
 export const toggleLocalLikedReview = (reviewId) => {
   const liked = JSON.parse(localStorage.getItem("likedReviews")) || [];
   if (liked.includes(reviewId)) {
@@ -14,4 +13,9 @@ export const toggleLocalLikedReview = (reviewId) => {
 
 export const getLocalLikedReviews = () => {
   return JSON.parse(localStorage.getItem("likedReviews")) || [];
+};
+
+export const isReviewLiked = (reviewId) => {
+  const liked = JSON.parse(localStorage.getItem("likedReviews")) || [];
+  return liked.includes(reviewId);
 };

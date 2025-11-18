@@ -50,34 +50,6 @@ export default function MyLibraryPage() {
 
   return (
     <div className="library-container">
-      <aside className="library-sidebar">
-        <button
-          className={`library-sidebar-btn ${
-            location.pathname.includes("/profile/library") ? "active" : ""
-          }`}
-          onClick={() => navigate("/profile/library")}
-        >
-          나의 서재
-        </button>
-
-        <button
-          className={`library-sidebar-btn ${
-            location.pathname.includes("/profile/reviews") ? "active" : ""
-          }`}
-          onClick={() => navigate("/profile/reviews")}
-        >
-          나의 서평
-        </button>
-
-        <button
-          className={`library-sidebar-btn ${
-            location.pathname.includes("/profile/stats") ? "active" : ""
-          }`}
-          onClick={() => navigate("/profile/stats")}
-        >
-          독서 통계
-        </button>
-      </aside>
 
       <main className="library-main">
         <div className="library-header">
@@ -87,7 +59,7 @@ export default function MyLibraryPage() {
         </div>
 
         <div className="tab-wrapper">
-          <div className="tab-header">
+          <div className="tab-header-library">
             <div className="tab-buttons">
               {tabs.map((tab) => (
                 <button

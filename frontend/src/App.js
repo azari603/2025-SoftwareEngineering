@@ -21,6 +21,8 @@ import BookDetailPage from "./pages/BookDetail/BookDetailPage";
 import { LayoutProvider } from "./context/LayoutContext";
 import MyLibrary from "./pages/MyLibraryPage/MyLibrary";
 import ScrollToTop from "./components/ScrollToTop";
+import MyReview from "./pages/MyReview/MyReviewPage";
+import SidebarLayout from "./components/Layout/SidebarLayout";
 import BookSelectorView from "./pages/ReviewWrite/BookSelectorView"
 import RequireAuth from "./components/RequireAuth";
 import ReviewWrite from "./pages/ReviewWrite/ReviewWrite";
@@ -59,6 +61,11 @@ export default function App() {
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:id" element={<ReviewDetail/>}/>
                 <Route path="/book/:isbn" element={<BookDetailPage/>}/>
+
+          </Route>
+          <Route element={<SidebarLayout/>}>
+            <Route path="/profile/library" element={<MyLibrary/>}/>
+            <Route path="/profile/reviews" element={<MyReview/>}/>
                 <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
                 
                 <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>
