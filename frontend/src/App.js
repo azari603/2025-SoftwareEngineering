@@ -26,6 +26,7 @@ import SidebarLayout from "./components/Layout/SidebarLayout";
 import BookSelectorView from "./pages/ReviewWrite/BookSelectorView"
 import RequireAuth from "./components/RequireAuth";
 import ReviewWrite from "./pages/ReviewWrite/ReviewWrite";
+import Stats from "./pages/Stats/StatsPage";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -67,7 +68,8 @@ export default function App() {
           </Route>
           <Route element={<SidebarLayout/>}>
             <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
-            <Route path="/profile/reviews" element={<RequireAuth><MyReview/></RequireAuth>}/>                
+            <Route path="/profile/reviews" element={<RequireAuth><MyReview/></RequireAuth>}/>    
+            <Route path="/profile/stats" element={<RequireAuth><Stats/></RequireAuth>}/>    
           </Route>
           
           <Route path="/login" element={<LoginPage />} />

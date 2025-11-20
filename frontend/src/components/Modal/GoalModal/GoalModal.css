@@ -1,0 +1,65 @@
+.goal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.goal-modal {
+  background: #ffffff;
+  width: 350px;
+  padding: 26px 30px;
+  border-radius: 18px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.18);
+  animation: fadeIn .25s ease-out;
+}
+
+.goal-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.goal-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 15px;
+  font-size: 15px;
+  border: 1.8px solid #ccc;
+  border-radius: 18px;
+  outline: none;
+  transition: 0.2s;
+  margin-bottom: 15px;
+}
+
+.goal-input:focus {
+  border-color: #299159;
+}
+
+.goal-btn {
+  width: 100%;
+  height: 45px;
+  background: #299159;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.goal-btn:hover {
+  background: #247c4c;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
