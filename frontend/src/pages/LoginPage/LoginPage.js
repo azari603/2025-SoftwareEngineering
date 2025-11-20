@@ -19,40 +19,35 @@ export default function LoginPage() {
     // 에러 상태
     const [usernameError,setUsernameError] =useState("");
     const [passwordError,setPasswordError] =useState("");
+    const [generalError, setGeneralError] = useState("");
 
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        
-        //아이디 검증
-        //예시  등록된 계정 testuser/1234
-        if(username.trim() !== "testuser"){
-            setUsernameError("존재하지 않는 아이디입니다.");
-            setPasswordError("");  //아이디 틀리면 비밀번호 에러 초기화
+
+        setUsernameError("");
+        setPasswordError("");
+        setGeneralError("");
+
+        const result=await login(username, password);
+
+        if(!result.success){
+          if(result.error==="USER_NOT_FOUND"){
+            setUsernameError("존재하지 않는 아이디입니다.")
             return;
-        }else{
-            setUsernameError("");
+          }
+          if(result.error==="INVALID_PASSWORD"){
+            setPasswordError("비밀번호가 틀렸습니다.")
+            return;
+          }
+          setGeneralError(result.message||"로그인 실패");
+          return;
+
         }
 
-        //비밀번호 검증
-        if(password !=="1234"){
-            setPasswordError("비밀번호가 틀렸습니다.");
-        }else{
-            setPasswordError("");
-        }
-
-        //에러 없을 경우 로그인 성공 및 전역 상태 업데이트
-        if(username.trim()==="testuser" && password ==="1234"){
-            console.log("로그인 성공");
-
-            const userData={
-              id: "testuser",
-              nickname: "빙봉",
-            }
-
-            login(userData)
-        }
+        //로그인 성공 -> 홈으로 이동
         navigate("/")
+        
     };
 
     return (

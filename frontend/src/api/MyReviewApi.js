@@ -1,10 +1,9 @@
 import { getLocalLikedReviews } from "../utils/likeStorage";
+import { dummyReviews } from "../mocks/dummyReviews";
 
-// 임시 좋아요 ID 목록
-const likedIds = ["review_2", "review_5"];
 
 // 임시 API (나중에 fetch로 바꾸면 됨)
-export async function getMyReviews(currentUser,dummyReviews) {
+export async function getMyReviews(currentUser) {
   if (!currentUser) return [];
   return dummyReviews.filter((r) => r.user.id === currentUser.id);
 

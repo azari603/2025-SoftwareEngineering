@@ -1,30 +1,73 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useEffect } from 'react';
+import * as authAPI from "../api/authApi"
 
-// 1. Context 생성
-const AuthContext = createContext(null); // 초기값은 null로 설정
 
-// 2. Provider 컴포넌트: 상태와 함수를 제공하는 역할
+const AuthContext = createContext(null);
+
 export const AuthProvider = ({ children }) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [user, setUser] = useState(null); 
+  const [user, setUser] = useState(null);   
+  const [accessToken, setAccessToken]=useState(null);
+  const [refreshToken, setRefreshToken]=useState(null);
+  const isLoggedIn=!!accessToken;
 
-  // (임시) 로그인 함수
-  const login = (userData = { nickname: "CHAECK User", id: 1 }) => {
-    console.log("로그인 처리 완료.");
-    setIsLoggedIn(true);
+  //앱 시작 시 토큰 복구 -> 새로고침해도 안 날아가게
+  useEffect(()=>{
+    const savedAcess=localStorage.getItem("accessToken");
+    const savedRefresh=localStorage.getItem("refreshToken");
+    if(!savedAcess||!savedRefresh) return;
+    setAccessToken(savedAcess);
+    setRefreshToken(savedRefresh);
+
+    // 계정 조회 호출  -- /auth/me
+    authAPI.getMyAccount().then((res)=>{
+      if(res.success){
+        setUser(res.account);
+      } else{
+        logout(); //토큰 만료, 계정 없음 등의 경우 로그아웃
+      }
+    })
+  },[]);
+
+  // 로그인
+  const login=async(username, password)=>{
+    const res=await authAPI.login(username, password);
+    if(!res.success){
+      return res;
+    }
+
+    //로그인 성공
+    const {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      user: userData,
+    }=res;
+
+    //토큰 저장
+    localStorage.setItem("accessToken",newAccessToken);
+    localStorage.setItem("refreshToken",newRefreshToken);
+
+    setAccessToken(newAccessToken);
+    setRefreshToken(newRefreshToken);
     setUser(userData);
+
+    return {success: true};
   };
 
-  // (임시) 로그아웃 함수
+  // 로그아웃 함수
   const logout = () => {
-    console.log("로그아웃 처리 완료.");
-    setIsLoggedIn(false);
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+
+    setAccessToken(null);
+    setRefreshToken(null);
     setUser(null);
   };
 
   const value = { 
     isLoggedIn, 
     user, 
+    accessToken,
+    refreshToken,
     setUser,
     login, 
     logout 

@@ -1,0 +1,59 @@
+/* 페이지 전체 구조 — review-write-view 기반 */
+.feed-list-view {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #FDFBF4;
+  display: flex;
+  justify-content: center;
+  
+}
+
+/* 카드 박스 — review-write-card 기반 */
+.feed-list-card {
+  width: 1000px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  margin-top: 60px;
+}
+
+/***********************************************
+   탭 영역
+***********************************************/
+.feed-tabs-row {
+  display: flex;
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+  padding: 0 40px;
+  margin-top: 20px;
+}
+
+.feed-tab {
+  flex: 1;
+  padding: 18px 0;
+  text-align: center;
+  font-size: 17px;
+  color: #666;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.feed-tab.active {
+  color: #299159;
+  font-weight: 600;
+  border-bottom: 3px solid #299159;
+}
+
+/***********************************************
+   리뷰 리스트
+***********************************************/
+.feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 40px 60px;
+}

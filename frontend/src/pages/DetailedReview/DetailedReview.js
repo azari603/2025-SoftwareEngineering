@@ -13,23 +13,27 @@ import default_profile from "../../assets/profile_img.png";
 import GenericModal from "../../components/Modal/GenericModal";
 import { LayoutContext } from "../../context/LayoutContext";
 import { toggleLocalLikedReview, isReviewLiked } from "../../utils/likeStorage";
+import { fetchReviewDetail } from "../../api/reviewAPI"; //서평 상세 조회 API
+
 
 const ReviewDetail = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useAuth();
-  const { id } = useParams();
-  const location = useLocation();
+  const { isLoggedIn, user: currentUser } = useAuth();
+  const { reviewId } = useParams();
 
-  /** review 데이터 (navigate state로 전달됨) */
-  const review = location.state?.review;
-  const currentUser = location.state?.currentUser;
-
-  /** 🔥 Hook은 무조건 return보다 위!! */
+  /* Hook은 무조건 return보다 위! */
   const { setFooterColor } = useContext(LayoutContext);
 
-  const [liked, setLiked] = useState(() => isReviewLiked(`review_${id}`));
+  //리뷰 데이터
+  const [review, setReview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  //좋아요 상태
+  const [liked, setLiked] = useState(() => isReviewLiked(`review_${reviewId}`));
   const [likeCount, setLikeCount] = useState(review?.likes || 0);
 
+  //댓글
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("");
 
@@ -61,13 +65,44 @@ const ReviewDetail = () => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  /** 🔥 review가 없으면 예외 반환 — Hook 아래에서 return이 가능함 */
-  if (!review) return <div className="card">잘못된 접근입니다.</div>;
+  //서평 상세 조회 API 호출
+  useEffect(()=>{
+    async function loadReview(){
+      try{
+        const data=await fetchReviewDetail(reviewId);
+        setReview(data);
+        setLikeCount(data.likeCount||0);
+        setLiked(isReviewLiked(`review_${reviewId}`))
+      }catch(err){
+        setFetchError(err.error||"UNKNOWN_ERROR");
+      }finally{
+        setLoading(false);
+      }
+    }
+    loadReview()
+  },[reviewId]);
 
-  const { title, user, book, preview, date } = review;
+  /** 로딩 */
+  if (loading) {
+    return <div className="card">불러오는 중...</div>;
+  }
+
+  /** 에러 처리 */
+  if (fetchError) {
+    return (
+      <div className="card">
+        {fetchError === "REVIEW_NOT_FOUND" && "서평을 찾을 수 없습니다."}
+        {fetchError === "FORBIDDEN" && "비공개 서평입니다."}
+        {fetchError === "UNKNOWN_ERROR" && "서평을 불러오는 중 오류가 발생했습니다."}
+      </div>
+    );
+  }
+
+ /** 정상 review 구조 */
+  const { title, content, rating, createdAt, visibility, user, book, likeCount: initLike, commentCount } = review;
 
   /** 내 서평 여부 */
-  const isMyReview = currentUser?.id === user.id;
+  const isMyReview = currentUser?.username === user?.username;
 
   /** 좋아요 */
   const handleLikeClick = () => {
@@ -76,7 +111,7 @@ const ReviewDetail = () => {
       return;
     }
 
-    toggleLocalLikedReview(`review_${id}`);
+    toggleLocalLikedReview(`review_${reviewId}`);
     setLiked((prev) => !prev);
     setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
   };
@@ -136,7 +171,7 @@ const ReviewDetail = () => {
               <img src={user.profileImg} alt="user" className="review-user__img" />
               <div className="review-user__info">
                 <p className="review-user__name">{user.nickname}</p>
-                <p className="review-user__date">{date}</p>
+                <p className="review-user__date">{createdAt}</p>
               </div>
             </div>
 
@@ -176,7 +211,7 @@ const ReviewDetail = () => {
 
         {/* 본문 */}
         <article className="review-content">
-          {preview?.split("\n").map((line, idx) => (
+          {content?.split("\n").map((line, idx) => (
             <p key={idx}>{line}</p>
           ))}
         </article>

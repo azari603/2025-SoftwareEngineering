@@ -28,7 +28,7 @@ const Header = () => {
         {/* 메뉴 */}
         <nav className="nav">
           <Link to={isLoggedIn ? "/profile/library" : "/login"}>나의 서재</Link>
-          <Link to={isLoggedIn ? "/explore" : "/login"}>둘러보기</Link>
+          <Link to="/feed">둘러보기</Link>
           <Link to={isLoggedIn ? "/quiz/start" : "/login"}>책BTI</Link>
         </nav>
         

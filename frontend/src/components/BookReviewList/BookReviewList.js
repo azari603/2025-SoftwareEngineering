@@ -2,10 +2,10 @@ import React from "react";
 import "./BookReviewList.css";   
 import { useNavigate } from "react-router-dom";
 
-const ReviewItem = ({ review,setLikedTrigger,currentUser }) => {
+const ReviewItem = ({ review}) => {
   const navigate=useNavigate();
   const handleClick=()=>{
-    navigate(`/review/${review.id}`,{state:{review, currentUser}});
+    navigate(`/review/${review.reviewId}`);
   };
 
   return (
@@ -17,7 +17,7 @@ const ReviewItem = ({ review,setLikedTrigger,currentUser }) => {
           </div>
           <div className="userText">
             <span className="userName">{review.user.nickname}</span>
-            <span className="date">{review.date}</span>
+            <span className="date">{review.createdAt}</span>
           </div>
         </div>
 

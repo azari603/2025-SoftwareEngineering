@@ -2,19 +2,19 @@
 import profileImg from "../assets/profile_img.png"
 import bookCover from "../assets/book_cover.png";
 
-
-
-const dummyReview = {
-  id: 1,
+const dummyDetailedReviews = [{
+  reviewId: 1,
   title: "침묵 속에서 들려오는 소년의 목소리",
   user: {
-    name: "수진",
+    username: "testuser",
+    nickname: "수진",
     profileImg: profileImg,
   },
-  date: "2025.09.21",
+  createdAt: "2025.09.21",
   book: {
-    title: "소년이 온다",
-    author: "한강",
+    bookId: 1,
+    title: "월요일 수요일 토요일",
+    author: "페트라 펠리니",
     image: bookCover,
     rating: 4.3,
     ratingCount:27,
@@ -32,8 +32,32 @@ const dummyReview = {
     나는 이 소설을 읽으며 ‘기억한다는 것’의 무게를 다시 생각하게 되었다. 그것은 단순히 과거를 떠올리는 일이 아니라, 오늘의 나와 내 공동체가 어떤 선택을 할 것인지와도 이어진다. 『소년이 온다』는 독자에게 침묵하지 말고, 잊지 말고, 함께 기억하라고 요청한다. 결국 이 책은 아픈 역사와 마주하는 것이 얼마나 힘들고 고통스러운 일인지 보여주면서도, 동시에 인간의 존엄성과 연대의 가치를 다시금 일깨워 준다.
 
     『소년이 온다』는 무겁지만 반드시 읽어야 할 책이다. 읽는 순간은 고통스럽지만, 그 고통이 곧 우리가 가져야 할 책임감을 일깨우기 때문이다. 오랫동안 기억 속에 남아야 할 책이며, 누군가에게 “왜 문학을 읽어야 하는가”라는 질문을 받는다면 자신 있게 이 책을 추천하고 싶다.`,
-  likes: 58,
-  comments: 24,
-};
-
-export default dummyReview;
+  likeCount: 58,
+  commentCount: 24,
+  visibility: "PUBLIC"
+},
+{
+    reviewId: 2,
+    title: "빗속을 걷는 기분처럼 잔잔한 이야기",
+    user: {
+      username: "ssari",
+      nickname: "서현",
+      profileImg: profileImg,
+    },
+    createdAt: "2025-01-12",
+    visibility: "PUBLIC",
+    book: {
+      bookId: 2,
+      title: "다정한 사람이 이긴다",
+      author: "이해인",
+      image: bookCover,
+      rating: 4.1,
+      ratingCount: 48,
+      myRating: 4.0,
+      readPeriod: "2025.01.01 - 2025.01.03",
+    },
+    content: `두 번째 상세 서평 내용입니다. ...`,
+    likeCount: 12,
+    commentCount: 5,
+  },];
+export default dummyDetailedReviews;

@@ -36,7 +36,7 @@ export function makeDummyReviews(count = 8, { withBook = true } = {}) {
     const book = dummyBooks[i % dummyBooks.length];
 
     return {
-      id: `review_${i + 1}`, 
+      reviewId: i + 1, 
 
       title: pick(TITLES),
       subtitle: pick(SUBTITLES),

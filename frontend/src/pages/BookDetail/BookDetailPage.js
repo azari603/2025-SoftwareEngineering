@@ -11,7 +11,7 @@ import { LayoutContext } from "../../context/LayoutContext";
 
 
 export default function BookDetailPage(){
-    const {isbn}=useParams();
+    const {bookId}=useParams();
     const [book, setBook]=useState(null)
     const [recommended, setRecommended]=useState([]);
    
@@ -20,10 +20,10 @@ export default function BookDetailPage(){
     //책 정보 요청
     useEffect(()=>{
         (async () => {
-            const res=await BookAPI.getBookByISBN(isbn);
+            const res=await BookAPI.getBookByISBN(bookId);
             if(res.success) setBook(res.book);
         })();
-    },[isbn]);
+    },[bookId]);
 
     //추천 도서 요청
     useEffect(()=>{
