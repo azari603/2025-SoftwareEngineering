@@ -1,0 +1,414 @@
+.stats-container {
+  display: flex;
+  background-color: #fdfbf4;
+  min-height: 100vh;
+  font-family: "Noto Sans KR", sans-serif;
+}
+
+.stats-main {
+  flex: 1;
+  padding: 80px 120px;
+}
+
+.stats-header h2 {
+  font-size: 22px;
+  color: #222;
+  font-weight: 600;
+}
+
+.stats-breadcrumb {
+  color: #299159;
+  margin-left: 4px;
+}
+
+.stats-wrapper {
+  margin-top: 25px;
+}
+
+/* 카드 */
+.stats-top-cards {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.stats-card {
+  background: #fff;
+  padding: 20px 25px;
+  border-radius: 10px;
+  width: 240px;
+  height:100px;
+  box-shadow: 8px 8px 8px rgba(0,0,0,0.05);
+}
+
+.editable-card .edit-icon {
+  cursor: pointer;
+  margin-left:60px;
+}
+
+.card-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats-label {
+  font-size: 14px;
+  color: #777;
+}
+
+.stats-value {
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 15px;
+  color: #299159;
+}
+
+/* 원형 게이지 */
+.stats-circle-card {
+  background: #fff;
+  padding: 30px 0;
+  padding-top:20px;
+  border-radius: 10px;
+  box-shadow: 8px 8px 8px rgba(0,0,0,0.05);
+  width: 280px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap:10px;
+}
+
+.stats-circle-card h3{
+    margin-bottom: 25px;
+}
+
+
+.stats-mid-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.progress-svg {
+  transform: none;
+}
+
+.progress-svg circle {
+  fill: none;
+}
+
+.bg {
+  stroke: #ffffff;
+}
+
+.progress {
+  stroke: #299159;
+  stroke-linecap: round;  
+  stroke-dasharray: 377;   
+  transition: stroke-dashoffset 0.6s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+/* % 텍스트 */
+.percent {
+  font-size: 28px;
+  fill: #299159; 
+  font-weight: 600;
+}
+
+
+/* 평점 그래프 */
+.stats-rating-card {
+  background: #fff;
+  padding: 30px 0;
+  padding-top:20px;
+  border-radius: 10px;
+  box-shadow: 8px 8px 8px rgba(0,0,0,0.05);
+  flex: 1;
+  position: relative;
+  width:700px;
+}
+
+.stats-rating-card h3{
+    padding-left:40px;
+    margin-bottom: 35px;
+}
+
+/*  가로축 */
+.rating-x-axis {
+  position: absolute;
+  bottom: 20px;
+  left: 70px;
+  right: 30px;
+  height: 2px;
+  background: #c4c4c4;  
+  z-index: 2;       
+}
+
+/*  세로축  */
+.rating-y-axis {
+  position: absolute;
+  top: 60px;
+  bottom: 20px;
+  width: 2px;
+  background: #c4c4c4;   
+  z-index: 10;  
+  left:80px;      
+}
+
+.stats-rating-card {
+  position: relative;
+}
+
+.stats-rating-card::before {
+  content: "";
+  position: absolute;
+  top: 60px;
+  left: 80px;
+  right: 30px;
+  bottom: 20px;
+  background: repeating-linear-gradient(
+    to right,
+    transparent 0,
+    transparent 100px,
+    #e6e6e6 101px,
+    #e6e6e6 102px
+  );
+  z-index: 0;
+}
+
+.stats-rating-box {
+  flex: 1;
+}
+
+.bar-container {
+  flex:1;  
+  margin-left: 70px;      
+  position: relative;
+}
+
+
+.rating-row {
+  display: flex;
+  align-items: center;
+  margin: 18px 0;
+  position: relative;
+  z-index: 1;
+  padding-left: 0px;
+}
+
+/* 라벨 위치 */
+.rating-star {
+  position: absolute;
+  left: 20px;
+  width: 40px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* bar */
+.rating-bar {
+  height: 22px;
+  background-color: #7bb39c;
+  border-radius: 0 12px 12px 0;
+  position: relative;
+}
+
+.rating-count {
+  position: absolute;
+  right: -40px;    
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 14px;
+  color: #299159;
+  white-space: nowrap;
+}
+
+.bar-5 { background: #1b7f4d; }    
+.bar-4 { background: #4cb66e; }
+.bar-3 { background: #98d6aa; }
+.bar-2 { background: #d9f1df; } 
+
+
+/* 올해 기록 */
+.stats-year-box{
+  background: #fff;
+  height: 320px;
+  box-shadow: 8px 8px 8px rgba(0,0,0,0.05);
+  border-radius: 10px;
+  padding: 20px 30px; 
+  margin-top: 30px;   
+}
+
+.year-chart {
+  background: #fff;
+  display: flex;
+  justify-content: space-between; 
+  align-items: flex-end;
+  height: 240px;  
+  margin-top: 20px;
+  margin-bottom: 30px;
+  padding: 0 30px;  
+  padding-left:60px;
+  position: relative;
+  overflow: hidden;
+}
+
+.year-chart::before {
+  content: "";
+  position: absolute;
+  left: 40px;
+  right: 30px;
+  top: 8px;
+  bottom: 20px;
+  z-index: -1;
+
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 40px,
+    #f0f0f0 41px,
+    #f0f0f0 42px
+  );
+
+  z-index: 0;
+}
+
+.year-x-axis {
+  position: absolute;
+  bottom: 20px;
+  left: 40px;
+  right: 20px;
+  height: 2px;
+  background: #c4c4c4;
+  z-index: 5;
+}
+
+.year-y-axis {
+  position: absolute;
+  top: 10px;
+  bottom: 20px;
+  left: 40px;
+  width: 2px;
+  background: #c4c4c4;
+  z-index: 5;
+}
+
+.year-col {
+  width: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end; 
+  height: 80%; 
+}
+
+.year-bar {
+  position: relative;
+  width: 100%;
+  background: #2e7d32;
+  border-radius: 13px 13px 0 0;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 위쪽 정렬 */
+  margin-bottom:2px;
+}
+
+.year-month {
+  font-size: 13px;
+  color: #666;
+}
+
+.year-count {
+  position: absolute;
+  top: -18px;   
+  font-size: 12px;
+  color: #299159;
+  font-weight: 600;
+}
+
+/* 저자 */
+.stats-author-box {
+  margin-top:30px;
+  background: #fff;
+  border-radius: 10px;
+  padding: 30px;
+  box-shadow: 8px 8px 8px rgba(0,0,0,0.05);
+  padding-bottom:20px;
+}
+
+.stats-author-box h3{
+  margin-bottom:20px;
+}
+
+.author-item {
+  margin-bottom: 15px;
+}
+
+.author-book-count{
+  color:#767676;
+}
+.author-header {
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px 0;
+  font-weight: 500;
+}
+
+/* 저자 책 목록 스타일 */
+.author-books {
+  margin-top: 20px;
+  padding-left: 10px;
+  margin-bottom:20px;
+}
+
+.author-book-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.author-book-cover {
+  width: 60px;
+  height: 95px;
+  object-fit: cover;
+  background-color: #eee;
+}
+
+.author-book-title {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+
+
+/* 모달 */
+.modal-backdrop {
+  position: fixed;
+  top:0; left:0;
+  width:100vw; height:100vh;
+  background: rgba(0,0,0,0.3);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.modal {
+  background: white;
+  padding: 25px;
+  width: 300px;
+  border-radius: 10px;
+}
+
+.modal input {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
+  border: 1px solid #e5e5
+}
