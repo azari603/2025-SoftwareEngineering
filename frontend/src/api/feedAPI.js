@@ -16,11 +16,11 @@ export async function fetchLatestFeed({ page = 0, size = 8 } = {}) {
     reviewId: review.reviewId,
     title: review.title,
     excerpt: review.preview,
-    starRating: review.rating,
-    createdAt: makeFakeDate(),
+    starRating: review.myRating,
+    createdAt: review.createdAt,
 
     author: {
-      username: review.user.id,
+      username: review.user.username,
       nickname: review.user.nickname,
       profileImageUrl: review.user.profileImg,
     },
@@ -34,8 +34,8 @@ export async function fetchLatestFeed({ page = 0, size = 8 } = {}) {
       readPeriod: review.book.readPeriod,         // ✅ 읽은 기간
     },
 
-    likeCount: review.likes,
-    commentCount: randomCommentCount(),
+    likeCount: review.likeCount,
+    commentCount: review.commentCount,
     myLike: Math.random() > 0.5,
   }));
 
