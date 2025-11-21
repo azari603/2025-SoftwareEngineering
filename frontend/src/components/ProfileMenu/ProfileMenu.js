@@ -53,7 +53,7 @@ const ProfileMenu = ({ isOpen, setIsOpen }) => {
             </li>
             <li
               className="profile-item"
-              onClick={() => handleMove("/account")}
+              onClick={() => handleMove("/profile/settings")}
             >
               계정 설정
             </li>
