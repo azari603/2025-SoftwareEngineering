@@ -4,9 +4,10 @@ import dummyDetailedReviews from "./dummyDetailedReview";
 export const dummyReviews = dummyDetailedReviews.map((r) => ({
   reviewId: r.reviewId,
   title: r.title,
-  preview: r.content.slice(0, 80) + "...", // 미리보기 생성
+  preview: r.content.slice(0, 200), // 미리보기 생성
   createdAt: r.createdAt,
   likeCount: r.likeCount,
+  commentCount: r.commentCount,
   visibility: r.visibility,
   myRating: r.myRating,
 

@@ -1,5 +1,6 @@
 import "./FeedReviewCard.css";
 import { FaStar } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 import StarRate from "../StarRate/StarRate";
 import { FaHeart } from "react-icons/fa";
 import { FaRegCommentDots } from "react-icons/fa6";
@@ -74,7 +75,7 @@ export default function FeedReviewCard({ review }) {
       {/* FOOTER */}
       <div className="feed-review-footer">
         <div className="footer-item">
-          <FaHeart className="footer-icon heart-icon" />
+          <FaRegHeart className="footer-icon heart-icon" />
           <span>{likeCount}</span>
         </div>
 
