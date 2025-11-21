@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useBookStatus } from "../../context/BookStatusContext";
 import { useAuth } from "../../context/AuthContext";
 import StarRate from "../StarRate/StarRate";
 import "./BookInfoSection.css";
@@ -21,7 +20,7 @@ const SERVER_TO_CLIENT={
 
 
 export default function BookInfoSection({ book }) {
-  const {isLoggedIn} =useAuth();
+  const {isLoggedIn, user} =useAuth();
   const [status, setStatus]=useState("none"); //현재 책 상태
 
   //책 상태 초기 로딩
@@ -30,16 +29,16 @@ export default function BookInfoSection({ book }) {
       setStatus("none");
       return;
     }
-
-    const map = JSON.parse(localStorage.getItem("statusMap") || "{}");
-    const serverStatus = map[book.isbn];
-
-    if (serverStatus) {
-      setStatus(SERVER_TO_CLIENT[serverStatus]); 
-    } else {
-      setStatus("none");
+    async function loadStatus(){
+      const serverStatus=await BookAPI.getBookStatus(book.bookId, user.username);
+      if(serverStatus){
+        setStatus(SERVER_TO_CLIENT[serverStatus]);
+      }else{
+        setStatus("none");
+      }
     }
-  }, [book.isbn, isLoggedIn]);
+    loadStatus();
+},[book, isLoggedIn, user]);
 
   if (!book) return null;
 
@@ -49,13 +48,19 @@ export default function BookInfoSection({ book }) {
       alert("로그인이 필요합니다")
       return
     }
-    const serverStatus=CLIENT_TO_SERVER[newStatus];
-    const res=await BookAPI.updateBookStatus(book.isbn, serverStatus);
-
-    if(res.success){
-      setStatus(newStatus);
+    const serverNew=CLIENT_TO_SERVER[newStatus];
+    const serverCurrent=CLIENT_TO_SERVER[status];
+    
+    //같은 버튼 클릭 -> 상태 해제
+    if(serverNew===serverCurrent){
+      await BookAPI.removeBookStatus(book.bookId, user.username);
+      setStatus("none");
+      return;
     }
 
+    //다른 버튼 클릭 -> 상태 변경
+    await BookAPI.updateBookStatus(book.bookId, serverNew, user.username);
+    setStatus(newStatus);
   };
 
   return (
@@ -103,7 +108,7 @@ export default function BookInfoSection({ book }) {
           
         </div>
         {/* 서평쓰기 버튼 */}
-          <Button variant="filled" to={`/write/review?bookId=${book.isbn}`} size="small">서평 쓰기</Button> 
+          <Button variant="filled" to={`/write/review?bookId=${book.bookId}`} size="small">서평 쓰기</Button> 
       </div>
       
       <div className="book-description">

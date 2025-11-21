@@ -5,7 +5,7 @@ import "./ReviewCard.css"
 
 const ReviewCard = forwardRef(({ review, variant = "basic" }, ref) => {
   return (
-    <Link to={`/review/${review.id}`} state={{review}} className={`review-card ${variant}`} ref={ref}>
+    <Link to={`/review/${review.reviewId}`} state={{review}} className={`review-card ${variant}`} ref={ref}>
       {variant === "withBook" && review.book && (
         <div className="review-book-section">
           <img
@@ -23,7 +23,7 @@ const ReviewCard = forwardRef(({ review, variant = "basic" }, ref) => {
           <h3 className="review-title">{review.title} {review.subtitle}</h3>
           <span className="review-rating">
             <img src={starIcon} alt="별점" className="review-star" />
-            {review.rating}/5
+            {review.myRating}/5
           </span>
         </div>
         <p className="review-user">{review.user.nickname}</p>

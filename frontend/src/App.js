@@ -27,6 +27,7 @@ import BookSelectorView from "./pages/ReviewWrite/BookSelectorView"
 import RequireAuth from "./components/RequireAuth";
 import ReviewWrite from "./pages/ReviewWrite/ReviewWrite";
 import Stats from "./pages/Stats/StatsPage";
+import FeedPage from "./pages/FeedPage/FeedPage";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -59,17 +60,21 @@ export default function App() {
                 <Route path="/profile" element={<ProfilePage/>}/>
                 <Route path="/profile/settings" element={<SettingsPage/>}/>
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
-                <Route path="/review/:id" element={<ReviewDetail/>}/>
-                <Route path="/book/:isbn" element={<BookDetailPage/>}/>
+                <Route path="/review/:reviewId" element={<ReviewDetail/>}/>
+                <Route path="/book/:bookId" element={<BookDetailPage/>}/>
                 
                 <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>
                 <Route path="/write/review" element={<RequireAuth><ReviewWrite/></RequireAuth>}/>
-
+                <Route path="/feed" element={<FeedPage/>}/>
           </Route>
+
           <Route element={<SidebarLayout/>}>
             <Route path="/profile/library" element={<RequireAuth><MyLibrary/></RequireAuth>}/>
             <Route path="/profile/reviews" element={<RequireAuth><MyReview/></RequireAuth>}/>    
             <Route path="/profile/stats" element={<RequireAuth><Stats/></RequireAuth>}/>    
+            <Route path="/profile/reviews" element={<RequireAuth><MyReview/></RequireAuth>}/>                
+               
+                
           </Route>
           
           <Route path="/login" element={<LoginPage />} />

@@ -1,0 +1,180 @@
+.feed-review-card {
+  width: 100%;
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  padding: 24px 26px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  cursor: pointer;
+}
+
+.feed-book-top-row {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* HEADER */
+.feed-review-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin-bottom: 22px;
+}
+
+.feed-profile-img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+}
+
+.feed-writer-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.feed-writer-nickname {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.feed-writer-id {
+  font-size: 14px;
+  color: #888;
+}
+
+.feed-date {
+  position: absolute;
+  right: 0;
+  top: 4px;
+  font-size: 14px;
+  color: #999;
+}
+
+/* REVIEW STAR RATING */
+.feed-stars .star-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.feed-stars .score {
+  display: none;
+}
+
+/* TITLE & EXCERPT */
+.feed-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.feed-excerpt {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3; /*표준 속성(경고제거용)*/
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* BOOK BOX */
+.feed-book-box {
+  display: flex;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.feed-book-img {
+  width: 70px;
+  height: 98px;
+  border-radius: 6px;
+  margin-right: 14px;
+  object-fit: cover;
+}
+
+.feed-book-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 18px;
+}
+
+.feed-book-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
+
+.feed-book-author {
+  font-size: 14px;
+  color: #777;
+}
+
+.feed-book-meta-row {
+  font-size: 14px;
+  color: #555;
+}
+
+.feed-book-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
+  color: #299159;
+  width: fit-content;
+}
+
+.feed-book-rating .star-icon{
+  width: 16px;
+  height: 16px;
+  margin: 0px;
+}
+.feed-book-read-period {
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* FOOTER */
+.feed-review-footer {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 10px;
+}
+
+.footer-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;             /* 아이콘과 숫자 간 간격 */
+  font-size: 14px;
+  color: #A0A0A0;
+}
+
+/* 공통 아이콘 스타일 */
+.footer-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* 좋아요 아이콘 색상 */
+.heart-icon {
+  color: #A0A0A0;       /* 붉은색 계열 (원하면 바꿀 수 있음) */
+}
+
+/* 댓글 아이콘 색상 */
+.comment-icon {
+  color: #A0A0A0;          /* 기본 회색 */
+}

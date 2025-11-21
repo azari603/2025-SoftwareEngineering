@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import "./ProfilePage.css";
 import profile_img from "../../assets/profile_img.png";
 import { dummyBooks } from "../../mocks/dummyBooks";
-import { makeDummyReviews } from "../../mocks/dummyReviews";
 import ReviewList from "../../components/ReviewList/ReviewList";
 import no_result from "../../assets/no_result.png";
 import BookList from "../../components/BookList/BookList";
@@ -10,17 +9,37 @@ import settings_btn from "../../assets/option.png";
 import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
 import { LayoutContext } from "../../context/LayoutContext";
+import { getMyProfile } from "../../api/authApi";
+import dummyReviews from "../../mocks/dummyReviews";
 
 export default function ProfilePage() {
-  const { user} = useAuth();
+  const { user } = useAuth();
   const [selectedRating, setSelectedRating] = useState(5);
   const navigate = useNavigate();
-
   const { setFooterColor } = useContext(LayoutContext);
+  const [profile, setProfile]=useState(null);
+  const [loading, setLoading]=useState(true);
 
   useEffect(() => {
     setFooterColor("#FDFBF4"); // 흰색 테마
   }, []);
+
+  //프로필 조회 호출
+  useEffect(()=>{
+    async function loadProfile(){
+      const res=await getMyProfile({include: ["reviews", "stars"]})
+      setProfile(res.profile);
+      setLoading(false);
+    }
+    loadProfile();
+  },[]);
+
+  if(loading){
+    return <div className="profile-container">로딩 중...</div>
+  }
+  if (!profile) {
+    return <div className="profile-container">프로필 정보를 불러올 수 없습니다.</div>;
+  }
 
   const filteredBooks = dummyBooks.filter(
     (book) => book.rating === selectedRating
@@ -30,8 +49,8 @@ export default function ProfilePage() {
     <div className="profile-container">
       <div className="profile-card">
         <div className="profile-header-bg" style={{
-            backgroundImage: user.backgroundImg
-              ? `url(${user.backgroundImg})`
+            backgroundImage: profile.backgroundImageUrl
+              ? `url(${profile.backgroundImageUrl})`
               : "none",
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -46,26 +65,26 @@ export default function ProfilePage() {
         </div>
         <div className="profile-info">
           <div className="profile-img">
-            <img src={user.profileImg || profile_img} alt="프로필 이미지" />
+            <img src={profile.profileImageUrl || profile_img} alt="프로필 이미지" />
           </div>
-          <h2 className="username">{user.nickname}</h2>
-          <p className="userid">@{user.id}</p>
+          <h2 className="username">{profile.nickname}</h2>
+          <p className="userid">@{profile.username}</p>
 
           <div className="follow-info">
             <span>
-              팔로잉 <b>21</b>
+              팔로잉 <b>{profile.followingsCount}</b>
             </span>
             <span>
-              팔로워 <b>3</b>
+              팔로워 <b>{profile.followersCount}</b>
             </span>
             <span>
-              읽은책 <b>31</b>
+              읽은책 <b>{profile.readBooksCount}</b>
             </span>
           </div>
 
           <p className="intro">
-            {user.intro && user.intro.trim() !== ""
-              ? user.intro
+            {profile.intro && profile.intro.trim() !== ""
+              ? profile.intro
               : "나를 소개할 수 있는 한 문장을 적어보세요"}
           </p>
 
@@ -86,7 +105,7 @@ export default function ProfilePage() {
         {/* 별점 섹션 */}
         <div className="book-section">
           <h3>
-            <span className="user-id">{user.nickname}</span>님의 별점 목록
+            <span className="user-id">{profile.nickname}</span>님의 별점 목록
           </h3>
 
           <div className="rating-tabs">
@@ -127,7 +146,7 @@ export default function ProfilePage() {
           <h3>공개된 서평</h3>
           <div className="review-list">
             <ReviewList
-              reviews={makeDummyReviews(8, { withBook: true })}
+              reviews={dummyReviews}
               mode="carousel"
               visibleCount={3}
             />

@@ -29,11 +29,11 @@ export function makeDummyReviews(count = 8, currentUser, { withBook = true } = {
     const book = dummyBooks[i % dummyBooks.length];
 
     return {
-      id: `review_${i + 1}`,
+      reviewId: i + 1,
 
       // 유저
       user: {
-        id: i % 2 === 0 ? currentUser.id : makeRandomId(),
+        username: i % 2 === 0 ? currentUser.username : makeRandomId(),
         nickname: i % 2 === 0 ? currentUser.nickname : pick(["sunny", "mint", "readwithme"]),
         profileImg: default_profile
       },
@@ -48,7 +48,7 @@ export function makeDummyReviews(count = 8, currentUser, { withBook = true } = {
 
       // 책 정보
       book: {
-        id: book.id,
+        bookId: book.bookId,
         title: book.title,
         author: book.author,
         image: book.image,
