@@ -36,6 +36,12 @@ export default function StatsPage() {
   .slice(0, 4)
   :[];
 
+  const calcRate = (achieved, goal) => {
+    if (goal <= 0) return 100;  // 0 이하 목표 → 자동 100%
+    const percent = Math.round((achieved / goal) * 100);
+    return percent;  
+  };
+
 
   useEffect(() => {
     setOverview(dummyOverview);
@@ -112,7 +118,7 @@ export default function StatsPage() {
                     r="60"
                     strokeWidth="18"
                     style={{
-                        strokeDashoffset: 377 - (377 * goals.rate) / 100,
+                        strokeDashoffset: 377 - (377 *Math.min(goals.rate,100)) / 100,
                     }}
                     />
                     <text x="80" y="90" textAnchor="middle" className="percent">
@@ -222,7 +228,7 @@ export default function StatsPage() {
           setGoals(prev=>({
             ...prev,
             goal:newGoal,
-            rate:Math.round((prev.achieved/newGoal)*100)
+            rate:calcRate(prev.achieved,newGoal)
           }));
           console.log("입력된 목표 : ",value);
           setGoalModalOpen(false);

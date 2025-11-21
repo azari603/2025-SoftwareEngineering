@@ -36,14 +36,17 @@
   background: #fff;
   padding: 20px 25px;
   border-radius: 10px;
-  width: 240px;
+  width: 24%;
   height:100px;
   box-shadow: 8px 8px 8px rgba(0,0,0,0.05);
+  position:relative;
 }
 
 .editable-card .edit-icon {
   cursor: pointer;
-  margin-left:60px;
+  top:12px;
+  right:12px;
+  position: absolute;
 }
 
 .card-header-row {
