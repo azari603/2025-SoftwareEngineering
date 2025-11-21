@@ -24,7 +24,7 @@ export default function SettingsPage() {
   const profileImage = user?.profileImg || profile_img;
   const nickname = user?.nickname || "사용자";
   const intro = user?.intro || "나를 소개할 수 있는 한 문장을 적어보세요.";
-  const userId = user?.id || "unknown";
+  const username = user?.id || "unknown";
   const email = user?.email || "unknown@test.com";
 
   return (
@@ -88,7 +88,7 @@ export default function SettingsPage() {
         <div className="info-section">
           <div className="info-row">
             <p className="label">아이디</p>
-            <p className="value">@{userId}</p>
+            <p className="value">@{username}</p>
           </div>
 
           <div className="info-row">

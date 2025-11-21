@@ -33,7 +33,7 @@ export function makeDummyReviews(count = 8, currentUser, { withBook = true } = {
 
       // 유저
       user: {
-        id: i % 2 === 0 ? currentUser.id : makeRandomId(),
+        username: i % 2 === 0 ? currentUser.username : makeRandomId(),
         nickname: i % 2 === 0 ? currentUser.nickname : pick(["sunny", "mint", "readwithme"]),
         profileImg: default_profile
       },

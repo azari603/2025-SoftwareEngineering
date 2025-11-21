@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { searchBooks, getBooksByStatus } from "../../api/bookAPI";
+import { useAuth } from "../../context/AuthContext";
 import "./BookSelectorView.css"
 
 function mapStatus(tab){
@@ -18,23 +19,36 @@ function mapStatus(tab){
 
 export default function BookSelectorView(){
     const navigate=useNavigate();
+    const {user, isLoggedIn}=useAuth();
 
     const [query, setQuery]=useState("");
     const [tab, setTab]=useState("reading");
     const [books, setBooks]=useState([]);
     const [loading, setLoading]=useState(false);
+    const isSearching = query.trim().length > 0;
 
-    useEffect(()=>{
-        if(!query.trim()) loadMyLibrary(tab);
-    },[tab]);
+    //탭 바뀌면 내 서재 다시 불러오기 (검색중 아닐때)
+    useEffect(() => {
+    if (!isSearching) {
+      loadMyLibrary(tab);
+    }
+  }, [tab]);
 
+  //검색어 지워진 경우 내서재 다시 불러오기
+    useEffect(() => {
+        if (!isSearching) {
+        loadMyLibrary(tab);
+        }
+    }, [query]);
+
+    
     //검색
     const handleSearch=async(e)=>{
         e.preventDefault();
         if(query.trim()){
             setLoading(true);
             const res=await searchBooks({query});
-            if (res.success) setBooks(res.books);
+            setBooks(res.books);
             setLoading(false);
         }else{
             loadMyLibrary(tab);
@@ -42,18 +56,19 @@ export default function BookSelectorView(){
     };
     // 내 서재 불러오기
     const loadMyLibrary = async (tab) => {
+        if (!isLoggedIn || !user) return;
         setLoading(true);
         const status=mapStatus(tab)
-        const res = await getBooksByStatus(status);
-        if (res.success) setBooks(res.books);
+        const res = await getBooksByStatus({status, username: user.username});
+        setBooks(res.books);
         setLoading(false);
     };
 
     const handleSelectBook = (book) => {
-        navigate(`/write/review?bookId=${book.isbn}`);
+        navigate(`/write/review?bookId=${book.bookId}`);
     };
 
-    const isSearching=query.trim().length>0;
+    
 
     return (
         <div className="book-selector-view">
@@ -104,7 +119,7 @@ export default function BookSelectorView(){
             {books.length > 0 ? (
             books.map((book) => (
                 <div
-                key={book.isbn}
+                key={book.bookId}
                 className="book-item"
                 onClick={() => handleSelectBook(book)}
                 >

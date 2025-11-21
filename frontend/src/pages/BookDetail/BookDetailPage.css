@@ -15,11 +15,12 @@
 }
 
 .review-wrapper{
-  width: fit-content;
+  width: 100%;
   display: flex;
   justify-content: center;
   flex-direction: column;
   padding-block: 40px;
+  padding-inline: 30px;
 }
 
 .book-detail-card{

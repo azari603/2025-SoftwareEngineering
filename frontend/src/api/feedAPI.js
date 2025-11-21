@@ -1,5 +1,5 @@
 // src/api/feedAPI.js
-import { makeDummyReviews } from "../mocks/dummyReviews";
+import dummyReviews from "../mocks/dummyReviews";
 
 function makeFakeDate() {
   const now = new Date();
@@ -10,7 +10,7 @@ function makeFakeDate() {
 const randomCommentCount = () => Math.floor(Math.random() * 20);
 
 export async function fetchLatestFeed({ page = 0, size = 8 } = {}) {
-  const dummy = makeDummyReviews(size, { withBook: true });
+  const dummy = dummyReviews
 
   const mapped = dummy.map((review) => ({
     reviewId: review.reviewId,
@@ -26,7 +26,7 @@ export async function fetchLatestFeed({ page = 0, size = 8 } = {}) {
     },
 
     book: {
-      bookId: review.book.isbn,
+      bookId: review.book.bookId,
       name: review.book.title,
       imageUrl: review.book.image,
       author: review.book.author,                 // ✅ 작가

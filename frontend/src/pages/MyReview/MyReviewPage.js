@@ -2,9 +2,10 @@ import React, { useEffect, useContext, useState } from "react";
 import "./MyReviewPage.css";
 import ReviewItem from "../../components/BookReviewList/BookReviewList";
 import { LayoutContext } from "../../context/LayoutContext";
-import { getMyReviews, getLikedReviews } from "../../api/MyReviewApi";
+import { getLikedReviews } from "../../api/MyReviewApi";
 import { useAuth } from "../../context/AuthContext";
 import { makeDummyReviews } from "../../mocks/dummyReviewList";
+import { getMyReviews } from "../../api/reviewAPI";
 
 export default function MyReviewPage() {
   const { setFooterColor } = useContext(LayoutContext);
@@ -13,12 +14,7 @@ export default function MyReviewPage() {
   const {user}=useAuth();
   const [likedTrigger, setLikedTrigger] = useState(0);
   const [dummyReviews, setDummyReviews] = useState([]);
-  useEffect(() => {
-    if (user) {
-     const r = makeDummyReviews(8, user, { withBook: true });
-     setDummyReviews(r);
-    }
-  }, [user]);
+  
   useEffect(() => {
     setFooterColor("#FDFBF4");
   }, [setFooterColor]);
@@ -27,15 +23,21 @@ export default function MyReviewPage() {
   if (!user) return; 
     async function load() {
       if (activeTab === "my") {
-        const data = await getMyReviews(user,dummyReviews);
-        setReviews(data);
+        const data = await getMyReviews(user.username,{
+          page:0,
+          size:20,
+          visibility:"ALL",
+          status:"PIBLISHED",
+          sort:"createdAt,desc"
+        });
+        setReviews(data.content);
       } else {
         const data = await getLikedReviews(dummyReviews);
         setReviews(data);
       }
     }
     load();
-  }, [activeTab,user,dummyReviews,likedTrigger]);
+  }, [activeTab,user,likedTrigger]);
 
   return (
     <div className="myReview-container">
@@ -76,7 +78,7 @@ export default function MyReviewPage() {
               <p className="myReview-empty">서평이 없습니다.</p>
             ) : (
               reviews.map((review) => (
-                <ReviewItem key={review.id} review={review} setLikedTrigger={setLikedTrigger} currentUser={user}/>
+                <ReviewItem key={review.reviewId} review={review} setLikedTrigger={setLikedTrigger} currentUser={user}/>
               ))
             )}
           </div>

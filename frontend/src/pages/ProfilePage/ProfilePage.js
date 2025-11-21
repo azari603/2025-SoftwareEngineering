@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import "./ProfilePage.css";
 import profile_img from "../../assets/profile_img.png";
 import { dummyBooks } from "../../mocks/dummyBooks";
-import { makeDummyReviews } from "../../mocks/dummyReviews";
 import ReviewList from "../../components/ReviewList/ReviewList";
 import no_result from "../../assets/no_result.png";
 import BookList from "../../components/BookList/BookList";
@@ -11,6 +10,7 @@ import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
 import { LayoutContext } from "../../context/LayoutContext";
 import { getMyProfile } from "../../api/authApi";
+import dummyReviews from "../../mocks/dummyReviews";
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -28,9 +28,7 @@ export default function ProfilePage() {
   useEffect(()=>{
     async function loadProfile(){
       const res=await getMyProfile({include: ["reviews", "stars"]})
-      if (res.success){
-        setProfile(res.profile);
-      }
+      setProfile(res.profile);
       setLoading(false);
     }
     loadProfile();
@@ -148,7 +146,7 @@ export default function ProfilePage() {
           <h3>공개된 서평</h3>
           <div className="review-list">
             <ReviewList
-              reviews={makeDummyReviews(8, { withBook: true })}
+              reviews={dummyReviews}
               mode="carousel"
               visibleCount={3}
             />

@@ -10,21 +10,19 @@ import "./ReviewWrite.css";
 const ReviewWrite = () => {
     const location = useLocation();
     const params=new URLSearchParams(location.search);
-    const isbn=params.get("bookId");
+    const bookId=params.get("bookId");
 
     const[book, setBooks]=useState(null);
     const[loading, setLoading]=useState(true);
 
     useEffect(()=>{
         async function fetchBooks(){
-            const res=await getBookByISBN(isbn);
-            if(res.success){
-                setBooks(res.book);
-            }
+            const res=await getBookByISBN(bookId);
+            setBooks(res);
             setLoading(false);
         }
         fetchBooks()
-    },[isbn]);
+    },[bookId]);
     
     const [rating, setRating] = useState(0);
     const [startDate, setStartDate] = useState("");
@@ -37,7 +35,7 @@ const ReviewWrite = () => {
 
     const handleSubmit=()=>{
         const reviewData={
-            isbn: isbn,
+            bookId: bookId,
             rating,
             startDate,
             endDate,

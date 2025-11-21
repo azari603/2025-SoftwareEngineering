@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
 
     // 계정 조회 호출  -- /auth/me
     authAPI.getMyAccount().then((res)=>{
-      if(res.success){
+      if(res?.account){
         setUser(res.account);
       } else{
         logout(); //토큰 만료, 계정 없음 등의 경우 로그아웃
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   // 로그인
   const login=async(username, password)=>{
     const res=await authAPI.login(username, password);
-    if(!res.success){
+    if(res.error){
       return res;
     }
 

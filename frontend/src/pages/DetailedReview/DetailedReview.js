@@ -178,7 +178,13 @@ const ReviewDetail = () => {
             {!isMyReview && (
               <button
                 className={`follow-btn ${isFollowing ? "following" : ""}`}
-                onClick={() => setIsFollowing(!isFollowing)}
+                onClick={() => {
+                  if (!isLoggedIn) {
+                    setShowLoginModal(true);
+                    return;
+                  }
+                  setIsFollowing(!isFollowing);
+                }}
               >
                 {isFollowing ? "팔로잉" : "+ 팔로우"}
               </button>
@@ -201,7 +207,7 @@ const ReviewDetail = () => {
 
               <div className="book-rating__my">
                 <span className="my-text">내 평점</span>
-                <StarRate value={book.myRating} readOnly={true} />
+                <StarRate value={review.myRating} readOnly={true} />
               </div>
             </div>
           </div>

@@ -4,6 +4,7 @@ import BookCard from "../../components/BookCard/BookCard";
 import { LayoutContext } from "../../context/LayoutContext";
 import { useNavigate, useLocation } from "react-router-dom";
 import { getBooksByStatus } from "../../api/bookAPI";
+import { useAuth } from "../../context/AuthContext";
 
 function mapStatus(tab){
   switch(tab){
@@ -12,7 +13,7 @@ function mapStatus(tab){
     case "finished":
       return "COMPLETED"
     case "want":
-      return "WISHILIST"
+      return "WISHLIST"
     default:
       return "READING"
   }
@@ -23,8 +24,7 @@ export default function MyLibraryPage() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
   const { setFooterColor } = useContext(LayoutContext);
-  const navigate = useNavigate();
-  const location= useLocation();
+  const {user}=useAuth()
 
   const tabs = [
     { id: "reading", label: "읽고있는 책" },
@@ -33,19 +33,25 @@ export default function MyLibraryPage() {
   ];
 
   useEffect(() => {
-    const loadBooks = async () => {
+    async function loadBooks() {
       setLoading(true);
-      const status=mapStatus(activeTab);
-      const res = await getBooksByStatus(status);
-      if (res.success)
-        setBooks(res.books);
+
+      const status = mapStatus(activeTab);
+
+      const res = await getBooksByStatus({
+        status,
+        username: user.username, // 임시 API 전용 (백엔드 연결 후 axiosInstance가 토큰 처리)
+      });
+
+      setBooks(res.books);
       setLoading(false);
-    };
+    }
+
     loadBooks();
   }, [activeTab]);
 
   useEffect(() => {
-    setFooterColor("#FDFBF4"); // 흰색 테마
+    setFooterColor("#FDFBF4"); 
   }, [setFooterColor]);
 
   return (

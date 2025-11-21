@@ -8,20 +8,33 @@ import ReviewList from "../../components/ReviewList/ReviewList"
 import * as BookAPI from "../../api/bookAPI"
 import "./BookDetailPage.css"
 import { LayoutContext } from "../../context/LayoutContext";
+import * as ReviewAPI from "../../api/reviewAPI"
 
 
 export default function BookDetailPage(){
     const {bookId}=useParams();
     const [book, setBook]=useState(null)
     const [recommended, setRecommended]=useState([]);
+    const [reviews, setReviews] = useState([]); //이 책의 서평
    
     const { setFooterColor } = useContext(LayoutContext);
+
+    //이 책의 서평 목록 요청
+    useEffect(() => {
+    if (!book) return;
+
+    (async () => {
+        const res = await ReviewAPI.getReviewsByBookId(book.bookId, 0, 10, "latest");
+        setReviews(res.content);
+    })();
+
+    }, [book]);
     
     //책 정보 요청
     useEffect(()=>{
         (async () => {
             const res=await BookAPI.getBookByISBN(bookId);
-            if(res.success) setBook(res.book);
+            setBook(res);
         })();
     },[bookId]);
 
@@ -45,7 +58,7 @@ export default function BookDetailPage(){
                     <BookInfoSection book={book}/>
                     <div className="review-wrapper">
                         <h3>이 책의 서평</h3>
-                        <ReviewList reviews={dummyReviews} mode="carousel" visibleCount={3} variant=""/>
+                        <ReviewList reviews={reviews} mode="carousel" visibleCount={3} variant=""/>
                     </div>
 
                     <div className="book-wrapper">
