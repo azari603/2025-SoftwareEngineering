@@ -1,3 +1,4 @@
+// src/main/java/com/cheack/softwareengineering/config/SecurityConfig.java
 package com.cheack.softwareengineering.config;
 
 import com.cheack.softwareengineering.security.JwtAuthenticationFilter;
@@ -30,6 +31,7 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> {}) // CORS 설정 사용
                 .authorizeHttpRequests(auth -> auth
                         // 1) 정적/기본 개방
                         .requestMatchers(
@@ -46,20 +48,24 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
 
-                        // 2) 인증 불필요 엔드포인트 (Auth API)
+                        // 2) 인증 불필요 엔드포인트 (Auth API – v1 경로)
                         .requestMatchers(HttpMethod.GET,
-                                "/api/auth/check/username",
-                                "/api/auth/check/email"
+                                "/api/v1/auth/check/username",
+                                "/api/v1/auth/check/email",
+                                "/api/v1/auth/verify-email",
+                                "/api/v1/auth/find-id"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
-                                "/api/auth/signup",
-                                "/api/auth/login",
-                                "/api/auth/token/refresh",
-                                "/api/auth/email/verify",
-                                "/api/auth/email/resend",
-                                "/api/auth/find-id",
-                                "/api/auth/find-password"
+                                "/api/v1/auth/signup",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/token/refresh",
+                                "/api/v1/auth/password/forgot",
+                                "/api/v1/auth/password/reset",
+                                "/api/v1/auth/email/resend"
                         ).permitAll()
+
+                        // 소셜 로그인 엔드포인트도 나중에 여기 permitAll 추가하면 됨:
+                        // .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
                         // 3) 그 외 보호
                         .anyRequest().authenticated()
@@ -78,7 +84,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:5173"));
+        configuration.setAllowedOrigins(List.of(
+                "http://localhost:3000",
+                "http://localhost:5173"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);

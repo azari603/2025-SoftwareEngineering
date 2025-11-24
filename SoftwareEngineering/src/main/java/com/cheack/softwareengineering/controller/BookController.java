@@ -2,7 +2,6 @@ package com.cheack.softwareengineering.controller;
 
 import com.cheack.softwareengineering.dto.BookDetailDto;
 import com.cheack.softwareengineering.dto.BookDto;
-import com.cheack.softwareengineering.dto.BookSummaryDto;
 import com.cheack.softwareengineering.service.BookIngestService;
 import com.cheack.softwareengineering.service.BookService;
 import lombok.AllArgsConstructor;
@@ -10,8 +9,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,6 +20,11 @@ import java.util.stream.Collectors;
  * Book Catalog / Meta API v1
  *
  * Base: /api/v1/books
+ *
+ * 역할:
+ *  - 우리 DB에 있는 책 상세 조회
+ *  - (선택) ISBN 기반 단일/배치 인입 같은 메타 관리 기능
+ * 검색은 SearchController에서 담당한다.
  */
 @RestController
 @RequestMapping("/api/v1/books")
@@ -47,8 +49,8 @@ public class BookController {
      * [ISBN 로 조회(존재 없으면 즉시 수집/등록)]
      * GET /api/v1/books/isbn/{isbn}
      *
-     * 동작: DB 조회 → 없으면 외부 메타 호출(성공 시 저장 후 반환)
-     * 외부에서도 못 찾으면 404
+     * 이건 주로 내부/관리용 용도.
+     * FE에서 직접 ISBN을 넘겨줄 일은 사실상 없을 가능성이 높다.
      */
     @GetMapping("/isbn/{isbn}")
     public BookDetailDto getByIsbn(@PathVariable String isbn) {
@@ -69,31 +71,15 @@ public class BookController {
     }
 
     /**
-     * [도서 검색]
-     * GET /api/v1/books?q=키워드&author=…&publisher=…&isbn=…&page&size&sort
-     *
-     * 지금은 q 만 BookService.search 로 넘기고,
-     * author/publisher/isbn 필터는 추후 확장용으로만 받는다.
-     */
-    @GetMapping
-    public Page<BookSummaryDto> searchBooks(
-            @RequestParam(name = "q", required = false) String keyword,
-            @RequestParam(name = "author", required = false) String author,
-            @RequestParam(name = "publisher", required = false) String publisher,
-            @RequestParam(name = "isbn", required = false) String isbn,
-            Pageable pageable
-    ) {
-        // TODO: author/publisher/isbn 조건까지 포함하는 검색으로 확장
-        return bookService.search(keyword, pageable);
-    }
-
-    /**
      * [여러 ISBN 일괄 조회(최대 N개)]
      * POST /api/v1/books/isbn/bulk
      *
      * 요청: { "isbns": ["...", "..."] }
      * 동작: 존재분은 그대로, 미존재는 외부 메타 호출 후 upsert
      * 응답: 성공 목록, 실패 목록(실패 사유 포함)
+     *
+     * 이것도 마찬가지로 “관리/배치용”에 가깝고,
+     * 일반 검색은 /api/v1/search/books 를 사용한다.
      */
     @PostMapping("/isbn/bulk")
     public BulkResultResponse ingestByIsbnBulk(@RequestBody BulkIsbnRequest request) {

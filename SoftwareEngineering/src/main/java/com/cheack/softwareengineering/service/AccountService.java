@@ -1,3 +1,4 @@
+// src/main/java/com/cheack/softwareengineering/service/AccountService.java
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.entity.ProviderType;
@@ -19,11 +20,8 @@ public class AccountService {
     private final EmailService emailService;
 
     /**
-     * 회원 가입
-     *  - username / email 중복 체크
-     *  - 비밀번호 암호화
-     *  - 기본값(LOCAL, ACTIVE 등) 세팅
-     *  - 인증 메일 발송
+     * (예전에 만든) 순수 Account용 회원가입.
+     * 현재는 AuthService.signUp()을 쓰고 있어서 안 써도 된다.
      */
     public User register(String username, String email, String rawPassword) {
         if (userRepository.existsByUsername(username)) {
@@ -33,11 +31,14 @@ public class AccountService {
             throw new IllegalArgumentException("email already exists");
         }
 
+        String normUsername = username.trim().toLowerCase();
+        String normEmail = email.trim().toLowerCase();
+
         User user = User.builder()
-                .username(username)
-                .email(email)
+                .username(normUsername)
+                .email(normEmail)
                 .password(passwordEncoder.encode(rawPassword))
-                .nickname(username)                 // 엔티티 주석에 나온 기본 정책
+                .nickname(normUsername)
                 .provider(ProviderType.LOCAL)
                 .status(UserStatus.ACTIVE)
                 .emailVerified(false)
@@ -52,15 +53,19 @@ public class AccountService {
     }
 
     /**
-     * 비밀번호 변경
-     *  - 현재 비밀번호 검증
-     *  - 새 비밀번호 암호화 후 저장
+     * 비밀번호 변경 (로그인된 사용자가 자기 비번 바꾸는 용도)
      */
     public void changePassword(String username,
                                String currentPassword,
                                String newPassword) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
+        String normUsername = username.trim().toLowerCase();
+
+        User user = userRepository.findByUsername(normUsername)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normUsername));
+
+        if (user.getProvider() != ProviderType.LOCAL) {
+            throw new IllegalArgumentException("social account cannot change password here");
+        }
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
             throw new IllegalArgumentException("current password not matched");
@@ -71,47 +76,133 @@ public class AccountService {
     }
 
     /**
-     * 이메일 인증 메일 재발송 요청
+     * 이메일 인증 메일 재전송 (이메일 기준, 로그인 불필요)
      */
-    public void resendVerificationMail(String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + username));
+    public void resendVerificationMailByEmail(String email) {
+        String normEmail = email.trim().toLowerCase();
+
+        User user = userRepository.findByEmail(normEmail)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normEmail));
+
+        if (user.getIsEmailVerified()) {
+            // 이미 인증된 계정이면 그냥 종료
+            return;
+        }
 
         emailService.sendVerificationMail(user.getEmail(), user.getUsername());
     }
 
     /**
-     * 이메일 인증 토큰 검증 후, 사용자 emailVerified 플래그를 true 로 세팅
+     * username 기준 재전송 – 필요하면 그대로 사용
      */
-    public void verifyEmail(String token) {
-        // EmailService 가 토큰 → username 을 검증/반환
-        String username = emailService.verifyTokenAndReturnUsername(token);
+    public void resendVerificationMail(String username) {
+        String normUsername = username.trim().toLowerCase();
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new IllegalStateException("user not found after verification: " + username));
+        User user = userRepository.findByUsername(normUsername)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normUsername));
 
-        user.setIsEmailVerified(true);
-        userRepository.save(user);
+        if (user.getIsEmailVerified()) {
+            return;
+        }
+
+        emailService.sendVerificationMail(user.getEmail(), user.getUsername());
     }
 
     /**
-     * 이메일 변경 요청
-     *  - 중복 이메일 체크
-     *  - 이메일 변경 후 emailVerified=false 로 초기화
-     *  - 새 이메일로 인증 메일 발송
+     * 이메일 변경 + 다시 인증 요청
      */
     public void changeEmail(Long userId, String newEmail) {
-        if (userRepository.existsByEmail(newEmail)) {
+        String normEmail = newEmail.trim().toLowerCase();
+
+        if (userRepository.existsByEmail(normEmail)) {
             throw new IllegalArgumentException("email already exists");
         }
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("user not found: " + userId));
 
-        user.setEmail(newEmail);
+        user.setEmail(normEmail);
         user.setIsEmailVerified(false);
         userRepository.save(user);
 
-        emailService.sendVerificationMail(newEmail, user.getUsername());
+        emailService.sendVerificationMail(normEmail, user.getUsername());
+    }
+
+    // ================== 비밀번호 찾기 / 재설정 ==================
+
+    /**
+     * 비밀번호 찾기 – 재설정 메일 발송 (AuthController에서 사용)
+     */
+    public void forgotPassword(String email) {
+        String normEmail = email.trim().toLowerCase();
+        emailService.sendPasswordResetMail(normEmail);
+    }
+
+    /**
+     * 비밀번호 찾기 – 재설정 메일 발송 (AccountController에서 사용하던 이름)
+     * => 위 forgotPassword() 래핑
+     */
+    public void requestPasswordReset(String email) {
+        forgotPassword(email);
+    }
+
+    /**
+     * 비밀번호 재설정 – 토큰 검증 후 새 비밀번호로 변경
+     */
+    public void resetPassword(String token, String newPassword) {
+        Long userId = emailService.verifyPasswordResetToken(token);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + userId));
+
+        if (user.getProvider() != ProviderType.LOCAL) {
+            throw new IllegalArgumentException("social account cannot reset password here");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    // ================== 아이디 찾기 ==================
+
+    /**
+     * 아이디 찾기 – 이메일로 username 반환
+     */
+    public String findUsernameByEmail(String email) {
+        String normEmail = email.trim().toLowerCase();
+
+        User user = userRepository.findByEmail(normEmail)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normEmail));
+        return user.getUsername();
+    }
+
+    // ================== 계정 탈퇴 ==================
+
+    /**
+     * 계정 탈퇴 – status=DEACTIVATED (AuthController에서 사용하는 이름)
+     */
+    public void deleteAccount(String username, String password) {
+        String normUsername = username.trim().toLowerCase();
+
+        User user = userRepository.findByUsername(normUsername)
+                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normUsername));
+
+        if (user.getProvider() == ProviderType.LOCAL) {
+            if (password == null || !passwordEncoder.matches(password, user.getPassword())) {
+                throw new IllegalArgumentException("password not matched");
+            }
+        }
+        // 소셜 계정은 나중에 reauthToken 등으로 검증 로직 추가 가능
+
+        user.setStatus(UserStatus.DELETED);
+        userRepository.save(user);
+    }
+
+    /**
+     * 계정 탈퇴 – AccountController에서 사용하던 이름
+     * => deleteAccount() 래핑
+     */
+    public void deactivateAccount(String username, String password) {
+        deleteAccount(username, password);
     }
 }
