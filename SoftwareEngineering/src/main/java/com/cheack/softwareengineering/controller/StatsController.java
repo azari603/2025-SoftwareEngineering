@@ -48,11 +48,16 @@ public class StatsController {
      */
     @GetMapping("/me/overview")
     public StatsOverviewDto getMyOverview(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestParam(name = "period", required = false) String period,
-            @RequestParam(name = "from", required = false) String from,
-            @RequestParam(name = "to", required = false) String to
+            @RequestParam(name = "from",   required = false) String from,
+            @RequestParam(name = "to",     required = false) String to
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        Long userId = userService.getByUsername(username).getId();
         return statsService.getOverview(userId);
     }
 
@@ -83,8 +88,13 @@ public class StatsController {
      */
     @GetMapping("/me/stars")
     public RatingHistogramDto getMyStarsHistogram(
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String username
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        Long userId = userService.getByUsername(username).getId();
         return statsService.getRatingHistogram(userId);
     }
 
@@ -105,19 +115,21 @@ public class StatsController {
      */
     @GetMapping("/me/timeline")
     public Object getMyTimeline(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestParam(name = "granularity", defaultValue = "month") String granularity,
             @RequestParam(name = "from") String from,
             @RequestParam(name = "to", required = false) String to
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        Long userId = userService.getByUsername(username).getId();
         int year = parseYearOrDefault(from);
 
         if ("year".equalsIgnoreCase(granularity)) {
-            // 연간 요약 통계
             return statsService.getYearlySummary(userId, year);
         }
-
-        // 기본: 월 단위 시계열(해당 연도 기준)
         return statsService.getMonthlySeries(userId, year);
     }
 
@@ -131,12 +143,18 @@ public class StatsController {
      */
     @GetMapping("/me/authors")
     public TopAuthorsDto getMyTopAuthors(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestParam(name = "top", defaultValue = "5") int top
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
         if (top <= 0) {
             top = 5;
         }
+
+        Long userId = userService.getByUsername(username).getId();
         return statsService.getTopAuthors(userId, top);
     }
 
@@ -151,10 +169,16 @@ public class StatsController {
      */
     @GetMapping("/me/categories")
     public List<Object> getMyCategoryShare(
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String username
     ) {
-        // TODO: 책/리뷰 카테고리 정보를 바탕으로 통계 계산 로직 추가
-        return List.of();
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        // TODO: userId로 카테고리 통계 계산할 때 사용
+        Long userId = userService.getByUsername(username).getId();
+
+        return List.of(); // 지금은 기존대로 빈 리스트
     }
 
     // ======================= 목표/진행률 =======================
@@ -169,18 +193,21 @@ public class StatsController {
      */
     @GetMapping("/me/goals")
     public GoalProgressDto getMyGoals(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestParam(name = "period", defaultValue = "month") String period
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        Long userId = userService.getByUsername(username).getId();
+
         YearMonth now = YearMonth.now();
         YearMonth targetYm;
 
         if ("year".equalsIgnoreCase(period)) {
-            // 연간 목표는 아직 별도 서비스가 없으므로,
-            // 일단 해당 연도 1월을 대표값으로 사용 (TODO: 연간 집계용 서비스 추가 시 교체)
             targetYm = YearMonth.of(now.getYear(), 1);
         } else {
-            // 기본: 이번 달
             targetYm = now;
         }
 

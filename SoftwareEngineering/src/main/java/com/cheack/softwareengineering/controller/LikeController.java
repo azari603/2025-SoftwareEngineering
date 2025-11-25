@@ -3,7 +3,9 @@ package com.cheack.softwareengineering.controller;
 import com.cheack.softwareengineering.dto.LikeCountResponse;
 import com.cheack.softwareengineering.dto.LikeStatusResponse;
 import com.cheack.softwareengineering.dto.ReviewCardDto;
+import com.cheack.softwareengineering.dto.UserDto;
 import com.cheack.softwareengineering.service.LikeService;
+import com.cheack.softwareengineering.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 public class LikeController {
 
     private final LikeService likeService;
+    private final UserService userService;
 
     /**
      * [리뷰 좋아요 생성]
@@ -39,14 +42,16 @@ public class LikeController {
     @PostMapping("/reviews/{reviewId}/likes")
     public ResponseEntity<Void> like(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String principalUsername   // 수정
     ) {
-        if (userId == null) {
+        if (principalUsername == null || "anonymousUser".equals(principalUsername)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        UserDto user = userService.getByUsername(principalUsername);
+        Long userId = user.getId();
+
         likeService.like(userId, reviewId);
-        // 멱등 create → 201 또는 204 둘 다 가능. 여기선 201 사용.
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -58,11 +63,14 @@ public class LikeController {
     @DeleteMapping("/reviews/{reviewId}/likes")
     public ResponseEntity<Void> unlike(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String principalUsername
     ) {
-        if (userId == null) {
+        if (principalUsername == null || "anonymousUser".equals(principalUsername)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        UserDto user = userService.getByUsername(principalUsername);
+        Long userId = user.getId();
 
         likeService.unlike(userId, reviewId);
         return ResponseEntity.noContent().build();
@@ -83,7 +91,7 @@ public class LikeController {
     /**
      * [내가 특정 리뷰를 좋아요 했는지]
      * GET /api/v1/reviews/{reviewId}/likes/status
-     *
+     * <p>
      * 로그인 안 했으면 liked=false 로 응답.
      * 서비스는 이미 완성이라, 상태 조회는
      * getLikedReviews(...) 안에서 찾아보는 방식으로 처리.
@@ -91,13 +99,16 @@ public class LikeController {
     @GetMapping("/reviews/{reviewId}/likes/status")
     public ResponseEntity<LikeStatusResponse> getLikeStatus(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String principalUsername
     ) {
-        if (userId == null) {
+        // 로그인 안 했으면 무조건 liked=false
+        if (principalUsername == null || "anonymousUser".equals(principalUsername)) {
             return ResponseEntity.ok(new LikeStatusResponse(false));
         }
 
-        // 최대 1000개 정도만 가져와서 안에서 찾는 방식 (서비스는 안 건드림)
+        UserDto user = userService.getByUsername(principalUsername);
+        Long userId = user.getId();
+
         Page<ReviewCardDto> likedPage =
                 likeService.getLikedReviews(userId, PageRequest.of(0, 1000));
 
@@ -114,12 +125,15 @@ public class LikeController {
      */
     @GetMapping("/me/likes/reviews")
     public ResponseEntity<Page<ReviewCardDto>> getMyLikedReviews(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String principalUsername,
             Pageable pageable
     ) {
-        if (userId == null) {
+        if (principalUsername == null || "anonymousUser".equals(principalUsername)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+
+        UserDto user = userService.getByUsername(principalUsername);
+        Long userId = user.getId();
 
         Page<ReviewCardDto> page = likeService.getLikedReviews(userId, pageable);
         return ResponseEntity.ok(page);
