@@ -1,4 +1,5 @@
 import { dummyBooks } from "../mocks/dummyBooks"
+import axiosInstance from "./axiosInstance";
 //---임시 저장소----//
 function loadStatusMap() {
   return JSON.parse(localStorage.getItem("statusMap") || "{}");
@@ -20,33 +21,42 @@ export async function getRecommendBooks(){
     return {books:recommended}
 }
 
-//(임시) 책 검색
-export async function searchBooks({query="",page,pageSize}={}){
-    await new Promise((r)=>setTimeout(r,200))
+//책 검색
+export async function searchBooks({q="", page=0, size=10}){
+  try{
+    const res=await axiosInstance.get("/search/books",{
+      params: {
+        q,
+        page,
+        size,
+      }
+    });
 
-    let filtered=dummyBooks;
-    if(query.trim()){
-        const q=query.toLowerCase();
-        filtered=dummyBooks.filter(
-            (book)=>
-                book.title.toLowerCase().includes(q)||
-            book.author.toLowerCase().includes(q)
-        )
+    const data=res.data;
+    if(Array.isArray(data)){
+      return {
+        books: data,
+        totalCount: null,
+        isPaged: false,
+      };
     }
 
-    const totalCount=filtered.length;
-
-    if(page&&pageSize){
-        const start=(page-1)*pageSize;
-        const end=start+pageSize;
-        filtered=filtered.slice(start,end);
+    if(data.content&&typeof data.totalElements==="number"){
+      return{
+        books: data.content,
+        totalCount: data.totalElements,
+        isPaged: true,
+      };
     }
-
-    return {
-        totalCount,
-        books: filtered,
-        isPaged: !!page&&!!pageSize
-    }
+  }catch(err){
+    console.error("책 검색 중 오류", err);
+    return{
+      books: [],
+      totalCount: null,
+      isPaged: false,
+      error: err.response?.data?.message||"검색 오류 발생",
+    };
+  }
 }
 
 export const getMyLibraryBooks = async (type) => {

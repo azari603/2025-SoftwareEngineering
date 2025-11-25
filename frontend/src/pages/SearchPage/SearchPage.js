@@ -20,11 +20,15 @@ export default function SearchResult() {
   useEffect(()=>{
     const fetchResults = async()=>{
       if(!query) return;
-      const res = await searchBooks({query, page, pageSize});
-      if(res.success){
+      const res = await searchBooks({
+        q: query,
+        page,
+        size: pageSize,
+      });
+      
         setResults(res.books)
         setTotalCount(res.totalCount)
-      }
+      
     }
 
     fetchResults()
@@ -43,12 +47,13 @@ export default function SearchResult() {
           <div className="search-result-container">
                 <BookList books={results} mode="list" cardSize="lg" />
             </div>
-
-            <Pagination
+            {totalCount!==null&&(
+              <Pagination
               currentPage={page}
               totalCount={totalCount}
               pageSize={pageSize}
               onPageChange={(newPage)=>setPage(newPage)}/>
+            )}
           </>
             
     ):(
