@@ -49,13 +49,17 @@ public class FollowController {
     @PostMapping("/{targetUsername}")
     public ResponseEntity<Void> follow(
             @PathVariable String targetUsername,
-            @AuthenticationPrincipal(expression = "id") Long followerId
+            @AuthenticationPrincipal String username
     ) {
-        if (followerId == null) {
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        UserDto follower = userService.getByUsername(username);
+        Long followerId = follower.getId();
+
         UserDto target = userService.getByUsername(targetUsername);
+
         followService.follow(followerId, target.getId());
 
         // 멱등이지만, "팔로우" 액션이므로 201 선택
@@ -70,13 +74,17 @@ public class FollowController {
     @DeleteMapping("/{targetUsername}")
     public ResponseEntity<Void> unfollow(
             @PathVariable String targetUsername,
-            @AuthenticationPrincipal(expression = "id") Long followerId
+            @AuthenticationPrincipal String username
     ) {
-        if (followerId == null) {
+        if (username == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
+        UserDto me = userService.getByUsername(username);
+        Long followerId = me.getId();
+
         UserDto target = userService.getByUsername(targetUsername);
+
         followService.unfollow(followerId, target.getId());
 
         return ResponseEntity.noContent().build();
@@ -91,13 +99,17 @@ public class FollowController {
     @GetMapping("/{targetUsername}/status")
     public ResponseEntity<FollowStatusResponse> status(
             @PathVariable String targetUsername,
-            @AuthenticationPrincipal(expression = "id") Long viewerId
+            @AuthenticationPrincipal String username
     ) {
-        if (viewerId == null) {
+        if (username == null) {
             return ResponseEntity.ok(new FollowStatusResponse(false));
         }
 
+        UserDto viewer = userService.getByUsername(username);
+        Long viewerId = viewer.getId();
+
         UserDto target = userService.getByUsername(targetUsername);
+
         boolean following = followService.isFollowing(viewerId, target.getId());
 
         return ResponseEntity.ok(new FollowStatusResponse(following));
@@ -112,19 +124,27 @@ public class FollowController {
     @GetMapping("/{username}/followers")
     public ResponseEntity<Page<FollowerDto>> followers(
             @PathVariable String username,
-            @AuthenticationPrincipal(expression = "id") Long viewerId,
+            @AuthenticationPrincipal String principalUsername,
             Pageable pageable
     ) {
         UserDto target = userService.getByUsername(username);
 
+        Long viewerId = null;
+        if (principalUsername != null) {
+            UserDto viewer = userService.getByUsername(principalUsername);
+            viewerId = viewer.getId();
+        }
+
         Page<UserMiniDto> followerPage =
                 followService.getFollowers(target.getId(), pageable);
 
+        final Long currentViewerId = viewerId;
+
         Page<FollowerDto> dtoPage = followerPage.map(u -> {
             boolean followedByMe = false;
-            if (viewerId != null) {
+            if (currentViewerId != null) {
                 // viewer → follower 를 다시 팔로우하는지 여부
-                followedByMe = followService.isFollowing(viewerId, u.getId());
+                followedByMe = followService.isFollowing(currentViewerId, u.getId());
             }
 
             return FollowerDto.builder()

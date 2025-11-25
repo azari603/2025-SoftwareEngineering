@@ -15,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 /**
  * Profile API v1
@@ -42,7 +43,7 @@ public class ProfileController {
     public ProfileResponse getProfile(
             @PathVariable String username,
             @RequestParam(value = "include", required = false) String include,
-            @AuthenticationPrincipal(expression = "id") Long viewerId   // 로그인 안 했으면 null 가능
+            @AuthenticationPrincipal String viewerUsername   // 로그인 안 했으면 null 가능
     ) {
         // username -> userId
         UserDto targetUser = userService.getByUsername(username);
@@ -66,11 +67,12 @@ public class ProfileController {
      */
     @GetMapping("/me")
     public ProfileResponse getMyProfile(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestParam(value = "include", required = false) String include
     ) {
         // 기본 유저 정보
-        UserDto user = userService.getById(userId);
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
 
         // 공개 프로필 요약 + 팔로워/팔로잉/완독 수
         UserProfileSummaryDto summary = userService.getPublicProfileSummary(userId);
@@ -91,9 +93,12 @@ public class ProfileController {
     @PatchMapping("/me")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProfile(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestBody UpdateProfileRequest request
     ) {
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         // 닉네임 변경은 User 도메인 책임
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
             // TODO: UserService에 updateNickname 메서드 구현 필요
@@ -118,9 +123,17 @@ public class ProfileController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public ProfileImageResponse updateProfileImage(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestPart("file") MultipartFile file
     ) {
+        if (username == null) {
+            // 토큰 없는 경우 방어
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증된 사용자가 아닙니다.");
+        }
+
+        UserDto me = userService.getByUsername(username);
+        Long userId = me.getId();
+
         String url = profileService.updateAvatar(userId, file);
         return new ProfileImageResponse(url);
     }
@@ -137,9 +150,11 @@ public class ProfileController {
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE
     )
     public BackgroundImageResponse updateBackgroundImage(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestPart("file") MultipartFile file
     ) {
+        UserDto me = userService.getByUsername(username);
+        Long userId = me.getId();
         String url = profileService.updateBackground(userId, file);
         return new BackgroundImageResponse(url);
     }
@@ -154,9 +169,16 @@ public class ProfileController {
     @PatchMapping("/me/goal")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateGoal(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestBody UpdateGoalRequest request
     ) {
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증된 사용자가 아닙니다.");
+        }
+
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         profileService.setMonthlyGoal(userId, request.getMonthlyGoal());
     }
 }

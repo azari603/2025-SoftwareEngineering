@@ -42,13 +42,17 @@ public class ReviewController {
      */
     @PostMapping
     public ResponseEntity<Long> createReview(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestBody ReviewCreateRequest request
     ) {
-        if (userId == null) {
-            // TODO: 공통 예외로 교체 (UNAUTHORIZED)
+        if (username == null || "anonymousUser".equals(username)) {
+            // TODO: 공통 예외/에러코드(UNAUTHORIZED)로 교체
             throw new IllegalArgumentException("UNAUTHORIZED");
         }
+
+        // username -> userId 매핑
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
 
         Long reviewId = reviewService.create(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewId);
@@ -64,9 +68,15 @@ public class ReviewController {
     @GetMapping("/{reviewId}")
     public ReviewDetailDto getReviewDetail(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String username
     ) {
-        Long viewerId = (userId != null) ? userId : 0L;
+        Long viewerId = 0L;
+
+        if (username != null && !"anonymousUser".equals(username)) {
+            UserDto me = userService.getByUsername(username);  // username -> UserDto
+            viewerId = me.getId();                             // 실제 로그인 유저 id
+        }
+
         return reviewService.getDetail(viewerId, reviewId);
     }
 
@@ -76,12 +86,16 @@ public class ReviewController {
      */
     @GetMapping("/me")
     public Page<ReviewCardDto> getMyReviews(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             Pageable pageable
     ) {
-        if (userId == null) {
+        if (username == null || "anonymousUser".equals(username)) {
             throw new IllegalArgumentException("UNAUTHORIZED");
         }
+
+        UserDto me = userService.getByUsername(username);
+        Long userId = me.getId();
+
         return reviewService.getMyReviews(userId, pageable);
     }
 
@@ -120,12 +134,15 @@ public class ReviewController {
     @PatchMapping("/{reviewId}")
     public ResponseEntity<Void> updateReview(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestBody ReviewUpdateRequest request
     ) {
-        if (userId == null) {
+        if (username == null || "anonymousUser".equals(username)) {
             throw new IllegalArgumentException("UNAUTHORIZED");
         }
+
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
 
         reviewService.update(userId, reviewId, request);
         return ResponseEntity.noContent().build();
@@ -138,11 +155,14 @@ public class ReviewController {
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(
             @PathVariable Long reviewId,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String username
     ) {
-        if (userId == null) {
+        if (username == null || "anonymousUser".equals(username)) {
             throw new IllegalArgumentException("UNAUTHORIZED");
         }
+
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
 
         reviewService.delete(userId, reviewId);
         return ResponseEntity.noContent().build();

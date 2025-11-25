@@ -1,9 +1,12 @@
 package com.cheack.softwareengineering.controller;
 
+import com.cheack.softwareengineering.dto.UserDto;
 import com.cheack.softwareengineering.dto.ReadingStatusDto;
 import com.cheack.softwareengineering.dto.ReadingStatusSummary;
+import com.cheack.softwareengineering.dto.SetStatusRequest;
 import com.cheack.softwareengineering.entity.ReadingStatusType;
 import com.cheack.softwareengineering.service.ReadingStatusService;
+import com.cheack.softwareengineering.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class ReadingStatusController {
 
+    private final UserService userService;
     private final ReadingStatusService readingStatusService;
 
     /**
@@ -42,10 +46,13 @@ public class ReadingStatusController {
      */
     @PutMapping("/books/{bookId}/status")
     public void setStatus(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @PathVariable Long bookId,
             @RequestBody @Valid SetStatusRequest request
     ) {
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         readingStatusService.setStatus(userId, bookId, request.getStatus());
     }
 
@@ -55,9 +62,12 @@ public class ReadingStatusController {
      */
     @DeleteMapping("/books/{bookId}/status")
     public void clearStatus(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @PathVariable Long bookId
     ) {
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         readingStatusService.clearStatus(userId, bookId);
     }
 
@@ -69,10 +79,17 @@ public class ReadingStatusController {
      */
     @GetMapping("/books")
     public Page<ReadingStatusDto> listByStatus(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             @RequestParam("status") ReadingStatusType status,
             Pageable pageable
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         return readingStatusService.getByStatus(userId, status, pageable);
     }
 
@@ -86,19 +103,14 @@ public class ReadingStatusController {
      */
     @GetMapping("/books/counts")
     public ReadingStatusSummary counts(
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String username
     ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         return readingStatusService.getSummary(userId);
-    }
-
-    // ===== 요청 DTO =====
-
-    @Getter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class SetStatusRequest {
-
-        @NotNull
-        private ReadingStatusType status;
     }
 }

@@ -2,14 +2,18 @@
 package com.cheack.softwareengineering.controller;
 
 import com.cheack.softwareengineering.dto.BtiQuestionDto;
+import com.cheack.softwareengineering.dto.UserDto;
 import com.cheack.softwareengineering.dto.BtiResultDto;
 import com.cheack.softwareengineering.dto.BookCardDto;
 import com.cheack.softwareengineering.service.BookBtiService;
+import com.cheack.softwareengineering.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.Authentication;
+import java.util.ArrayList;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -37,6 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BookBtiController {
 
     private final BookBtiService bookBtiService;
+    private final UserService userService;
 
     /**
      * 매우 단순한 인메모리 세션 저장소.
@@ -70,11 +75,20 @@ public class BookBtiController {
      */
     @PostMapping("/sessions")
     public CreateSessionResponse start(
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String username
     ) {
+
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
+
         String sessionId = UUID.randomUUID().toString();
         SessionState session = new SessionState(sessionId, userId);
         sessions.put(sessionId, session);
+
         return new CreateSessionResponse(sessionId);
     }
 
@@ -167,7 +181,7 @@ public class BookBtiController {
     @PostMapping("/sessions/{sessionId}/finish")
     public BtiResultDto finish(
             @PathVariable String sessionId,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            Authentication authentication
     ) {
         SessionState session = getSessionOrThrow(sessionId);
 
@@ -182,10 +196,20 @@ public class BookBtiController {
 
         BtiResultDto result = bookBtiService.calculateResult(session.getAnswers());
 
-        // 세션에 귀속된 userId(시작 시점)와 현재 인증된 userId 중 하나 사용
-        Long ownerUserId = (userId != null ? userId : session.getUserId());
+        Long ownerUserId = session.getUserId();
+
+        if (ownerUserId == null && authentication != null
+                && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
+
+            String username = authentication.getName();   // JWT의 subject = username
+            UserDto user = userService.getByUsername(username);
+            ownerUserId = user.getId();
+        }
+
         if (ownerUserId != null) {
-            bookBtiService.saveResult(ownerUserId, result, new ArrayList<>(session.getAnswers()));
+            bookBtiService.saveResult(ownerUserId, result,
+                    new ArrayList<>(session.getAnswers()));
         }
 
         session.setFinished(true);
@@ -221,20 +245,26 @@ public class BookBtiController {
             @PathVariable String sessionId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @AuthenticationPrincipal(expression = "id") Long userId
+            @AuthenticationPrincipal String principalUsername
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Long targetUserId = userId;
-        if (targetUserId == null) {
-            // 세션 시작 시점에 로그인했던 사용자가 있다면 그것을 사용
-            SessionState session = getSessionOrThrow(sessionId);
-            targetUserId = session.getUserId();
+        // 1) 로그인했으면 username -> userId 로 바꾸기
+        Long targetUserId = null;
+        if (principalUsername != null && !"anonymousUser".equals(principalUsername)) {
+            UserDto me = userService.getByUsername(principalUsername);
+            targetUserId = me.getId();
         }
 
-        // targetUserId가 여전히 null이면 내부에서 인기 도서 폴백
+        // 2) 그래도 null이면, 세션에 저장된 userId 사용 (세션 시작할 때 로그인했던 유저)
+        if (targetUserId == null) {
+            SessionState session = getSessionOrThrow(sessionId);
+            targetUserId = session.getUserId();  // 없으면 null 그대로 전달해서 service 쪽에서 fallbackPopular 사용
+        }
+
         return bookBtiService.recommendFromResult(targetUserId, pageable);
     }
+
 
     // ===================== 내부 유틸/DTO =====================
 

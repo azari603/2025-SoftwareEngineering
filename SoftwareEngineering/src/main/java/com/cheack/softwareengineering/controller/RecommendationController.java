@@ -1,6 +1,8 @@
 package com.cheack.softwareengineering.controller;
 
+import com.cheack.softwareengineering.dto.UserDto;
 import com.cheack.softwareengineering.dto.BookCardDto;
+import com.cheack.softwareengineering.service.UserService;
 import com.cheack.softwareengineering.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 public class RecommendationController {
 
+    private final UserService userService;
     private final RecommendationService recommendationService;
 
     /**
@@ -32,13 +35,20 @@ public class RecommendationController {
      */
     @GetMapping("/recommendations/me")
     public Page<BookCardDto> getMyRecommendations(
-            @AuthenticationPrincipal(expression = "id") Long userId,
+            @AuthenticationPrincipal String username,
             Pageable pageable
     ) {
-        if (userId == null) {
-            // TODO: 나중에 커스텀 예외/에러코드(UNAUTHORIZED)로 교체
+        if (username == null || "anonymousUser".equals(username)) {
             throw new IllegalArgumentException("UNAUTHORIZED");
         }
+
+        //if (userId == null) {
+            // TODO: 나중에 커스텀 예외/에러코드(UNAUTHORIZED)로 교체
+        //    throw new IllegalArgumentException("UNAUTHORIZED");
+        //}
+
+        UserDto user = userService.getByUsername(username);
+        Long userId = user.getId();
 
         return recommendationService.recommendForUser(userId, pageable);
     }
