@@ -31,16 +31,23 @@ export default function LoginPage() {
 
         const result=await login(username, password);
 
-        if(!result.success){
-          if(result.error==="USER_NOT_FOUND"){
-            setUsernameError("존재하지 않는 아이디입니다.")
-            return;
+        if(!result.ok){
+          switch(result.code){
+            case "USER_NOT_FOUND":
+              setUsernameError("존재하지 않는 아이디입니다.");
+              break;
+            case "INVALID_PASSWORD":
+              setPasswordError("비밀번호가 틀렸습니다.");
+              break;
+            case "EMAIL_NOT_VERIFIED":
+              setGeneralError("이메일 인증이 필요합니다.");
+              break;
+            case "USER_LOCKED":
+              setGeneralError("해당 계정은 잠겨있습니다.");
+              break;
+            default:
+              setGeneralError(result.message||"로그인에 실패하였습니다.");
           }
-          if(result.error==="INVALID_PASSWORD"){
-            setPasswordError("비밀번호가 틀렸습니다.")
-            return;
-          }
-          setGeneralError(result.message||"로그인 실패");
           return;
 
         }

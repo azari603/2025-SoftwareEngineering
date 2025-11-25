@@ -1,56 +1,51 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import * as authAPI from "../api/authApi"
+import axiosInstance from '../api/axiosInstance';
 
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);   
-  const [accessToken, setAccessToken]=useState(null);
-  const [refreshToken, setRefreshToken]=useState(null);
+  const [accessToken, setAccessToken]=useState(
+    localStorage.getItem("accessToken")
+  );
+  const [refreshToken, setRefreshToken]=useState(
+    localStorage.getItem("refreshToken")
+  );
   const isLoggedIn=!!accessToken;
 
   //앱 시작 시 토큰 복구 -> 새로고침해도 안 날아가게
   useEffect(()=>{
-    const savedAcess=localStorage.getItem("accessToken");
-    const savedRefresh=localStorage.getItem("refreshToken");
-    if(!savedAcess||!savedRefresh) return;
-    setAccessToken(savedAcess);
-    setRefreshToken(savedRefresh);
+    if(!accessToken) return;
+    fetchMyInfo();
+  },[accessToken]);
 
-    // 계정 조회 호출  -- /auth/me
-    authAPI.getMyAccount().then((res)=>{
-      if(res?.account){
-        setUser(res.account);
-      } else{
-        logout(); //토큰 만료, 계정 없음 등의 경우 로그아웃
-      }
-    })
-  },[]);
+  const fetchMyInfo=async()=>{
+    try{
+      const res=await axiosInstance.get("/auth/me");
+      setUser(res.data);
+    }catch(err){
+      console.log("유저 정보 불러오기 실패:",err);
+    }
+  };
 
   // 로그인
   const login=async(username, password)=>{
     const res=await authAPI.login(username, password);
-    if(res.error){
-      return res;
+
+    if(!res.ok){
+      return res; //{ok: false, code, message}
     }
+    const {accessToken, refreshToken}=res.data.data;
+    localStorage.setItem("accessToken",accessToken);
+    localStorage.setItem("refreshToken", refreshToken);
 
-    //로그인 성공
-    const {
-      accessToken: newAccessToken,
-      refreshToken: newRefreshToken,
-      user: userData,
-    }=res;
+    setAccessToken(accessToken);
+    setRefreshToken(refreshToken);
+    await fetchMyInfo();
 
-    //토큰 저장
-    localStorage.setItem("accessToken",newAccessToken);
-    localStorage.setItem("refreshToken",newRefreshToken);
-
-    setAccessToken(newAccessToken);
-    setRefreshToken(newRefreshToken);
-    setUser(userData);
-
-    return {success: true};
+    return {ok: true};
   };
 
   // 로그아웃 함수
@@ -66,8 +61,6 @@ export const AuthProvider = ({ children }) => {
   const value = { 
     isLoggedIn, 
     user, 
-    accessToken,
-    refreshToken,
     setUser,
     login, 
     logout 

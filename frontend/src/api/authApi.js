@@ -1,35 +1,56 @@
 import { dummyBooks } from "../mocks/dummyBooks";
 import { dummyReviews } from "../mocks/dummyReviews";
+import axiosInstance from "./axiosInstance";
 
-// 테스트용 로그인
+//회원가입
+export async function signup({username, email, password, passwordConfirm, agreeTerms}){
+  try{
+    const res=await axiosInstance.post("/auth/signup",{
+      username,
+      email,
+      password,
+      passwordConfirm,
+      agreeTerms,
+    });
+    return res.data; //인증 메일 발송
+  }catch(error){
+    if(error.response){
+      const errorCode=error.response.data?.errorCode;
+      switch (errorCode){
+        case "DUBLICATE_USERNAME":
+          throw new Error("이미 사용 중인 아이디입니다.");
+        case "DUPLICATE_EMAIL":
+          throw new Error("이미 등록된 이메일입니다.");
+        case "VALIDATION_ERROR":
+          throw new Error("입력 값이 올바르지 않습니다.");
+        default:
+          throw new Error("회원가입 중 오류가 발생했습니다.");
+      }
+    }
+    throw error;
+  }
+}
+// 로그인
 export async function login(username, password) {
-  await new Promise((r) => setTimeout(r, 500));
-
-  if (username !== "testuser") {
-    return { 
-      error: "USER_NOT_FOUND", 
-      message: "존재하지 않는 아이디입니다." 
+  try{
+    const res=await axiosInstance.post("/auth/login",{
+    username,
+    password,
+  });
+    return {
+      ok: true,
+      data: res.data,
+    };
+  }catch(err){
+    const code=err.response?.data?.code;
+    const message=err.response?.data?.message;
+    return {
+      ok: false,
+      code,
+      message,
     };
   }
-
-  // 비밀번호 틀림
-  if (password !== "1234") {
-    return { 
-      error: "INVALID_PASSWORD",
-      message: "비밀번호가 틀렸습니다." 
-    };
-  }
-
-
-  return { 
-      tokenType: "Bearer",
-      accessToken: "mock-access-token",
-      refreshToken: "mock-refresh-token",
-      expiresIn: 3600, 
-      user: { username: "testuser", nickname: "수진", email: "test@email.com",
-        emailVerified: true, provider: "LOCAL", status: "ACTIVE", createdAt: "2025-01-01T12:00:00Z",
-       } 
-  };
+  
 }
 
 //내 계정 조회 (임시)
@@ -49,51 +70,18 @@ export async function getMyAccount() {
   };
 }
 
-//내 프로필 조회 (임시)
-export async function getMyProfile({ include } = {}) {
-  await new Promise((r) => setTimeout(r, 400));
-
-  // dummy user "testuser" 기준
-  const username = "testuser";
-
-  const baseProfile = {
-    username,
-    nickname: "수진",
-    intro: "나를 소개할 수 있는 한 문장을 적어보세요.",
-    profileImageUrl: "",
-    backgroundImageUrl: "",
-    followersCount: 10,
-    followingsCount: 5,
-    readBooksCount: dummyBooks.length,
-
-    // 본인 전용 정보
-    emailVerified: true,
-    provider: "LOCAL",
-  };
-
-  let stars, recentReviews;
-
-  if (include?.includes("reviews")) {
-    recentReviews = dummyReviews
-      .filter((rev) => rev.user.id === username)
-      .slice(0, 5);
+//내 프로필 조회
+export async function getMyProfile(){
+  try{
+    const res=await axiosInstance.get("/profiles/me");
+    return res.data;
+  }catch (err){
+    console.error("내 프로필 조회 실패",err);
+    if(err.response?.data?.error==="USER_NOT_FOUND"){
+      throw new Error("사용자를 찾을 수 없습니다");
+    }
+    throw err;
   }
-
-  if (include?.includes("stars")) {
-    stars = dummyReviews.reduce((acc, rev) => {
-      const r = Math.round(rev.rating);
-      acc[r] = (acc[r] || 0) + 1;
-      return acc;
-    }, {});
-  }
-
-  return {
-    profile: {
-      ...baseProfile,
-      stars,
-      recentReviews,
-    },
-  };
 }
 
 // (타인) 프로필 조회 (임시)

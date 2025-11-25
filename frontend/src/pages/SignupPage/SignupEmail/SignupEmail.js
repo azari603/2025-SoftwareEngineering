@@ -47,12 +47,12 @@ export default function SignupEmail() {
         다음
       </Button>
 
-      <p className="email-resend">
+      {/*<p className="email-resend">
         인증 메일을 받지 못하셨나요?{" "}
         <a href="/" className="resend-link">
           인증메일 재발송
         </a>
-      </p>
+      </p>*/}
     </div>
   );
 }
