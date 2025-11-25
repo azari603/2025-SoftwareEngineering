@@ -100,5 +100,11 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(username, null, Collections.emptyList());
     }
 
-    public long getAccessExpSeconds() { return accessExpSeconds; }
+    public long getAccessExpSeconds() {
+        return accessExpSeconds;
+    }
+
+    public long getRefreshExpSeconds() {
+        return refreshExpSeconds;
+    }
 }

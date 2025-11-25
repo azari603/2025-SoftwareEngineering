@@ -1,5 +1,6 @@
 package com.cheack.softwareengineering.security.oauth2;
 
+import com.cheack.softwareengineering.entity.ProviderType;
 import com.cheack.softwareengineering.entity.User;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
@@ -14,10 +15,12 @@ public class CustomOAuth2User implements OAuth2User {
 
     private final User user;
     private final Map<String, Object> attributes;
+    private final boolean newUser;   // ★ 추가
 
-    public CustomOAuth2User(User user, Map<String, Object> attributes) {
+    public CustomOAuth2User(User user, Map<String, Object> attributes, boolean newUser) {
         this.user = user;
         this.attributes = attributes;
+        this.newUser = newUser;
     }
 
     @Override
@@ -43,7 +46,11 @@ public class CustomOAuth2User implements OAuth2User {
         return user.getId();
     }
 
-    public String getSocialType() {
-        return user.getSocialType();
+    public ProviderType getProvider() {
+        return user.getProvider();
+    }
+
+    public boolean isNewUser() {
+        return newUser;
     }
 }

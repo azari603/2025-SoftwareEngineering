@@ -17,6 +17,10 @@ public enum ErrorCode {
     INVALID_TOKEN("유효하지 않은 토큰입니다."),
     ALREADY_VERIFIED("이미 인증된 이메일 입니다."),
     USER_LOCKED("잠긴 계정입니다."),
-    UNAUTHORIZED("인증이 필요합니다.");
+    UNAUTHORIZED("인증이 필요합니다."),
+    VALIDATION_ERROR("인증이 실패했습니다."),
+    INVALID_OAUTH2_STATE("유효하지 않은 소셜 로그인 상태입니다."),
+    SOCIAL_SIGNUP_EXPIRED("소셜 회원가입 유효 시간이 만료되었습니다."),
+    OAUTH2_EMAIL_CONFLICT("이미 다른 방식으로 가입된 이메일입니다.");
     private final String message;
 }

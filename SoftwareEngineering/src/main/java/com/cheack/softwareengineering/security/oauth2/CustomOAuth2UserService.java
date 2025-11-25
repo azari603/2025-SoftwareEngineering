@@ -29,25 +29,34 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
         OAuthAttributes attr = OAuthAttributes.of(registrationId, attributes);
 
-        // 기존 사용자 조회 (provider+providerId)
-        User user = userRepository.findByProviderAndProviderId(attr.getProvider(), attr.getProviderId())
-                .orElseGet(() -> {
-                    // 최초 소셜 유입: 임시 username = 이메일 앞부분 등 정책에 맞게
-                    String tmpUsername = attr.getSuggestedUsername();
+        boolean isNew = false;
 
-                    User created = User.builder()
-                            .username(tmpUsername)
-                            .email(attr.getEmail())
-                            .password(null)
-                            .nickname(tmpUsername)
-                            .emailVerified(true)           // 소셜 이메일 제공 시 기본 true (정책에 맞게 조정)
-                            .provider(attr.getProvider())  // ← socialType() 아님
-                            .providerId(attr.getProviderId())
-                            .status(UserStatus.ACTIVE)
-                            .build();
-                    return userRepository.save(created);
-                });
+        User user = userRepository.findByProviderAndProviderId(
+                        attr.getProvider(),
+                        attr.getProviderId()
+                )
+                .orElse(null);
 
-        return new CustomOAuth2User(user, oAuth2User.getAttributes());
+        if (user == null) {
+            // ★ 최초 소셜 유입
+            isNew = true;
+
+            String tmpUsername = attr.getSuggestedUsername(); // 예: "@abc123"
+
+            user = User.builder()
+                    .username(tmpUsername)
+                    .email(attr.getEmail())
+                    .password(null)
+                    .nickname(tmpUsername)
+                    .emailVerified(true)
+                    .provider(attr.getProvider())   // ProviderType
+                    .providerId(attr.getProviderId())
+                    .status(UserStatus.ACTIVE)
+                    .build();
+
+            user = userRepository.save(user);
+        }
+
+        return new CustomOAuth2User(user, oAuth2User.getAttributes(), isNew);
     }
 }
