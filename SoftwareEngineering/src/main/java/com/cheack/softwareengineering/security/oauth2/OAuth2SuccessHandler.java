@@ -8,6 +8,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -22,7 +24,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtProvider jwtProvider;
     private final SocialSignupService socialSignupService;
 
-    // FE 리다이렉트 기본 URL (리액트)
     private static final String REDIRECT_URL = "http://localhost:3000/oauth2/redirect";
 
     @Override
@@ -33,17 +34,16 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         User user = oAuth2User.getUser();
 
-        // "첫 소셜 로그인" 판단 기준: 임시 아이디 정책 (예: temp_ / @something)
         boolean isNewUser = user.getUsername().startsWith("temp_") || user.getUsername().startsWith("@");
 
         String targetUrl;
 
         if (isNewUser) {
-            // 🔹 소셜 최초 유저: 1회용 signupToken 발급
+            // 신규 소셜 유저: 1회용 signupToken만 쿼리로 전달
             String signupToken = socialSignupService.createSignupToken(
-                    user.getProvider(),   // ProviderType (GOOGLE / KAKAO / NAVER)
-                    user.getProviderId(), // 소셜 고유 id
-                    user.getEmail()       // 이메일
+                    user.getProvider(),
+                    user.getProviderId(),
+                    user.getEmail()
             );
 
             targetUrl = UriComponentsBuilder.fromUriString(REDIRECT_URL)
@@ -51,15 +51,34 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                     .queryParam("signupToken", signupToken)
                     .build()
                     .toUriString();
+
         } else {
-            // 🔹 기존 유저: 바로 JWT 발급해서 로그인 완료로 보냄
+            // 기존 유저: access/refresh 모두 HttpOnly 쿠키로만 내려주고
+            // 쿼리에는 토큰을 전혀 안 보냄
             String accessToken = jwtProvider.createAccessToken(user.getUsername());
             String refreshToken = jwtProvider.createRefreshToken(user.getUsername());
 
+            ResponseCookie accessCookie = ResponseCookie.from("accessToken", accessToken)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(jwtProvider.getAccessExpSeconds())
+                    .sameSite("Lax")
+                    .build();
+
+            ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", refreshToken)
+                    .httpOnly(true)
+                    .secure(false)
+                    .path("/")
+                    .maxAge(jwtProvider.getRefreshExpSeconds())
+                    .sameSite("Lax")
+                    .build();
+
+            response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
+            response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
             targetUrl = UriComponentsBuilder.fromUriString(REDIRECT_URL)
                     .queryParam("mode", "login")
-                    .queryParam("token", accessToken)
-                    .queryParam("refreshToken", refreshToken)
                     .build()
                     .toUriString();
         }

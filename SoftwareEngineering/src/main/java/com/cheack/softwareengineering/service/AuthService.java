@@ -1,6 +1,8 @@
+// src/main/java/com/cheack/softwareengineering/service/AuthService.java
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.dto.LoginRequest;
+import com.cheack.softwareengineering.dto.RefreshTokenRequest;
 import com.cheack.softwareengineering.dto.SignUpRequest;
 import com.cheack.softwareengineering.dto.TokenResponse;
 import com.cheack.softwareengineering.dto.SocialSignupCompleteRequest;
@@ -82,30 +84,20 @@ public class AuthService {
         return new TokenResponse("Bearer", access, refresh, jwtProvider.getAccessExpSeconds());
     }
 
-    /**
-     * refresh 토큰 → 새 access/refresh 발급
-     * - refreshToken은 이제 HttpOnly 쿠키에서 읽어와서 여기로 String으로 들어온다고 가정
-     */
     @Transactional(readOnly = true)
-    public TokenResponse refreshToken(String refreshTokenValue) {
-        String refresh = refreshTokenValue;
-
-        if (refresh == null || refresh.isBlank()
-                || !jwtProvider.validate(refresh)
-                || !jwtProvider.isRefreshToken(refresh)) {
+    public TokenResponse refreshToken(RefreshTokenRequest req) {
+        String refresh = req.getRefreshToken();
+        if (refresh == null || !jwtProvider.validate(refresh) || !jwtProvider.isRefreshToken(refresh)) {
             throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
-
         String username = jwtProvider.extractUsername(refresh);
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new CustomException(ErrorCode.USER_LOCKED);
         }
-
         String newAccess = jwtProvider.generateAccessToken(username);
         String newRefresh = jwtProvider.generateRefreshToken(username); // 회전 방식
-
         return new TokenResponse("Bearer", newAccess, newRefresh, jwtProvider.getAccessExpSeconds());
     }
 
@@ -119,8 +111,7 @@ public class AuthService {
 
     @Transactional
     public void logout(String token) {
-        // 현재 구조에서는 서버에 저장된 세션/토큰이 없으므로 별도 처리 없음.
-        // (refresh 토큰은 쿠키 삭제로 처리, access는 FE에서 버림)
+        // 서버 쪽에서 리프레시 토큰 블랙리스트를 운용할 거면 여기 구현
     }
 
     // ================= 소셜 1회 가입 완료 =================
@@ -183,5 +174,13 @@ public class AuthService {
         String refresh = jwtProvider.generateRefreshToken(user.getUsername());
 
         return new TokenResponse("Bearer", access, refresh, jwtProvider.getAccessExpSeconds());
+    }
+
+    // ================= 이메일 인증 여부 확인 (비로그인용) =================
+    @Transactional(readOnly = true)
+    public boolean isEmailVerifiedByEmail(String email) {      // NEW
+        return userRepository.findByEmail(email.trim().toLowerCase())
+                .map(User::getIsEmailVerified)
+                .orElse(false); // 유저 없으면 false로 응답 (있으면 true/false 그대로)
     }
 }

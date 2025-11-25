@@ -72,7 +72,9 @@ public class AuthController {
     public ResponseEntity<ApiResponse<TokenResponse>> refresh(
             @CookieValue(name = "refreshToken", required = false) String refreshToken
     ) {
-        TokenResponse token = authService.refreshToken(refreshToken);
+        TokenResponse token = authService.refreshToken(
+                new RefreshTokenRequest(refreshToken) // 필요 시 생성자/빌더에 맞게 수정
+        );
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .httpOnly(true)
@@ -129,6 +131,17 @@ public class AuthController {
     public ResponseEntity<ApiResponse<?>> resendVerification(@Valid @RequestBody EmailRequest request) {
         accountService.resendVerificationMailByEmail(request.getEmail());
         return ResponseEntity.ok(ApiResponse.success("인증 이메일 재전송 완료"));
+    }
+
+    /**
+     * 비로그인 상태에서 이메일 인증 여부 확인
+     * GET /api/v1/auth/email/verified?email=...
+     * 응답 data: true(인증됨) / false(미인증 or 해당 이메일 없음)
+     */
+    @GetMapping("/email/verified")
+    public ResponseEntity<ApiResponse<Boolean>> isEmailVerified(@RequestParam String email) {
+        boolean verified = authService.isEmailVerifiedByEmail(email);
+        return ResponseEntity.ok(ApiResponse.success(verified));
     }
 
     // ========== 중복 체크 ==========

@@ -63,7 +63,8 @@ public class SecurityConfig {
                                 "/api/v1/auth/check/username",
                                 "/api/v1/auth/check/email",
                                 "/api/v1/auth/verify-email",
-                                "/api/v1/auth/find-id"
+                                "/api/v1/auth/find-id",
+                                "/api/v1/auth/email/verified"
                         ).permitAll()
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/auth/signup",

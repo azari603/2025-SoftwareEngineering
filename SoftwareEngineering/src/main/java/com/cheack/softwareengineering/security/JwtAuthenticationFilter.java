@@ -1,7 +1,9 @@
+// src/main/java/com/cheack/softwareengineering/security/JwtAuthenticationFilter.java
 package com.cheack.softwareengineering.security;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -22,19 +24,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain chain) throws ServletException, IOException {
-        String header = request.getHeader("Authorization");
-        if (header != null && header.startsWith("Bearer ")) {
-            String token = header.substring(7);
+
+        String token = resolveTokenFromCookies(request);
+
+        // (선택) Postman 같은 곳에서 Authorization 헤더로도 테스트하고 싶으면 fallback 허용
+        if (token == null) {
+            String header = request.getHeader("Authorization");
+            if (header != null && header.startsWith("Bearer ")) {
+                token = header.substring(7);
+            }
+        }
+
+        if (token != null) {
             try {
                 if (jwtProvider.validate(token) && jwtProvider.isAccessToken(token)) {
                     var auth = jwtProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             } catch (Exception e) {
-                // 토큰 문제는 인증 미보유로 처리(로그만 남기고 진행)
                 log.debug("JWT filter error: {}", e.getMessage());
             }
         }
+
         chain.doFilter(request, response);
+    }
+
+    private String resolveTokenFromCookies(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+
+        for (Cookie cookie : cookies) {
+            if ("accessToken".equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+        return null;
     }
 }
