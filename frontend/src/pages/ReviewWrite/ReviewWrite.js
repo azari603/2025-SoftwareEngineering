@@ -1,28 +1,35 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import StarRate from "../../components/StarRate/StarRate";
 import DatePickerModal from "../../components/Modal/DatePickerModal/DatePickerModal";
 import Dropdown from "../../components/Dropdown/Dropdown";
 import { getBookByISBN } from "../../api/bookAPI";
 import { CiCalendar } from "react-icons/ci";
+import { createReview } from "../../api/reviewAPI";
 import "./ReviewWrite.css";
 
 const ReviewWrite = () => {
     const location = useLocation();
     const params=new URLSearchParams(location.search);
-    const bookId=params.get("bookId");
+    const navigate=useNavigate();
+    const isbn=params.get("isbn");
 
     const[book, setBooks]=useState(null);
     const[loading, setLoading]=useState(true);
 
+    //책 정보 불러오기
     useEffect(()=>{
         async function fetchBooks(){
-            const res=await getBookByISBN(bookId);
-            setBooks(res);
+            const res=await getBookByISBN(isbn);
+            if(!res.ok){
+                alert(res.message);
+                return;
+            }
+            setBooks(res.book);
             setLoading(false);
         }
         fetchBooks()
-    },[bookId]);
+    },[isbn]);
     
     const [rating, setRating] = useState(0);
     const [startDate, setStartDate] = useState("");
@@ -33,17 +40,32 @@ const ReviewWrite = () => {
     const [openStart, setOpenStart] = useState(false);
     const [openEnd, setOpenEnd] = useState(false);
 
-    const handleSubmit=()=>{
-        const reviewData={
-            bookId: bookId,
-            rating,
-            startDate,
-            endDate,
-            title,
-            content,
-            visibility,
-        };
-        alert("서평이 등록되었습니다.")
+    const visibilityMap={
+        "공개":"PUBLIC",
+        "비공개":"PRIVATE",
+    }
+
+    const handleSubmit= async ()=>{
+       const result=await createReview({
+        bookId: book.id,
+        title,
+        text: content,
+        starRating: rating,
+        startDate,
+        finishDate: endDate,
+        visibility: visibilityMap[visibility],
+        status:"PUBLISHED",
+       });
+
+       if(!result.success){
+        if(result.code==="BOOK_NOT_FOUND") alert("책 정보를 찾을 수 없습니다.");
+        else if(result.code==="VALIDATION_ERROR") alert("입력값이 유효하지 않습니다.");
+        else alert("서평 등록 중 오류가 발생했습니다.");
+        return;
+       }
+
+       alert("서평이 등록되었습니다.")
+       navigate(`/review/${result.reviewId}`);
     }
 
     if(loading) return <div>책 정보를 불러오는 중 ... </div>
@@ -58,7 +80,7 @@ const ReviewWrite = () => {
 
                 <div className="book-info-meta">
                     <div className="book-meta-wrapper">
-                         <h2>{book.title}</h2>
+                         <h2>{book.name}</h2>
                         <p className="author">{book.author}</p>
                     </div>
                     <div className="book-meta-wrapper">

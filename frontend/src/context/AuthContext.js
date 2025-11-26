@@ -37,12 +37,10 @@ export const AuthProvider = ({ children }) => {
     if(!res.ok){
       return res; //{ok: false, code, message}
     }
-    const {accessToken, refreshToken}=res.data.data;
-    localStorage.setItem("accessToken",accessToken);
-    localStorage.setItem("refreshToken", refreshToken);
+    const newAccessToken=res.data.data.accessToken;
+    localStorage.setItem("accessToken",newAccessToken);
 
-    setAccessToken(accessToken);
-    setRefreshToken(refreshToken);
+    setAccessToken(newAccessToken);
     await fetchMyInfo();
 
     return {ok: true};
@@ -51,10 +49,8 @@ export const AuthProvider = ({ children }) => {
   // 로그아웃 함수
   const logout = () => {
     localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-
+  
     setAccessToken(null);
-    setRefreshToken(null);
     setUser(null);
   };
 

@@ -24,17 +24,13 @@ axiosInstance.interceptors.response.use(
 
         if(error.response?.status===401&&!originalRequest._retry){
             originalRequest._retry=true;
-            const refreshToken=localStorage.getItem("refreshToken");
             try{
-                const {data}=await axiosInstance.post("/auth/token/refresh",{
-                    refreshToken,
-                });
+                const {data}=await axiosInstance.post("/auth/token/refresh");
                 localStorage.setItem("accessToken",data.accessToken);
                 originalRequest.headers.Authorization=`Bearer ${data.accessToken}`;
                 return axiosInstance(originalRequest);
             }catch(err){
                 localStorage.removeItem("accessToken");
-                localStorage.removeItem("refreshToken");
                 window.location.href="/login"; 
             }
         }

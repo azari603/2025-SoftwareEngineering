@@ -9,10 +9,24 @@ function saveStatusMap(map) {
 }
 //------------------//
 
-//(임시) 특정 도서 상세 정보 요청
-export async function getBookByISBN(bookId){
-    const book = dummyBooks.find((b)=>b.bookId===bookId)
-    return book;
+//isbn 기반 검색
+export async function getBookByISBN(isbn){
+    try{
+      const res=await axiosInstance.get(`/books/isbn/${isbn}`);
+      return{
+        ok: true,
+        book: res.data,
+      };
+    }catch(err){
+      console.error("ISBN 조회 중 오류:",err);
+      const code=err.response?.data?.code??"UNKNOWN_ERROR";
+      const message=err.response?.data?.message??"도서 조회 중 오류"
+      return{
+        ok: false,
+        code,
+        message,
+      };
+    }
 }
 
 //(임시) 추천 도서 리스트 요청
@@ -22,38 +36,30 @@ export async function getRecommendBooks(){
 }
 
 //책 검색
-export async function searchBooks({q="", page=0, size=10}){
+export async function searchBooks({q="", page=1, size=10}){
   try{
     const res=await axiosInstance.get("/search/books",{
       params: {
         q,
-        page,
+        page: page-1,
         size,
       }
     });
 
     const data=res.data;
-    if(Array.isArray(data)){
-      return {
-        books: data,
-        totalCount: null,
-        isPaged: false,
-      };
-    }
-
-    if(data.content&&typeof data.totalElements==="number"){
+    
       return{
         books: data.content,
         totalCount: data.totalElements,
         isPaged: true,
       };
-    }
+    
   }catch(err){
     console.error("책 검색 중 오류", err);
     return{
       books: [],
       totalCount: null,
-      isPaged: false,
+      isPaged: true,
       error: err.response?.data?.message||"검색 오류 발생",
     };
   }

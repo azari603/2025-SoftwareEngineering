@@ -24,7 +24,7 @@ const BookCard = forwardRef(({ book, size = "lg" }, ref) => {
         <img src={book.image} alt={book.title} />
       </div>
       <div className="book-info">
-        <h3 className="book-title">{book.title || "책제목"}</h3>
+        <h3 className="book-title">{book.name || "책제목"}</h3>
         <p className="book-author">{book.author || "저자이름"}</p>
       </div>
     </Link>
