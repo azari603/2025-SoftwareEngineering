@@ -1,3 +1,4 @@
+// src/main/java/com/cheack/softwareengineering/entity/Book.java
 package com.cheack.softwareengineering.entity;
 
 import jakarta.persistence.*;
@@ -35,22 +36,16 @@ public class Book {
     @Column(name = "author", length = 200)
     private String author;
 
-    @Column(name = "intro", length = 2000)
+    // 🔹 intro를 TEXT로 변경
+    @Column(name = "intro", columnDefinition = "TEXT")
     private String intro;
 
     @Column(name = "publisher", length = 200)
     private String publisher;
 
-    /**
-     * ERD에는 Long 으로 되어있지만,
-     * 이미 너 클래스 다이어그램에서 isbn String 으로 쓰고 있어서 String 으로 잡았다.
-     */
     @Column(name = "isbn", length = 20, unique = true)
     private String isbn;
 
-    /**
-     * 출판일은 LocalDate 정도가 적당해서 이렇게 잡았다.
-     */
     @Column(name = "publication_date")
     private LocalDate publicationDate;
 }

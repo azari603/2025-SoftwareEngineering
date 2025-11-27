@@ -1,3 +1,4 @@
+// src/main/java/com/cheack/softwareengineering/service/BookIngestService.java
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.dto.BookDto;
@@ -91,7 +92,8 @@ public class BookIngestService {
 
     /**
      * 외부 메타에 필수값이 제대로 들어있는지 검증
-     * (나중에 CustomException + ErrorCode 로 바꿔도 됨)
+     * - title, isbn 은 필수
+     * - author 는 없으면 "저자 미상" 으로 채운다
      */
     public void validate(ExternalBookMeta meta) {
         if (meta == null) {
@@ -100,11 +102,15 @@ public class BookIngestService {
         if (meta.getTitle() == null || meta.getTitle().isBlank()) {
             throw new IllegalArgumentException("Book title is required");
         }
-        if (meta.getAuthor() == null || meta.getAuthor().isBlank()) {
-            throw new IllegalArgumentException("Book author is required");
-        }
         if (meta.getIsbn() == null || meta.getIsbn().isBlank()) {
             throw new IllegalArgumentException("Book ISBN is required");
+        }
+
+        // author 는 옵션: 없으면 기본값 "저자 미상"
+        if (meta.getAuthor() == null || meta.getAuthor().isBlank()) {
+            log.debug("External book meta has no author. isbn={}, title='{}' → set '저자 미상'",
+                    meta.getIsbn(), meta.getTitle());
+            meta.setAuthor("저자 미상");
         }
     }
 
@@ -129,6 +135,7 @@ public class BookIngestService {
      * 존재하는 Book 엔티티에 외부 메타 내용을 덮어쓰는 헬퍼
      */
     private void applyMeta(Book book, ExternalBookMeta meta) {
+        // validate 안에서 author 기본값까지 세팅되었다고 가정
         book.setName(meta.getTitle());
         book.setImage(meta.getImageUrl());
         book.setAuthor(meta.getAuthor());

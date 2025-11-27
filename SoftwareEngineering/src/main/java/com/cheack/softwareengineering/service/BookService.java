@@ -29,13 +29,15 @@ public class BookService {
      */
     public Page<BookSummaryDto> search(String keyword, Pageable pageable) {
         Page<Book> page;
+
         if (keyword == null || keyword.isBlank()) {
             page = bookRepository.findAll(pageable);
         } else {
-            page = bookRepository.findByNameContainingIgnoreCaseOrAuthorContainingIgnoreCase(
-                    keyword, keyword, pageable
-            );
+            // 입력에서 공백 제거
+            String normalized = keyword.replaceAll("\\s+", "");
+            page = bookRepository.searchIgnoreSpaces(normalized, pageable);
         }
+
         return page.map(BookSummaryDto::from);
     }
 

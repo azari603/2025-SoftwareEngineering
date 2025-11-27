@@ -75,17 +75,24 @@ public class SecurityConfig {
                                 "/api/v1/auth/email/resend"
                         ).permitAll()
 
+                        // 3) 인증 불필요 엔드포인트 (서평 상세 / 책 검색 / 도서 상세)
+                        .requestMatchers(HttpMethod.GET,
+                                "/api/v1/reviews/*",     // 서평 상세 조회
+                                "/api/v1/books/search",  // (쓰고 있으면 유지)
+                                "/api/v1/books/*",       // 도서 상세 조회
+                                "/api/v1/search/books",  // ★ 실제 SearchController 매핑
+                                "/api/v1/search/**"      // ★ 앞으로 확장용 전체 허용
+                        ).permitAll()
+
                         // 소셜 로그인 진입/콜백은 누구나 접근 가능
                         .requestMatchers("/oauth2/**", "/login/oauth2/**").permitAll()
 
-                        // 3) 그 외 보호
+                        // 4) 그 외 보호
                         .anyRequest().authenticated()
                 )
 
                 // OAuth2 로그인 설정
                 .oauth2Login(oauth -> oauth
-                        // /oauth2/authorization/{registrationId} 엔드포인트 사용
-                        // (기본 baseUri라 따로 안 건드려도 됨)
                         .userInfoEndpoint(userInfo ->
                                 userInfo.userService(customOAuth2UserService)
                         )
@@ -111,7 +118,7 @@ public class SecurityConfig {
                 "http://localhost:3000",
                 "http://localhost:5173"
         ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
