@@ -1,10 +1,11 @@
 import { useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { dummyBooks } from "../../mocks/dummyBooks";
 import BookList from "../../components/BookList/BookList";
 import bookImg from "../../assets/search_book.png"
 import Pagination from "../../components/Pagination/Pagination"
 import {searchBooks} from "../../api/bookAPI";
+import { LayoutContext } from "../../context/LayoutContext";
 import "./SearchPage.css"
 
 export default function SearchResult() {
@@ -13,22 +14,47 @@ export default function SearchResult() {
   const [results, setResults] = useState([]); // (3) 결과 저장용
 
   const [page, setPage]=useState(1); //현재 페이지 번호
-  const pageSize=2; //페이지당 책 개수
+  const pageSize=10; //페이지당 책 개수
   const [totalCount, setTotalCount]=useState(0);//총 검색 결과 수
+  const { setFooterColor } = useContext(LayoutContext);
+  const prevQuery=useRef(query); //이전 쿼리 저장
+  const lastFetchRef=useRef({query:null, page:null});
 
-  // (4) 검색어(query)가 바뀔 때마다 실행
+  useEffect(() => {
+    setFooterColor("#FDFBF4");
+  }, [setFooterColor]);
+
   useEffect(()=>{
-    const fetchResults = async()=>{
-      if(!query) return;
-      const res = await searchBooks({query, page, pageSize});
-      if(res.success){
-        setResults(res.books)
-        setTotalCount(res.totalCount)
+    if(!query) return;
+    let effectivePage=page;
+    // 쿼리가 변경되었을 때
+    if (prevQuery.current !== query) {
+      prevQuery.current = query; // 이전 쿼리 갱신
+      effectivePage=1;
+      if(page!==1){
+        setPage(1);
       }
     }
+    if(lastFetchRef.current.query===query&&lastFetchRef.current.page===effectivePage){
+      return;
+    }
+    lastFetchRef.current={query, page: effectivePage};
+    const fetchData = async () => {
+    const res = await searchBooks({
+      q: query,
+      page: effectivePage,
+      size: pageSize,
+    });
 
-    fetchResults()
-  },[query, page])
+      setResults(res?.books ?? []);
+      setTotalCount(res?.totalCount ?? 0);
+    };
+
+    // fetch 실행
+    fetchData();
+    
+  },[query, page]);
+
   return (
     <div className="search-result-page">
       <div className="search-header">
@@ -44,11 +70,12 @@ export default function SearchResult() {
                 <BookList books={results} mode="list" cardSize="lg" />
             </div>
 
-            <Pagination
+              <Pagination
               currentPage={page}
               totalCount={totalCount}
               pageSize={pageSize}
               onPageChange={(newPage)=>setPage(newPage)}/>
+            
           </>
             
     ):(

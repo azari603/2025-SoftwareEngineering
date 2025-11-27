@@ -1,6 +1,26 @@
 import {dummyReviews} from "../mocks/dummyReviews";
 import dummyDetailedReviews from "../mocks/dummyDetailedReview";
+import axiosInstance from "./axiosInstance";
 
+//서평 작성
+export async function createReview(reviewData){
+  try{
+    const res=await axiosInstance.post("/reviews",reviewData);
+    return{
+      success: true,
+      reviewId: res.data,
+    }
+  }catch(err){
+    console.error("서평 작성 오류:",err);
+    const code=err.response?.data?.code??"UNKNOWN_ERROR";
+    const message=err.response?.data?.message??"서평 작성 중 오류";
+    return{
+      success:false,
+      code,
+      message,
+    }
+  }
+}
 //최신 피드 (임시)
 export const getLatestReviews = async () => {
   return dummyReviews;

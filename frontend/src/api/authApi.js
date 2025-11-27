@@ -36,7 +36,7 @@ export async function login(username, password) {
     const res=await axiosInstance.post("/auth/login",{
     username,
     password,
-  });
+  },{withCredentials: true});
     return {
       ok: true,
       data: res.data,
@@ -51,6 +51,23 @@ export async function login(username, password) {
     };
   }
   
+}
+
+//인증 메일 재전송
+export async function resendVerifyEmail(email) {
+  try {
+    const res = await axiosInstance.post("/auth/email/resend", { email });
+    return {
+      ok: true,
+      message: res.data?.message || "인증 이메일을 다시 전송했습니다.",
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      code: err.response?.data?.code,
+      message: err.response?.data?.message || "재전송 중 오류가 발생했습니다.",
+    };
+  }
 }
 
 //내 계정 조회 (임시)

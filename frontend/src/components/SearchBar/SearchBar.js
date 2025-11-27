@@ -1,11 +1,17 @@
 import "./SearchBar.css";
 import searchIcon from "../../assets/search.png"
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
+import { useLocation } from "react-router-dom";
 
 const SearchBar = ({ placeholder = "책 제목 또는 저자명을 검색해 보세요", variant}) => {
   const [query, setQuery]=useState("")
   const navigate=useNavigate()
+  const location=useLocation();
+
+  useEffect(()=>{
+    setQuery("");
+  },[location.pathname]);
 
   const handleSubmit=(e)=>{
     e.preventDefault()

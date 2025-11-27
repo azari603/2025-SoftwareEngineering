@@ -20,7 +20,9 @@ function mapStatus(tab){
 export default function BookSelectorView(){
     const navigate=useNavigate();
     const {user, isLoggedIn}=useAuth();
-
+    const [page, setPage]=useState(1);
+    const pageSize=10;
+    const [hasMore, setHasMore]=useState(true);
     const [query, setQuery]=useState("");
     const [tab, setTab]=useState("reading");
     const [books, setBooks]=useState([]);
@@ -47,13 +49,63 @@ export default function BookSelectorView(){
         e.preventDefault();
         if(query.trim()){
             setLoading(true);
-            const res=await searchBooks({query});
+            setPage(1);
+            setHasMore(true);
+            const res=await searchBooks({q: query, page:1, size:pageSize});
             setBooks(res.books);
+            setHasMore(res.books.length===pageSize);
             setLoading(false);
         }else{
             loadMyLibrary(tab);
         }
     };
+
+    useEffect(() => {
+  const handleScroll = () => {
+    if (
+      window.innerHeight + window.scrollY >= document.body.offsetHeight - 200 &&
+      !loading &&
+      hasMore &&
+      isSearching      // 검색 중일 때만 무한 스크롤
+    ) {
+      loadMore();
+    }
+  };
+  
+
+  window.addEventListener("scroll", handleScroll);
+  return () => window.removeEventListener("scroll", handleScroll);
+}, [loading, hasMore, isSearching]);
+
+const loadMore = async () => {
+  if (!query.trim()) return;
+
+  setLoading(true);
+
+  const nextPage = page + 1;
+  const res = await searchBooks({
+    q: query,
+    page: nextPage,
+    size: pageSize,
+  });
+
+  setBooks((prev) => [...prev, ...res.books]); // ⭐ 기존 + 신규 append
+  setPage(nextPage);
+  setHasMore(res.books.length === pageSize);   // 10보다 적으면 마지막 페이지
+
+  setLoading(false);
+};
+
+useEffect(() => {
+  if (isSearching) {
+    setBooks([]);
+    setPage(1);
+    setHasMore(true);
+  } else {
+    loadMyLibrary(tab);
+  }
+}, [query]);
+
     // 내 서재 불러오기
     const loadMyLibrary = async (tab) => {
         if (!isLoggedIn || !user) return;
@@ -65,7 +117,7 @@ export default function BookSelectorView(){
     };
 
     const handleSelectBook = (book) => {
-        navigate(`/write/review?bookId=${book.bookId}`);
+        navigate(`/write/review?isbn=${book.isbn}`);
     };
 
     
@@ -127,7 +179,7 @@ export default function BookSelectorView(){
                     <img src={book.image} alt={book.title} />
                 </div>
                 <div className="book-info">
-                    <p className="book-title">{book.title}</p>
+                    <p className="book-title">{book.name}</p>
                     <p className="book-author">{book.author}</p>
                     <p className="book-publisher">{book.publisher || "출판사 정보 없음"}</p>
                 </div>
