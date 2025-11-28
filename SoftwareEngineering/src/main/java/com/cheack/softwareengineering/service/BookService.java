@@ -5,7 +5,9 @@ import com.cheack.softwareengineering.dto.BookDetailDto;
 import com.cheack.softwareengineering.dto.BookSummaryDto;
 import com.cheack.softwareengineering.dto.BookUpsertCmd;
 import com.cheack.softwareengineering.entity.Book;
+import com.cheack.softwareengineering.entity.Visibility;
 import com.cheack.softwareengineering.repository.BookRepository;
+import com.cheack.softwareengineering.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +24,7 @@ public class BookService {
 
     private final BookRepository bookRepository;
     private final BookIngestService bookIngestService;
+    private final ReviewRepository reviewRepository;
 
     /**
      * 키워드로 책 검색 (제목/저자에 대해 부분 일치, 대소문자 무시)
@@ -29,25 +32,34 @@ public class BookService {
      */
     public Page<BookSummaryDto> search(String keyword, Pageable pageable) {
         Page<Book> page;
-
         if (keyword == null || keyword.isBlank()) {
             page = bookRepository.findAll(pageable);
         } else {
-            // 입력에서 공백 제거
-            String normalized = keyword.replaceAll("\\s+", "");
-            page = bookRepository.searchIgnoreSpaces(normalized, pageable);
+            page = bookRepository.findByNameContainingIgnoreCaseOrAuthorContainingIgnoreCase(
+                    keyword, keyword, pageable
+            );
         }
-
         return page.map(BookSummaryDto::from);
     }
 
     /**
-     * bookId 로 상세 조회
+     * bookId 로 상세 조회 + 평균 별점/리뷰 수 포함
      */
     public BookDetailDto getDetail(Long bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new IllegalArgumentException("Book not found: id=" + bookId));
-        return BookDetailDto.from(book);
+
+        // ✅ 공개 리뷰 기준 통계 계산
+        Double avgStar = reviewRepository.findAvgStarByBookIdAndVisibility(
+                bookId,
+                Visibility.PUBLIC   // 공개 리뷰만
+        );
+
+        long reviewCount = reviewRepository
+                .countByBookIdAndVisibilityAndDeletedFalse(bookId, Visibility.PUBLIC);
+
+        // ✅ 새로운 from(...) 사용
+        return BookDetailDto.from(book, avgStar, reviewCount);
     }
 
     /**

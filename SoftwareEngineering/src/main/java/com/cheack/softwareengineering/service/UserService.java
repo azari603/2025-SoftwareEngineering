@@ -149,4 +149,23 @@ public class UserService {
 
         return page.map(UserMiniDto::from);
     }
+
+    /**
+     * 닉네임 변경
+     */
+    @Transactional
+    public void updateNickname(Long userId, String newNickname) {
+        String trimmed = (newNickname == null) ? null : newNickname.trim();
+        if (trimmed == null || trimmed.isBlank()) {
+            throw new IllegalArgumentException("nickname cannot be blank");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // (닉네임은 DB에서 unique 처리 안 되어 있으니, 중복 체크는 생략하거나
+        //  필요하면 existsByNickname(...) 추가해서 검사해도 됨.)
+        user.setNickname(trimmed);
+        // dirty checking 으로 자동 업데이트
+    }
 }

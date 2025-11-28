@@ -52,6 +52,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
                                                                                 Visibility visibility,
                                                                                 Pageable pageable);
 
+    @Query("select avg(r.starRating) " +
+            "from Review r " +
+            "where r.bookId = :bookId " +
+            "  and r.visibility = :visibility " +
+            "  and r.deleted = false")
+    Double findAvgStarByBookIdAndVisibility(@Param("bookId") Long bookId,
+                                            @Param("visibility") Visibility visibility);
+
+
+    long countByBookIdAndVisibilityAndDeletedFalse(Long bookId, Visibility visibility);
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Review r set r.deleted = true where r.id = :id")
     void softDelete(@Param("id") Long id);

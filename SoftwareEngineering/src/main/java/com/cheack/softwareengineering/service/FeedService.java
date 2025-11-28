@@ -2,15 +2,9 @@
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.dto.feed.FeedItemDto;
-import com.cheack.softwareengineering.dto.feed.ReviewCardDto;
-import com.cheack.softwareengineering.entity.Follow;
-import com.cheack.softwareengineering.entity.Review;
-import com.cheack.softwareengineering.entity.Visibility;
-import com.cheack.softwareengineering.repository.CommentRepository;
-import com.cheack.softwareengineering.repository.FollowRepository;
-import com.cheack.softwareengineering.repository.ReviewLikeRepository;
-import com.cheack.softwareengineering.repository.ReviewRepository;
-import com.cheack.softwareengineering.repository.UserRepository;
+import com.cheack.softwareengineering.dto.feed.FeedReviewCardDto;
+import com.cheack.softwareengineering.entity.*;
+import com.cheack.softwareengineering.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -32,23 +26,25 @@ public class FeedService {
     private final ReviewLikeRepository reviewLikeRepository;
     private final CommentRepository commentRepository;
     private final UserRepository userRepository; // 지금은 authorId만 쓰지만, 나중에 닉네임/프로필 등 확장 가능
+    private final ProfileRepository profileRepository;
+    private final BookRepository bookRepository;
 
     /**
      * 최신 피드 (전체 사용자 "공개" 리뷰 기준)
      */
-    public Page<ReviewCardDto> getLatest(Pageable pageable) {
+    public Page<FeedReviewCardDto> getLatest(Pageable pageable) {
         // 기존: reviewRepository.findAllByOrderByCreatedAtDesc(pageable);
         Page<Review> reviews =
                 reviewRepository.findByVisibilityAndDeletedFalseOrderByCreatedAtDesc(
                         Visibility.PUBLIC, pageable);
 
-        return reviews.map(review -> ReviewCardDto.from(enrich(review, null)));
+        return reviews.map(review -> buildFeedReviewCard(review, null));
     }
 
     /**
      * 팔로잉 피드 (viewerId가 팔로우한 사람들 중 "공개" 리뷰만)
      */
-    public Page<ReviewCardDto> getFollowing(Long viewerId, Pageable pageable) {
+    public Page<FeedReviewCardDto> getFollowing(Long viewerId, Pageable pageable) {
         List<Follow> follows = followRepository.findByFollowerIdAndStatusTrue(viewerId);
 
         if (follows.isEmpty()) {
@@ -64,8 +60,9 @@ public class FeedService {
                 reviewRepository.findByUserIdInAndVisibilityAndDeletedFalseOrderByCreatedAtDesc(
                         followeeIds, Visibility.PUBLIC, pageable);
 
-        return reviews.map(review -> ReviewCardDto.from(enrich(review, viewerId)));
-    }
+        return reviews.map(review -> buildFeedReviewCard(review, null));    }
+
+
 
     /**
      * Review 하나를 피드 카드에서 쓸 수 있는 DTO로 변환 + 좋아요/댓글 수/내가 좋아요 했는지까지 계산
@@ -90,6 +87,54 @@ public class FeedService {
                 .likedByViewer(likedByViewer)
                 .createdAt(review.getCreatedAt())
                 .build();
+    }
+
+    /**
+     * 단일 피드 아이템
+     */
+    public FeedReviewCardDto getFeedItem(Long reviewId, Long viewerId) {
+        Review review = reviewRepository.findById(reviewId)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+        return buildFeedReviewCard(review, viewerId);
+    }
+
+    private FeedReviewCardDto buildFeedReviewCard(Review review, Long viewerId) {
+        // 좋아요/댓글/내가 좋아요 했는지
+        FeedItemDto item = enrich(review, viewerId);
+
+        // 작성자 정보
+        Long authorId = review.getUserId();
+        User author = userRepository.findById(authorId).orElse(null);
+        Profile profile = profileRepository.findByUserId(authorId).orElse(null);
+
+        String nickname = author != null ? author.getNickname() : null;
+        String username = author != null ? author.getUsername() : null;
+        String profileImage = profile != null ? profile.getUserImage() : null;
+
+        // 도서 정보
+        Long bookId = review.getBookId();
+        Book book = bookRepository.findById(bookId).orElse(null);
+
+        String bookName = book != null ? book.getName() : null;
+        String bookImage = book != null ? book.getImage() : null;
+        String bookAuthor = book != null ? book.getAuthor() : null;
+
+        // 이 책의 평균 별점(공개 서평 기준)
+        Double avgStar = reviewRepository.findAvgStarByBookIdAndVisibility(
+                bookId,
+                Visibility.PUBLIC
+        );
+        return FeedReviewCardDto.from(
+                review,
+                item,
+                nickname,
+                username,
+                profileImage,
+                bookName,
+                bookImage,
+                bookAuthor,
+                avgStar
+        );
     }
 
     private String buildExcerpt(String text) {

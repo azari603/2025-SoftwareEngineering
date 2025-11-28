@@ -62,7 +62,22 @@ public class ProfileService {
      */
     @Transactional
     public void updateIntro(Long userId, String intro) {
-        Profile profile = findProfileByUserIdOrThrow(userId);
+
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    // user 존재 여부 확인 (없으면 여기서 예외)
+                    User user = findUserOrThrow(userId);
+
+                    Profile p = Profile.builder()
+                            .userId(user.getId())
+                            .userImage(null)
+                            .backgroundImage(null)
+                            .readBook(0L)
+                            .intro("")
+                            .build();
+
+                    return profileRepository.save(p);
+                });
 
         String trimmed = (intro == null) ? "" : intro.trim();
         profile.setIntro(trimmed);
@@ -156,10 +171,28 @@ public class ProfileService {
      */
     @Transactional
     public void setMonthlyGoal(Long userId, int goal) {
-        Profile profile = findProfileByUserIdOrThrow(userId);
 
-        // TODO: Profile 엔티티에 monthlyGoal 필드 추가 후 아래 라인 구현
-        // profile.setMonthlyGoal(goal);
+        // 프로필이 없으면 기본 프로필을 만들어주고, 있으면 가져온다.
+        Profile profile = profileRepository.findByUserId(userId)
+                .orElseGet(() -> {
+                    User user = findUserOrThrow(userId);
+                    Profile p = Profile.builder()
+                            .userId(user.getId())
+                            .userImage(null)
+                            .backgroundImage(null)
+                            .readBook(0L)
+                            .intro("")
+                            .monthlyGoal(null)
+                            .build();
+                    return profileRepository.save(p);
+                });
+
+        // goal <= 0 이면 목표 해제 (null)
+        if (goal <= 0) {
+            profile.setMonthlyGoal(null);
+        } else {
+            profile.setMonthlyGoal(goal);
+        }
 
         profileRepository.save(profile);
     }

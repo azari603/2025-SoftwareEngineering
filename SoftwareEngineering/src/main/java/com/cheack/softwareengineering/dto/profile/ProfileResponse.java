@@ -1,7 +1,12 @@
 package com.cheack.softwareengineering.dto.profile;
 
+import com.cheack.softwareengineering.dto.RatingHistogramDto;
 import com.cheack.softwareengineering.dto.UserDto;
 import com.cheack.softwareengineering.dto.UserProfileSummaryDto;
+import com.cheack.softwareengineering.dto.ReviewCardDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,11 +41,21 @@ public class ProfileResponse {
 
     // TODO: Profile 엔티티에 monthlyGoal 추가되면 사용
     private Integer monthlyGoal;
+    private RatingHistogramDto stars;          // 별점 분포
+    private Page<ReviewCardDto> reviews;       // 서평 목록 페이지 (옵션)
+
+    public static ProfileResponse from(UserProfileSummaryDto summary,
+                                       UserDto me,
+                                       Integer monthlyGoal) {
+        return from(summary, me, monthlyGoal, null, null);
+    }
 
     public static ProfileResponse from(
             UserProfileSummaryDto summary,
             UserDto user,
-            Integer monthlyGoal
+            Integer monthlyGoal,
+            RatingHistogramDto stars,
+            Page<ReviewCardDto> reviews
     ) {
         if (summary == null) {
             return null;
@@ -59,6 +74,8 @@ public class ProfileResponse {
                 .email(user != null ? user.getEmail() : null)
                 .emailVerified(user != null ? user.isEmailVerified() : null)
                 .monthlyGoal(monthlyGoal)
+                .stars(stars)
+                .reviews(reviews)
                 .build();
     }
 }

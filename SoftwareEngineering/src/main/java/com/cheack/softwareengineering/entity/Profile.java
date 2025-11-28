@@ -37,4 +37,7 @@ public class Profile {
 
     @Column(name = "intro", length = 1000)
     private String intro;
+
+    @Column(name = "monthly_goal")
+    private Integer monthlyGoal;
 }

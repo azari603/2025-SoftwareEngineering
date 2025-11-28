@@ -1,5 +1,7 @@
 package com.cheack.softwareengineering.controller;
 
+import com.cheack.softwareengineering.dto.RatingHistogramDto;
+import com.cheack.softwareengineering.dto.ReviewCardDto;
 import com.cheack.softwareengineering.dto.UserDto;
 import com.cheack.softwareengineering.dto.UserProfileSummaryDto;
 import com.cheack.softwareengineering.dto.profile.BackgroundImageResponse;
@@ -9,7 +11,12 @@ import com.cheack.softwareengineering.dto.profile.UpdateGoalRequest;
 import com.cheack.softwareengineering.dto.profile.UpdateProfileRequest;
 import com.cheack.softwareengineering.service.ProfileService;
 import com.cheack.softwareengineering.service.UserService;
+import com.cheack.softwareengineering.service.StatsService;
+import com.cheack.softwareengineering.service.ReviewService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -30,6 +37,24 @@ public class ProfileController {
 
     private final UserService userService;
     private final ProfileService profileService;
+    private final StatsService statsService;
+    private final ReviewService reviewService;
+
+
+    private boolean include(String include, String key) {
+        if (include == null || include.isBlank()) {
+            return false;
+        }
+        // "stars,reviews" 처럼 들어오는 것을 가정
+        String[] parts = include.split(",");
+        for (String part : parts) {
+            if (key.equalsIgnoreCase(part.trim())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * [프로필 조회(타인/본인 공용)]
@@ -43,10 +68,12 @@ public class ProfileController {
     public ProfileResponse getProfile(
             @PathVariable String username,
             @RequestParam(value = "include", required = false) String include,
-            @AuthenticationPrincipal String viewerUsername   // 로그인 안 했으면 null 가능
+            @AuthenticationPrincipal String viewerUsername
+            // 로그인 안 했으면 null 가능
     ) {
         // username -> userId
         UserDto targetUser = userService.getByUsername(username);
+        Long targetUserId = targetUser.getId();
 
         // 공개 프로필 요약 정보
         UserProfileSummaryDto summary =
@@ -55,8 +82,21 @@ public class ProfileController {
         // monthlyGoal 은 아직 Profile 엔티티에 없으므로 null
         Integer monthlyGoal = null;
 
+        RatingHistogramDto stars = null;
+        Page<ReviewCardDto> reviews = null;
+
+        if (include(include, "stars")) {
+            stars = statsService.getRatingHistogram(targetUserId);
+        }
+
+        if (include(include, "reviews")) {
+            // 프로필에서 보여줄 서평은 첫 페이지 N개 정도만 가져오는 식으로
+            Pageable pageable = PageRequest.of(0, 10);
+            reviews = reviewService.getPublicByUser(targetUserId, pageable);
+        }
+
         // /{username} 에서는 email 정보는 채우지 않는다(공개용)
-        return ProfileResponse.from(summary, null, monthlyGoal);
+        return ProfileResponse.from(summary, null, monthlyGoal, stars, reviews);
     }
 
     /**
@@ -68,7 +108,8 @@ public class ProfileController {
     @GetMapping("/me")
     public ProfileResponse getMyProfile(
             @AuthenticationPrincipal String username,
-            @RequestParam(value = "include", required = false) String include
+            @RequestParam(value = "include", required = false) String include,
+            @AuthenticationPrincipal String viewerUsername   // 로그인 안 했으면 null 가능
     ) {
         // 기본 유저 정보
         UserDto user = userService.getByUsername(username);
@@ -80,7 +121,19 @@ public class ProfileController {
         // TODO: Profile 엔티티에 monthlyGoal 필드 추가 후 값 조회
         Integer monthlyGoal = null;
 
-        return ProfileResponse.from(summary, user, monthlyGoal);
+        RatingHistogramDto stars = null;
+        Page<ReviewCardDto> reviews = null;
+
+        if (include(include, "stars")) {
+            stars = statsService.getRatingHistogram(userId);
+        }
+
+        if (include(include, "reviews")) {
+            Pageable pageable = PageRequest.of(0, 10);
+            reviews = reviewService.getPublicByUser(userId, pageable);
+        }
+
+        return ProfileResponse.from(summary, user, monthlyGoal, stars, reviews);
     }
 
     /**
@@ -101,8 +154,7 @@ public class ProfileController {
 
         // 닉네임 변경은 User 도메인 책임
         if (request.getNickname() != null && !request.getNickname().isBlank()) {
-            // TODO: UserService에 updateNickname 메서드 구현 필요
-            // userService.updateNickname(userId, request.getNickname().trim());
+            userService.updateNickname(userId, request.getNickname());
         }
 
         // 소개 변경은 Profile 도메인 책임
