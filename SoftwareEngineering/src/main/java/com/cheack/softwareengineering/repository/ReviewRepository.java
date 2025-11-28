@@ -39,6 +39,18 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     Page<Review> findByUserIdAndVisibilityAndDeletedFalse(Long userId,
                                                           Visibility visibility,
                                                           Pageable pageable);
+    /**
+     * 전체 공개 리뷰만, 최신순
+     */
+    Page<Review> findByVisibilityAndDeletedFalseOrderByCreatedAtDesc(Visibility visibility,
+                                                                     Pageable pageable);
+
+    /**
+     * 팔로잉 피드에서 쓸: 특정 유저들(followee) 중 공개 리뷰만, 최신순
+     */
+    Page<Review> findByUserIdInAndVisibilityAndDeletedFalseOrderByCreatedAtDesc(List<Long> userIds,
+                                                                                Visibility visibility,
+                                                                                Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Review r set r.deleted = true where r.id = :id")

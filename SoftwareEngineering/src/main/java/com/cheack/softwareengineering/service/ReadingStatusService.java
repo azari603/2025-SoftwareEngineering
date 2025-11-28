@@ -1,5 +1,6 @@
 package com.cheack.softwareengineering.service;
 
+import com.cheack.softwareengineering.dto.BookReadingStatusResponse;
 import com.cheack.softwareengineering.dto.ReadingStatusDto;
 import com.cheack.softwareengineering.dto.ReadingStatusSummary;
 import com.cheack.softwareengineering.entity.Book;
@@ -108,5 +109,22 @@ public class ReadingStatusService {
             counts.put(type, count);
         }
         return ReadingStatusSummary.of(counts);
+    }
+
+    /**
+     * getStatusForBook(username, bookId) : BookReadingStatusResponse
+     * - 로그인 사용자 기준, 특정 책에 대한 읽기 상태를 조회
+     * - 상태가 없으면 hasStatus=false 로 반환
+     */
+    public BookReadingStatusResponse getStatusForBook(String username, Long bookId) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new NoSuchElementException("User not found: username=" + username));
+
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new NoSuchElementException("Book not found: " + bookId));
+
+        return readingStatusRepository.findByUserIdAndBookId(user.getId(), book.getId())
+                .map(BookReadingStatusResponse::from)
+                .orElseGet(() -> BookReadingStatusResponse.empty(bookId));
     }
 }

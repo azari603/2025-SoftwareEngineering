@@ -2,14 +2,17 @@ package com.cheack.softwareengineering.controller;
 
 import com.cheack.softwareengineering.dto.BookDetailDto;
 import com.cheack.softwareengineering.dto.BookDto;
+import com.cheack.softwareengineering.dto.BookReadingStatusResponse;
 import com.cheack.softwareengineering.service.BookIngestService;
 import com.cheack.softwareengineering.service.BookService;
+import com.cheack.softwareengineering.service.ReadingStatusService;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -35,6 +38,7 @@ public class BookController {
 
     private final BookService bookService;
     private final BookIngestService bookIngestService;
+    private final ReadingStatusService readingStatusService;
 
     /**
      * [도서 상세 조회]
@@ -43,6 +47,23 @@ public class BookController {
     @GetMapping("/{bookId}")
     public BookDetailDto getBook(@PathVariable Long bookId) {
         return bookService.getDetail(bookId);
+    }
+
+    /**
+     * [특정 책에 대한 내 읽기 상태 조회]
+     * GET /api/v1/books/{bookId}/reading-status
+     *
+     * - Authorization: Bearer {accessToken} 필요
+     * - 상태가 없으면 hasStatus=false 로 응답
+     */
+    @GetMapping("/{bookId}/reading-status")
+    public BookReadingStatusResponse getMyReadingStatus(@PathVariable Long bookId,
+                                                        Authentication authentication) {
+        if (authentication == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증이 필요합니다.");
+        }
+        String username = authentication.getName();
+        return readingStatusService.getStatusForBook(username, bookId);
     }
 
     /**

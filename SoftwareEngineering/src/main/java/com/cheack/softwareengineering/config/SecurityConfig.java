@@ -2,6 +2,7 @@
 package com.cheack.softwareengineering.config;
 
 import com.cheack.softwareengineering.security.JwtAuthenticationFilter;
+import com.cheack.softwareengineering.security.RestAuthenticationEntryPoint;
 import com.cheack.softwareengineering.security.oauth2.CustomOAuth2UserService;
 import com.cheack.softwareengineering.security.oauth2.OAuth2FailureHandler;
 import com.cheack.softwareengineering.security.oauth2.OAuth2SuccessHandler;
@@ -32,6 +33,7 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final OAuth2FailureHandler oAuth2FailureHandler;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,6 +42,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(cors -> {})
+
+                // ★ 인증 실패(미로그인/토큰 만료 등) 시 401 JSON 내려주기
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(restAuthenticationEntryPoint)
+                )
 
                 // 인가 규칙
                 .authorizeHttpRequests(auth -> auth
@@ -75,13 +82,18 @@ public class SecurityConfig {
                                 "/api/v1/auth/email/resend"
                         ).permitAll()
 
-                        // 3) 인증 불필요 엔드포인트 (서평 상세 / 책 검색 / 도서 상세)
+                        // 3) 인증 불필요 엔드포인트 (서평 상세 / 책 검색 / 도서 상세 + 공개 추천/피드/좋아요 수)
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/reviews/*",     // 서평 상세 조회
-                                "/api/v1/books/search",  // (쓰고 있으면 유지)
-                                "/api/v1/books/*",       // 도서 상세 조회
-                                "/api/v1/search/books",  // ★ 실제 SearchController 매핑
-                                "/api/v1/search/**"      // ★ 앞으로 확장용 전체 허용
+                                "/api/v1/reviews/*",                // 서평 상세 조회
+                                "/api/v1/books/search",             // (쓰고 있으면 유지)
+                                "/api/v1/books/*",                  // 도서 상세 조회
+                                "/api/v1/search/books",             // SearchController 매핑
+                                "/api/v1/search/**",                // 검색 확장용
+
+                                // ★ 여기부터 새로 추가한 공개 API들
+                                "/api/v1/recommendations/popular",  // 인기 도서
+                                "/api/v1/feed/latest",              // 최신 피드
+                                "/api/v1/reviews/*/likes/count"     // 리뷰 좋아요 수 조회
                         ).permitAll()
 
                         // 소셜 로그인 진입/콜백은 누구나 접근 가능

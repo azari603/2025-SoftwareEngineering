@@ -5,6 +5,7 @@ import com.cheack.softwareengineering.dto.feed.FeedItemDto;
 import com.cheack.softwareengineering.dto.feed.ReviewCardDto;
 import com.cheack.softwareengineering.entity.Follow;
 import com.cheack.softwareengineering.entity.Review;
+import com.cheack.softwareengineering.entity.Visibility;
 import com.cheack.softwareengineering.repository.CommentRepository;
 import com.cheack.softwareengineering.repository.FollowRepository;
 import com.cheack.softwareengineering.repository.ReviewLikeRepository;
@@ -33,15 +34,19 @@ public class FeedService {
     private final UserRepository userRepository; // 지금은 authorId만 쓰지만, 나중에 닉네임/프로필 등 확장 가능
 
     /**
-     * 최신 피드 (전체 사용자 리뷰 기준)
+     * 최신 피드 (전체 사용자 "공개" 리뷰 기준)
      */
     public Page<ReviewCardDto> getLatest(Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllByOrderByCreatedAtDesc(pageable);
+        // 기존: reviewRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Page<Review> reviews =
+                reviewRepository.findByVisibilityAndDeletedFalseOrderByCreatedAtDesc(
+                        Visibility.PUBLIC, pageable);
+
         return reviews.map(review -> ReviewCardDto.from(enrich(review, null)));
     }
 
     /**
-     * 팔로잉 피드 (viewerId가 팔로우한 사람들만)
+     * 팔로잉 피드 (viewerId가 팔로우한 사람들 중 "공개" 리뷰만)
      */
     public Page<ReviewCardDto> getFollowing(Long viewerId, Pageable pageable) {
         List<Follow> follows = followRepository.findByFollowerIdAndStatusTrue(viewerId);
@@ -54,7 +59,11 @@ public class FeedService {
                 .map(Follow::getFolloweeId)
                 .collect(Collectors.toList());
 
-        Page<Review> reviews = reviewRepository.findByUserIdInOrderByCreatedAtDesc(followeeIds, pageable);
+        // 기존: reviewRepository.findByUserIdInOrderByCreatedAtDesc(followeeIds, pageable);
+        Page<Review> reviews =
+                reviewRepository.findByUserIdInAndVisibilityAndDeletedFalseOrderByCreatedAtDesc(
+                        followeeIds, Visibility.PUBLIC, pageable);
+
         return reviews.map(review -> ReviewCardDto.from(enrich(review, viewerId)));
     }
 
