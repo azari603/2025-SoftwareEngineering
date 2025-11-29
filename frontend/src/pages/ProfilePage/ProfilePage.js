@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./ProfilePage.css";
 import profile_img from "../../assets/profile_img.png";
 import { dummyBooks } from "../../mocks/dummyBooks";
@@ -9,8 +9,15 @@ import settings_btn from "../../assets/option.png";
 import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
 import { LayoutContext } from "../../context/LayoutContext";
-import { getMyProfile } from "../../api/authApi";
+import { getProfile, getMyProfile } from "../../api/authApi";
 import dummyReviews from "../../mocks/dummyReviews";
+
+const base=process.env.REACT_APP_BASE_URL;
+function fullUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${base}/${path}`; // base 붙이기
+}
 
 export default function ProfilePage() {
   const { user } = useAuth();
@@ -19,6 +26,9 @@ export default function ProfilePage() {
   const { setFooterColor } = useContext(LayoutContext);
   const [profile, setProfile]=useState(null);
   const [loading, setLoading]=useState(true);
+  const {username: paramUsername}=useParams();
+  const targetUsername=paramUsername??user?.username; //조회할 username 결정
+  
 
   useEffect(() => {
     setFooterColor("#FDFBF4"); // 흰색 테마
@@ -26,13 +36,14 @@ export default function ProfilePage() {
 
   //프로필 조회 호출
   useEffect(()=>{
+    if(!targetUsername) return;
     async function loadProfile(){
-      const res=await getMyProfile({include: ["reviews", "stars"]})
+      const res=await getProfile(targetUsername,{include:["reviews","stars"]})
       setProfile(res.profile);
       setLoading(false);
     }
     loadProfile();
-  },[]);
+  },[user]);
 
   if(loading){
     return <div className="profile-container">로딩 중...</div>
@@ -56,29 +67,34 @@ export default function ProfilePage() {
             backgroundPosition: "center",
           }}
         >
-          <button
-            className="settings-btn"
-            onClick={() => navigate("/profile/settings")}
-          >
-            <img src={settings_btn} alt="설정" />
-          </button>
+          {(!paramUsername||paramUsername===user?.username)&&(
+              <button
+              className="settings-btn"
+              onClick={() => navigate("/profile/settings")}
+            >
+              <img src={settings_btn} alt="설정" />
+            </button>
+          )}
+          
         </div>
         <div className="profile-info">
           <div className="profile-img">
-            <img src={profile.profileImageUrl || profile_img} alt="프로필 이미지" />
+            <img src={fullUrl(profile.profileImageUrl)||profile_img} 
+            onError={(e) => (e.target.src = profile_img)}
+            alt="프로필 이미지" />
           </div>
           <h2 className="username">{profile.nickname}</h2>
           <p className="userid">@{profile.username}</p>
 
           <div className="follow-info">
             <span>
-              팔로잉 <b>{profile.followingsCount}</b>
+              팔로잉 <b>{profile.followingCount}</b>
             </span>
             <span>
-              팔로워 <b>{profile.followersCount}</b>
+              팔로워 <b>{profile.followerCount}</b>
             </span>
             <span>
-              읽은책 <b>{profile.readBooksCount}</b>
+              읽은책 <b>{profile.completedBookCount}</b>
             </span>
           </div>
 
@@ -92,8 +108,8 @@ export default function ProfilePage() {
             <div className="goal-header">
               <h4>이달의 목표</h4>
               <p className="goal-count">
-                <span className="goal-current">8</span>
-                <span className="goal-total">/10권</span>
+                <span className="goal-current">0</span>
+                <span className="goal-total">/{profile.monthlyGoal||0}권</span>
               </p>
             </div>
             <div className="goal-progress">
@@ -146,7 +162,7 @@ export default function ProfilePage() {
           <h3>공개된 서평</h3>
           <div className="review-list">
             <ReviewList
-              reviews={dummyReviews}
+              reviews={profile.reviews.content}
               mode="carousel"
               visibleCount={3}
             />

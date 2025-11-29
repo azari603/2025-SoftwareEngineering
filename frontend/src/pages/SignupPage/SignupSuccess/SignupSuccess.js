@@ -19,11 +19,11 @@ export default function SignupSuccess() {
       <img src={successIcon} alt="성공 아이콘" className="success-icon" />
 
       <p className="success-welcome">
-        환영합니다, {username} 님 !
+        환영합니다!
       </p>
 
       <p className="success-subtext">
-        책을 읽는 순간은 흘러가지만.<br />
+        책을 읽는 순간은 흘러가지만,<br />
         기록은 언제든 곁에 남습니다.<br />
         오늘부터 함께 쌓아갈 여정을 나아가요.
       </p>

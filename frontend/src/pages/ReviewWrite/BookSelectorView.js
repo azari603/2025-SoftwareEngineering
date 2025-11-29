@@ -117,7 +117,7 @@ useEffect(() => {
     };
 
     const handleSelectBook = (book) => {
-        navigate(`/write/review?isbn=${book.isbn}`);
+        navigate(`/write/review?id=${book.id}`);
     };
 
     

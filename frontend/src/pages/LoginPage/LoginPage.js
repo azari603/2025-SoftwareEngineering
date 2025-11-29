@@ -8,7 +8,7 @@ import { Link,useNavigate } from "react-router-dom";
 import google_logo from "../../assets/google_logo.png"
 import naver_logo from "../../assets/naver_logo.png"
 import kakao_logo from "../../assets/kakao_logo.png"
-
+import CustomModal from "../../components/Modal/CustomModal"
 export default function LoginPage() {
     const navigate=useNavigate();
     const {login}=useAuth();
@@ -20,6 +20,9 @@ export default function LoginPage() {
     const [usernameError,setUsernameError] =useState("");
     const [passwordError,setPasswordError] =useState("");
     const [generalError, setGeneralError] = useState("");
+    const [showVerifyModal, setShowVerifyModal] = useState(false);
+    const [unverifiedEmail, setUnverifiedEmail] = useState("");
+
 
 
     const handleLogin = async (e) => {
@@ -40,7 +43,8 @@ export default function LoginPage() {
               setPasswordError("비밀번호가 틀렸습니다.");
               break;
             case "EMAIL_NOT_VERIFIED":
-              setGeneralError("이메일 인증이 필요합니다.");
+              setUnverifiedEmail(result.email);
+              setShowVerifyModal(true);
               break;
             case "USER_LOCKED":
               setGeneralError("해당 계정은 잠겨있습니다.");
@@ -117,6 +121,22 @@ export default function LoginPage() {
           </div>
         </div>
       </div>
+      {showVerifyModal && (
+  <CustomModal
+    title="이메일 인증 필요"
+    message={`로그인을 계속하려면 이메일 인증이 필요합니다. 
+      인증 페이지로 이동하시겠습니까?`}
+    /*onConfirm={() => {
+      navigate("/signup/email", {
+        state: {
+          email: unverifiedEmail,
+          username,
+        },
+      });
+    }}*/
+    onCancel={() => setShowVerifyModal(false)}
+  />
+)}
     </div>
   );
 }

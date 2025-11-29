@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import profile_img from "../../assets/profile_img.png";
 import "./DetailedReview.css";
 import { FaHeart, FaRegHeart, FaRegCommentDots } from "react-icons/fa";
 import { FaEllipsisVertical } from "react-icons/fa6";
@@ -12,15 +13,22 @@ import Pagination from "../../components/Pagination/Pagination";
 import default_profile from "../../assets/profile_img.png";
 import GenericModal from "../../components/Modal/GenericModal";
 import { LayoutContext } from "../../context/LayoutContext";
-import { toggleLocalLikedReview, isReviewLiked } from "../../utils/likeStorage";
-import { fetchReviewDetail } from "../../api/reviewAPI"; //서평 상세 조회 API
+import * as reviewAPI from "../../api/reviewAPI"; //서평 상세 조회 API
+import * as followAPI from "../../api/followAPI"
+import CustomModal from "../../components/Modal/CustomModal"
 
+const base=process.env.REACT_APP_BASE_URL;
+function fullUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${base}/${path}`; // base 붙이기
+}
 
 const ReviewDetail = () => {
   const navigate = useNavigate();
   const { isLoggedIn, user: currentUser } = useAuth();
   const { reviewId } = useParams();
-
+  
   /* Hook은 무조건 return보다 위! */
   const { setFooterColor } = useContext(LayoutContext);
 
@@ -30,8 +38,8 @@ const ReviewDetail = () => {
   const [fetchError, setFetchError] = useState(null);
 
   //좋아요 상태
-  const [liked, setLiked] = useState(() => isReviewLiked(`review_${reviewId}`));
-  const [likeCount, setLikeCount] = useState(review?.likes || 0);
+  const [liked, setLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(0);
 
   //댓글
   const [comments, setComments] = useState([]);
@@ -47,6 +55,11 @@ const ReviewDetail = () => {
   const [commentsOpen, setCommentsOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const commentsPerPage = 5;
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  //책 정보
+  const [book, setBook]=useState(null);
 
   /** 화면 색 변경 */
   useEffect(() => {
@@ -69,10 +82,27 @@ const ReviewDetail = () => {
   useEffect(()=>{
     async function loadReview(){
       try{
-        const data=await fetchReviewDetail(reviewId);
-        setReview(data);
-        setLikeCount(data.likeCount||0);
-        setLiked(isReviewLiked(`review_${reviewId}`))
+        const data=await reviewAPI.fetchReviewDetail(reviewId);
+        const {ok, ...reviewData}=data;
+        setReview(reviewData);
+
+        if(ok){ //리뷰 로딩 완료시 호출
+          const count=await reviewAPI.fetchReviewLikeCount(reviewId); //리뷰의 좋아요 수
+        setLikeCount(count);
+
+        // 좋아요 상태
+          const status = await reviewAPI.fetchReviewLikeStatus(reviewId);
+          if (status.ok) {
+            setLiked(status.liked);
+          }
+
+          /*if(!reviewData.mine){
+            const followStatus=await followAPI.fetchFollowStatus(reviewData)
+          }*/
+        
+        setBook(reviewData.book);
+        }
+        
       }catch(err){
         setFetchError(err.error||"UNKNOWN_ERROR");
       }finally{
@@ -93,48 +123,115 @@ const ReviewDetail = () => {
       <div className="card">
         {fetchError === "REVIEW_NOT_FOUND" && "서평을 찾을 수 없습니다."}
         {fetchError === "FORBIDDEN" && "비공개 서평입니다."}
-        {fetchError === "UNKNOWN_ERROR" && "서평을 불러오는 중 오류가 발생했습니다."}
+        {fetchError === "INTERNAL_SERVER_ERROR" && "서평을 불러오는 중 오류가 발생했습니다."}
       </div>
     );
   }
-
- /** 정상 review 구조 */
-  const { title, content, rating, createdAt, visibility, user, book, likeCount: initLike, commentCount } = review;
+  const nickname=review.authorNickname??"작성자"
+  const profileImg=fullUrl(review.authorProfileImageUrl)??profile_img
+ 
 
   /** 내 서평 여부 */
-  const isMyReview = currentUser?.username === user?.username;
+  const isMyReview = review?.mine===true;
 
-  /** 좋아요 */
-  const handleLikeClick = () => {
+  /** 좋아요 클릭 시 상태 업데이트*/
+  const handleLikeClick = async() => {
     if (!isLoggedIn) {
       setShowLoginModal(true);
       return;
     }
 
-    toggleLocalLikedReview(`review_${reviewId}`);
-    setLiked((prev) => !prev);
-    setLikeCount((prev) => (liked ? prev - 1 : prev + 1));
+      // UI 먼저 반영
+    const nextLiked = !liked;
+    setLiked(nextLiked);
+    setLikeCount((prev) => (nextLiked ? prev + 1 : prev - 1));
+
+    // 실제 서버에 반영
+    if (nextLiked) {
+      const res = await reviewAPI.likeReview(reviewId);
+      if (!res.ok) {
+        // 서버 반영 실패 → UI 롤백
+        setLiked(false);
+        setLikeCount((prev) => prev - 1);
+        alert("좋아요에 실패했습니다.");
+      }
+    } else {
+      const res = await reviewAPI.unlikeReview(reviewId);
+      if (!res.ok) {
+        // 서버 반영 실패 → UI 롤백
+        setLiked(true);
+        setLikeCount((prev) => prev + 1);
+        alert("좋아요 취소에 실패했습니다.");
+      }
+    }
+
+  };
+
+  //댓글 목록 조회
+  const loadComments = async (page = currentPage - 1) => {
+    const res = await reviewAPI.fetchComments(reviewId, {
+      page,
+      size: commentsPerPage,
+    });
+
+    if (res.ok) {
+      setComments(res.content);
+    } else {
+      if (res.error === "FORBIDDEN") setFetchError("FORBIDDEN");
+      if (res.error === "REVIEW_NOT_FOUND") setFetchError("REVIEW_NOT_FOUND");
+    }
   };
 
   /** 댓글 등록 */
-  const handleCommentSubmit = () => {
+  const handleCommentSubmit = async() => {
     if (!newComment.trim()) return;
 
-    const now = new Date();
-    const newCommentObj = {
-      id: Date.now(),
-      user: {
-        name: currentUser?.nickname || "나",
-        profileImg: currentUser?.profileImg || default_profile,
-      },
-      text: newComment,
-      date: now.toLocaleString("ko-KR"),
-    };
+    if(!isLoggedIn){
+      setShowLoginModal(true);
+      return;
+    }
 
-    setComments((prev) => [newCommentObj, ...prev]);
+    const res=await reviewAPI.postComment(reviewId, newComment);
+    if(!res.ok){
+      if(res.error==="FORBIDDEN"){
+        alert("비공개 서평에는 댓글을 달 수 없습니다.");
+      }else{
+        alert("댓글 등록에 실패하였습니다.")
+      }
+      return;
+    }
+    await loadComments();
     setNewComment("");
     setShowAlert(true);
   };
+
+  const handleToggleComments = async () => {
+  const nextOpen = !commentsOpen;
+  setCommentsOpen(nextOpen);
+
+  if (nextOpen) {
+    await loadComments();
+  }
+};
+
+//서평 삭제
+const handleDeleteReview = async () => {
+  const res = await reviewAPI.deleteReview(reviewId);
+
+  if (!res.ok) {
+    if (res.error === "FORBIDDEN") {
+      alert("본인의 서평만 삭제할 수 있습니다.");
+    } else if (res.error === "REVIEW_NOT_FOUND") {
+      alert("서평을 찾을 수 없습니다.");
+    } else {
+      alert("서평 삭제에 실패했습니다.");
+    }
+    return;
+  }
+
+  // 삭제 성공 → 이전 페이지로 이동
+  navigate(-1); // 뒤로가기
+};
 
   /** JSX 렌더링 */
   return (
@@ -148,7 +245,7 @@ const ReviewDetail = () => {
           </button>
 
           <div className="review-title-row">
-            <h1 className="review-title">"{title}"</h1>
+            <h1 className="review-title">{review.title}</h1>
 
             {isMyReview && (
               <div className="user-action-area" ref={menuRef}>
@@ -159,7 +256,7 @@ const ReviewDetail = () => {
                 {menuOpen && (
                   <div className="menu-dropdown">
                     <button className="menu-item">수정</button>
-                    <button className="menu-item delete">삭제</button>
+                    <button className="menu-item delete" onClick={() => setShowDeleteModal(true)}>삭제</button>
                   </div>
                 )}
               </div>
@@ -168,14 +265,16 @@ const ReviewDetail = () => {
 
           <div className="review-user_">
             <div className="review-user__profile">
-              <img src={user.profileImg} alt="user" className="review-user__img" />
+              {<img src={profileImg} 
+              onError={(e) => (e.target.src = profile_img)}
+              alt="user" className="review-user__img" />} 
               <div className="review-user__info">
-                <p className="review-user__name">{user.nickname}</p>
-                <p className="review-user__date">{createdAt}</p>
+                <p className="review-user__name">{nickname}</p>
+                <p className="review-user__date">{review.createdAt.split("T")[0]}</p>
               </div>
             </div>
 
-            {!isMyReview && (
+            {/*{!isMyReview && (
               <button
                 className={`follow-btn ${isFollowing ? "following" : ""}`}
                 onClick={() => {
@@ -188,26 +287,26 @@ const ReviewDetail = () => {
               >
                 {isFollowing ? "팔로잉" : "+ 팔로우"}
               </button>
-            )}
+            )}*/}
           </div>
         </header>
 
         {/* 책 정보 */}
         <section className="book-info-review">
-          <img src={book.image} alt={book.title} className="book-cover" />
+          <img src={book.image} alt={book.name} className="book-cover" />
           <div className="review-book-meta">
-            <h3 className="book-title-review">{book.title}</h3>
+            <h3 className="book-title-review">{book.name}</h3>
             <p className="book-author">{book.author}</p>
-            <p className="book-read">읽은 날짜 : {book.readPeriod}</p>
+            <p className="book-read">읽은 날짜 : {review.startDate} - {review.finishDate}</p>
 
             <div className="book-rating">
               <div className="book-rating__avg">
-                ⭐{book.rating} <span className="avg-count">({book.ratingCount})</span>
+                ⭐{book.avgStar} <span className="avg-count">({book.reviewCount})</span>
               </div>
 
               <div className="book-rating__my">
                 <span className="my-text">내 평점</span>
-                <StarRate value={review.myRating} readOnly={true} />
+                <StarRate value={review.starRating} readOnly={true} />
               </div>
             </div>
           </div>
@@ -217,7 +316,7 @@ const ReviewDetail = () => {
 
         {/* 본문 */}
         <article className="review-content">
-          {content?.split("\n").map((line, idx) => (
+          {review.text?.split("\n").map((line, idx) => (
             <p key={idx}>{line}</p>
           ))}
         </article>
@@ -234,7 +333,7 @@ const ReviewDetail = () => {
             <span>{likeCount}</span>
           </button>
 
-          <button className="comment-btn" onClick={() => setCommentsOpen(!commentsOpen)}>
+          <button className="comment-btn" onClick={handleToggleComments}>
             <FaRegCommentDots />
             <span>댓글 {comments.length}</span>
             {commentsOpen ? <SlArrowDown /> : <SlArrowRight />}
@@ -248,18 +347,20 @@ const ReviewDetail = () => {
               {comments.length === 0 ? (
                 <p className="no-comment">가장 먼저 댓글을 달아보세요!</p>
               ) : (
-                comments
-                  .slice((currentPage - 1) * commentsPerPage, currentPage * commentsPerPage)
-                  .map((c) => (
-                    <div key={c.id} className="comment-item">
-                      <img src={c.user.profileImg} alt="user" className="comment-user__img" />
-                      <div className="comment-content">
-                        <p className="comment-user__name">{c.user.name}</p>
-                        <p className="comment-text">{c.text}</p>
-                        <p className="comment-date">{c.date}</p>
-                      </div>
+                comments.map((c) => (
+                  <div key={c.commentId} className="comment-item">
+                    <img
+                      src={c.author.profileImageUrl || default_profile}
+                      alt="user"
+                      className="comment-user__img"
+                    />
+                    <div className="comment-content">
+                      <p className="comment-user__name">{c.author.nickname}</p>
+                      <p className="comment-text">{c.text}</p>
+                      <p className="comment-date">{c.createdAt.split("T")[0]}</p>
                     </div>
-                  ))
+                  </div>
+                ))
               )}
             </div>
 
@@ -267,7 +368,7 @@ const ReviewDetail = () => {
               currentPage={currentPage}
               totalCount={comments.length}
               pageSize={commentsPerPage}
-              onPageChange={(page) => setCurrentPage(page)}
+              onPageChange={async (page) => {setCurrentPage(page); await loadComments(page-1)}}
             />
 
             <div className="comment-input">
@@ -299,6 +400,18 @@ const ReviewDetail = () => {
           />
         )}
       </div>
+      {showDeleteModal && (
+        <CustomModal
+          title="서평 삭제"
+          message={`서평을 삭제하시겠습니까?
+          삭제 후에는 복구할 수 없습니다.`}
+          onConfirm={() => {
+            setShowDeleteModal(false);
+            handleDeleteReview();
+          }}
+          onCancel={() => setShowDeleteModal(false)}
+        />
+      )}
     </div>
   );
 };

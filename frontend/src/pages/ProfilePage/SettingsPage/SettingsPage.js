@@ -4,12 +4,20 @@ import profile_img from "../../../assets/profile_img.png";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../../../components/Modal/ChangePasswordModal/ChangePasswordModal.js";
+import { getMyProfile } from "../../../api/authApi.js";
 
+const base=process.env.REACT_APP_BASE_URL;
+function fullUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${base}/${path}`; // base 붙이기
+}
 
 export default function SettingsPage() {
   const { isLoggedIn, user } = useAuth();
   const navigate=useNavigate();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const[profile,setProfile]=useState();
 
   
 
@@ -20,12 +28,25 @@ export default function SettingsPage() {
     }
   }, [isLoggedIn, user, navigate]);
 
+  useEffect(()=>{
+    async function loadProfiles(){
+      try{
+        const res=await getMyProfile();
+        setProfile(res);
+      }catch (err) {
+        console.error("프로필 불러오기 실패", err);
+        alert("프로필 정보를 불러오지 못했습니다.");
+      } 
+    }
+    loadProfiles();
+  },[])
+
   // 기본값 설정
-  const profileImage = user?.profileImg || profile_img;
-  const nickname = user?.nickname || "사용자";
-  const intro = user?.intro || "나를 소개할 수 있는 한 문장을 적어보세요.";
-  const username = user?.id || "unknown";
-  const email = user?.email || "unknown@test.com";
+  const profileImage = fullUrl(profile?.profileImageUrl)??profile_img;
+  const nickname = profile?.nickname || "사용자";
+  const intro = profile?.intro || "나를 소개할 수 있는 한 문장을 적어보세요.";
+  const username = profile?.username || "unknown";
+  const email = profile?.email || "unknown@test.com";
 
   return (
     <div className="settings-container">
@@ -46,7 +67,9 @@ export default function SettingsPage() {
           <div className="profile-item">
             <p className="label">프로필</p>
             <div className="value">
-              <img src={profileImage} alt="프로필" className="profile-thumb" />
+              <img src={profileImage} 
+              onError={(e) => (e.target.src = profile_img)}
+              alt="프로필" className="profile-thumb" />
             </div>
           </div>
 
