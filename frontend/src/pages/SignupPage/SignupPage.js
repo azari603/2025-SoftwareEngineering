@@ -73,14 +73,28 @@ export default function SignUpPage() {
                 agreeTerms:true,
             });
             navigate("/signup/email",{state: {username, email}});
-        }catch(err){
-            const msg=err.message;
-            if(msg.includes("아이디")) setUsernameError(msg);
-            else if(msg.includes("이메일")) setEmailError(msg);
-            else alert(msg);
-        }
-    };
+        }catch (err) {
+    // err = { code: "...", message: "..." }
 
+        switch (err.code) {
+            case "DUPLICATE_USERNAME":
+                setUsernameError(err.message);
+                break;
+
+            case "DUPLICATE_EMAIL":
+                setEmailError(err.message);
+                break;
+
+            case "VALIDATION_ERROR":
+                // 백엔드 validation이면 어떤 필드인지 확실히 모를 수 있으므로 alert로 처리
+                alert(err.message);
+                break;
+
+            default:
+                alert(err.message);
+        }
+        };
+    }
     return (
         <>
             <h2 className="signup-title">회원가입</h2>

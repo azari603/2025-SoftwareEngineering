@@ -34,6 +34,7 @@ export default function MyLibraryPage() {
 
   useEffect(() => {
     async function loadBooks() {
+      if(!user) return;
       setLoading(true);
 
       const status = mapStatus(activeTab);

@@ -5,6 +5,14 @@ import StarRate from "../StarRate/StarRate";
 import { FaHeart } from "react-icons/fa";
 import { FaRegCommentDots } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import profile_img from "../../assets/profile_img.png";
+
+const base=process.env.REACT_APP_BASE_URL;
+function fullUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${base}/${path}`; // base 붙이기
+}
 
 export default function FeedReviewCard({ review }) {
   const {
@@ -12,7 +20,10 @@ export default function FeedReviewCard({ review }) {
     excerpt,
     starRating,
     createdAt,
-    author,
+    username,
+    nickname,
+    profileImage,
+    avgStar,
     book,
     likeCount,
     commentCount,
@@ -32,14 +43,15 @@ export default function FeedReviewCard({ review }) {
       {/* HEADER */}
       <div className="feed-review-header">
         <img
-          src={author.profileImageUrl}
+          src={fullUrl(profileImage)||profile_img}
+          onError={(e) => (e.target.src = profile_img)}
           alt=""
           className="feed-profile-img"
         />
 
         <div className="feed-writer-info">
-          <div className="feed-writer-nickname">{author.nickname}</div>
-          <div className="feed-writer-id">@{author.username}</div>
+          <div className="feed-writer-nickname">{nickname}</div>
+          <div className="feed-writer-id">@{username}</div>
         </div>
 
         <div className="feed-date">{formattedDate}</div>
@@ -56,16 +68,16 @@ export default function FeedReviewCard({ review }) {
 
       {/* BOOK BOX */}
       <div className="feed-book-box">
-        <img src={book.imageUrl} alt="" className="feed-book-img" />
+        <img src={book.image} alt="" className="feed-book-img" />
 
         <div className="feed-book-info">
           <div className="feed-book-top-row">
-            <div className="feed-book-title">{book.name}</div>
+            <div className="feed-book-title">{book.title}</div>
             <div className="feed-book-author">{book.author}</div>
           </div>
           <div className="feed-book-meta-row">
             <span className="feed-book-rating">
-              <FaStar className="star-icon" /> {book.averageRating.toFixed(1)}
+              <FaStar className="star-icon" /> {avgStar}
             </span>
           </div>
         </div>

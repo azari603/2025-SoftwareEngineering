@@ -5,6 +5,7 @@ import "./BookInfoSection.css";
 import Button from "../Button/Button";
 import * as BookAPI from "../../api/bookAPI"
 import { useState } from "react";
+import LoginModal from "../Modal/LoginModal/LoginModal";
 
 const CLIENT_TO_SERVER={
   want:"WISHLIST",
@@ -22,45 +23,50 @@ const SERVER_TO_CLIENT={
 export default function BookInfoSection({ book }) {
   const {isLoggedIn, user} =useAuth();
   const [status, setStatus]=useState("none"); //현재 책 상태
+  const safeIntro = book?.intro?.trim() || "등록된 소개가 없습니다.";
+  const [showLoginModal, setShowLoginModal]=useState(false);
 
-  //책 상태 초기 로딩
+  //첫 로드시 내 읽기 상태 조회
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!isLoggedIn||!book) {
       setStatus("none");
       return;
     }
-    async function loadStatus(){
-      const serverStatus=await BookAPI.getBookStatus(book.bookId, user.username);
-      if(serverStatus){
-        setStatus(SERVER_TO_CLIENT[serverStatus]);
-      }else{
-        setStatus("none");
+
+    async function loadStatus() {
+      const res = await BookAPI.getMyBookStatus(book.id);
+      if (res.ok) {
+        if (res.data.hasStatus && res.data.status) {
+          const clientStatus = SERVER_TO_CLIENT[res.data.status];
+          setStatus(clientStatus);
+        } else {
+          setStatus("none");
+        }
       }
     }
     loadStatus();
-},[book, isLoggedIn, user]);
-
-  if (!book) return null;
+  }, [book.id, isLoggedIn]);
 
   //상태 변경 버튼 클릭
   const handleStatusChange = async (newStatus) => {
     if(!isLoggedIn){
-      alert("로그인이 필요합니다")
+      setShowLoginModal(true);
       return
     }
     const serverNew=CLIENT_TO_SERVER[newStatus];
-    const serverCurrent=CLIENT_TO_SERVER[status];
-    
-    //같은 버튼 클릭 -> 상태 해제
-    if(serverNew===serverCurrent){
-      await BookAPI.removeBookStatus(book.bookId, user.username);
-      setStatus("none");
-      return;
-    }
+  
+    if (status === newStatus) {
+    // 이미 선택된 상태 → 해제
+    const res = await BookAPI.clearBookStatus(book.id);
+    if (res.success) setStatus("none");
+    return;
+  }
 
-    //다른 버튼 클릭 -> 상태 변경
-    await BookAPI.updateBookStatus(book.bookId, serverNew, user.username);
+  // 상태 설정
+  const res = await BookAPI.setBookStatus(book.id, serverNew);
+  if (res.success) {
     setStatus(newStatus);
+  }
   };
 
   return (
@@ -68,16 +74,16 @@ export default function BookInfoSection({ book }) {
       <div className="book-info-wrapper">
           {/* 책 표지 */}
         <div className="book-cover">
-          <img src={book.image} alt={book.title} />
+          <img src={book.image} alt={book.name} />
         </div>
 
         {/* 책 정보 */}
         <div className="book-info-meta">
           <div className="book-meta-wrapper">
-            <h2 className="book-title">{book.title}</h2>
-            <p className="book-author">{book.author}</p>
-            <p className="book-pub">
-              {book.publisher || "출판사 미상"} · {book.publishDate || "출판일 미상"}
+            <h2 className="book-title">{book.name}</h2>
+            <p className="book-info-author">{book.author}</p>
+            <p className="book-info-pub">
+              {book.publisher || "출판사 미상"} · {book.publicationDate || "출판일 미상"}
             </p>
           </div>
           
@@ -85,7 +91,7 @@ export default function BookInfoSection({ book }) {
           <div className="book-rating-action-wrapper">
             {/* 별점 (더미 데이터) */}
           <div className="book-rating">
-            <StarRate className="start-rate" value={book.rating} readOnly={true}/>
+            <StarRate className="start-rate" value={book.avgStar} readOnly={true}/>
           </div>
 
           {/* 상태 변경 버튼 */}
@@ -108,13 +114,15 @@ export default function BookInfoSection({ book }) {
           
         </div>
         {/* 서평쓰기 버튼 */}
-          <Button variant="filled" to={`/write/review?bookId=${book.bookId}`} size="small">서평 쓰기</Button> 
+          <Button variant="filled" to={`/write/review?id=${book.id}`} size="small">서평 쓰기</Button> 
       </div>
       
       <div className="book-description">
           <h3>책 소개</h3>
-          <p>{book.description}</p>
+          <p>{safeIntro}</p>
       </div>
+      {showLoginModal && <LoginModal onClose={() => setShowLoginModal(false)} />}
     </section>
+    
   );
 }

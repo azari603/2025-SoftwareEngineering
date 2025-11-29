@@ -38,7 +38,7 @@ const ratings = [5, 4, 3, 5, 2, 4,5];
 
 export const dummyBooks = titles.map((t, i) => ({
   bookId: String(i + 1),
-  title: t,                          
+  name: t,                          
   author: author[i%author.length],
   image: coverImages[i % coverImages.length], 
   rating: ratings[i],

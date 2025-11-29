@@ -1,29 +1,69 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./ProfileEditPage.css";
 import profile_img from "../../../assets/profile_img.png";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import camera_img from "../../../../src/assets/camera.png";
+import * as authAPI from "../../../api/authApi";
 
 export default function ProfileEditPage() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const[profile,setProfile]=useState();
+
+  useEffect(()=>{
+      async function loadProfiles(){
+        try{
+          const res=await authAPI.getMyProfile();
+          setProfile(res);
+        }catch (err) {
+          console.error("프로필 불러오기 실패", err);
+          alert("프로필 정보를 불러오지 못했습니다.");
+        } 
+      }
+      loadProfiles();
+    },[])
+
 
   // 초기값
-  const [nickname, setNickname] = useState(user?.nickname || "");
-  const [intro, setIntro] = useState(user?.intro || "");
-  const [profileImage, setProfileImage] = useState(user?.profileImg || profile_img);
-  const [bgImage, setBgImage] = useState(user?.backgroundImg || null);
-
+  const [nickname, setNickname] = useState(profile?.nickname || "");
+  const [intro, setIntro] = useState(profile?.intro || "");
+  const [profileImage, setProfileImage] = useState(profile?.profileImageUrl || profile_img);
+  const [bgImage, setBgImage] = useState(profile?.backgroundImageUrl || null);
+  const [profileImagePreview, setProfileImagePreview]=useState(profile?.profileImageUrl||profile_img);
+  const [bgImagePreview, setBgImagePreview]=useState(profile?.backgroundImageUrl||null);
   const profileInputRef = useRef(null);
   const bgInputRef = useRef(null);
+
+  useEffect(() => {
+    if (profile) {
+      const base=process.env.REACT_APP_BASE_URL;
+      const fullProfileImage = profile.profileImageUrl
+      ? (profile.profileImageUrl.startsWith("http")
+          ? profile.profileImageUrl
+          : base+ profile.profileImageUrl)
+      : profile_img;
+
+    const fullBgImage = profile.backgroundImageUrl
+      ? (profile.backgroundImageUrl.startsWith("http")
+          ? profile.backgroundImageUrl
+          : base + profile.backgroundImageUrl)
+      : null;
+
+      setNickname(profile.nickname || "");
+      setIntro(profile.intro || "");
+      setProfileImagePreview(fullProfileImage);
+      setBgImagePreview(fullBgImage);
+    }
+  }, [profile]);
 
   // 프로필 이미지 변경
   const handleProfileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setProfileImage(file);
       const previewURL = URL.createObjectURL(file);
-      setProfileImage(previewURL); // 프리뷰용 URL
+      setProfileImagePreview(previewURL); // 프리뷰용 URL
     }
   };
 
@@ -31,21 +71,43 @@ export default function ProfileEditPage() {
   const handleBgChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setBgImage(file);
       const previewURL = URL.createObjectURL(file);
-      setBgImage(previewURL); // 프리뷰용 URL
+      setBgImagePreview(previewURL); // 프리뷰용 URL
     }
   };
 
   // 저장 (지금은 로컬 상태만 업데이트)
-  const handleSave = () => {
-    const updatedUser = {
-      ...user,
-      nickname,
-      intro,
-      profileImg: profileImage,
-      backgroundImg: bgImage,
-    };
-
+  const handleSave = async () => {
+    const updatedUser = { ...user };
+    // 닉네임/소개 변경
+      if (nickname !== profile.nickname || intro !== profile.intro) {
+        const res = await authAPI.updateProfile({ nickname, intro });
+        if (!res.success) {
+          alert(res.message || "프로필 수정 오류가 발생했습니다.");
+          return;
+        }
+        updatedUser.nickname = nickname;
+        updatedUser.intro = intro;
+      }
+      // 프로필 이미지 업로드
+      if (profileImage) {
+        const res = await authAPI.uploadProfileImage(profileImage);
+        if (!res.success) {
+          alert(res.message || "프로필 이미지 업로드 중 오류");
+          return;
+        }
+        updatedUser.profileImg = res.profileImageUrl;
+      }
+      // 배경 이미지 업로드
+      if (bgImage) {
+        const res = await authAPI.uploadBackgroundImage(bgImage);
+        if (!res.success) {
+          alert(res.message || "배경 이미지 업로드 중 오류");
+          return;
+        }
+        updatedUser.backgroundImg = res.backgroundImageUrl;
+      }
     // 화면 즉시 반영
     setUser(updatedUser);
 
@@ -67,7 +129,11 @@ export default function ProfileEditPage() {
             className="profile-thumb"
             onClick={() => profileInputRef.current.click()}
           >
-            <img src={profileImage} alt="프로필 이미지" />
+            <img src={profileImagePreview}
+            onError={(e) => {
+            e.target.src = profile_img; // 기본 이미지로 변경
+          }}
+            alt="프로필 이미지" />
             <div className="camera-overlay">
               <img
                 src={camera_img}
@@ -117,7 +183,7 @@ export default function ProfileEditPage() {
               className="background-preview editable"
               onClick={() => bgInputRef.current.click()}
               style={{
-                backgroundImage: bgImage ? `url(${bgImage})` : "none",
+                backgroundImage: bgImagePreview ? `url(${bgImagePreview})` : "none",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
               }}

@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import StarRate from "../../components/StarRate/StarRate";
 import DatePickerModal from "../../components/Modal/DatePickerModal/DatePickerModal";
 import Dropdown from "../../components/Dropdown/Dropdown";
-import { getBookByISBN } from "../../api/bookAPI";
+import { fetchBookDetail, getBookByISBN } from "../../api/bookAPI";
 import { CiCalendar } from "react-icons/ci";
 import { createReview } from "../../api/reviewAPI";
 import "./ReviewWrite.css";
@@ -12,7 +12,7 @@ const ReviewWrite = () => {
     const location = useLocation();
     const params=new URLSearchParams(location.search);
     const navigate=useNavigate();
-    const isbn=params.get("isbn");
+    const id=params.get("id");
 
     const[book, setBooks]=useState(null);
     const[loading, setLoading]=useState(true);
@@ -20,16 +20,16 @@ const ReviewWrite = () => {
     //책 정보 불러오기
     useEffect(()=>{
         async function fetchBooks(){
-            const res=await getBookByISBN(isbn);
+            const res=await fetchBookDetail(id);
             if(!res.ok){
                 alert(res.message);
                 return;
             }
-            setBooks(res.book);
+            setBooks(res);
             setLoading(false);
         }
         fetchBooks()
-    },[isbn]);
+    },[id]);
     
     const [rating, setRating] = useState(0);
     const [startDate, setStartDate] = useState("");

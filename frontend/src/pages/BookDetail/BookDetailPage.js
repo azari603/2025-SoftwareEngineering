@@ -18,34 +18,50 @@ export default function BookDetailPage(){
     const [reviews, setReviews] = useState([]); //이 책의 서평
    
     const { setFooterColor } = useContext(LayoutContext);
-
-    //이 책의 서평 목록 요청
-    useEffect(() => {
-    if (!book) return;
-
-    (async () => {
-        const res = await ReviewAPI.getReviewsByBookId(book.bookId, 0, 10, "latest");
-        setReviews(res.content);
-    })();
-
-    }, [book]);
     
     //책 정보 요청
     useEffect(()=>{
         (async () => {
-            const res=await BookAPI.getBookByISBN(bookId);
+            const res=await BookAPI.fetchBookDetail(bookId);
             setBook(res);
         })();
     },[bookId]);
 
-    //추천 도서 요청
+    //이 책의 서평
     useEffect(()=>{
-        if(!book) return;
-        (async ()=>{
-            const res=await BookAPI.getRecommendBooks();
-            if(res.books) setRecommended(res.books);
+        async function loadReviews(){
+            const res=await BookAPI.fetchReveiwByBook({
+                bookId, page: 0, size: 10, sort: "createdAt,desc"
+            });
+            if(res.ok){
+                setReviews(res.data.content);
+            }else{
+                console.error("도서별 서평 조회 오류",res.error);
+            }
+        }
+        loadReviews()
+    },[bookId]);
+    
+
+    //추천 도서 요청
+    useEffect(() => {
+        if (!book) return;
+
+        (async () => {
+            const res = await BookAPI.fetchSimilarBooks({
+            bookId,
+            page: 0,
+            size: 10,
+        });
+
+            if (res.ok) {
+            setRecommended(res.books);
+            } else {
+            console.error("유사 도서 조회 오류", res.error);
+            setRecommended([]);
+            }
         })();
-    },[book])
+    }, [book]);
 
     useEffect(() => {
         setFooterColor("#FDFBF4"); // 흰색 테마
@@ -62,7 +78,7 @@ export default function BookDetailPage(){
                     </div>
 
                     <div className="book-wrapper">
-                        <h3><span className="book-title-span">{book.title}</span>과 비슷한 책</h3>
+                        <h3><span className="book-title-span">{book.name}</span>과 비슷한 책</h3>
                         <BookList books={recommended} mode="carousel" visibleCount={4} cardSize="lg"/>
                     </div>
                     

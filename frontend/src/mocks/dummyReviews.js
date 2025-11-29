@@ -4,7 +4,7 @@ import dummyDetailedReviews from "./dummyDetailedReview";
 export const dummyReviews = dummyDetailedReviews.map((r) => ({
   reviewId: r.reviewId,
   title: r.title,
-  preview: r.content.slice(0, 200), // 미리보기 생성
+  excerpt: r.content.slice(0, 200), // 미리보기 생성
   createdAt: r.createdAt,
   likeCount: r.likeCount,
   commentCount: r.commentCount,
@@ -19,7 +19,7 @@ export const dummyReviews = dummyDetailedReviews.map((r) => ({
 
   book: {
     bookId: r.book.bookId,
-    title: r.book.title,
+    name: r.book.name,
     author: r.book.author,
     image: r.book.image,
     rating: r.book.rating,

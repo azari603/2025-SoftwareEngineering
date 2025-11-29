@@ -47,9 +47,9 @@ export default function App() {
             path="/"
             element={
                 <Home
-                  todayBooks={todaysBooks}
-                  todayReviews={todaysReviews}
-                  recommendedBooks={recommendedBooks}
+                  
+                 
+                  
                   followingReviews={followingReviews}
                 />}/>
 
@@ -58,6 +58,7 @@ export default function App() {
                 <Route path="/quiz/result" element={<QuizResult/>}/>
                 <Route path="/search" element={<SearchPage/>}></Route>
                 <Route path="/profile" element={<ProfilePage/>}/>
+                <Route path="/profile/:username" element={<ProfilePage/>}/>
                 <Route path="/profile/settings" element={<SettingsPage/>}/>
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:reviewId" element={<ReviewDetail/>}/>

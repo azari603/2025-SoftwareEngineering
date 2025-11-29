@@ -8,7 +8,7 @@
 }
 
 .success-title {
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: #229159;
   margin-top: 10px;
@@ -20,14 +20,14 @@
 }
 
 .success-welcome {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 500;
   margin: 0;
 }
 
 
 .success-subtext {
-  font-size: 12px;
+  font-size: 16px;
   line-height: 1.7;
   color: #767676;
   margin: 0 0 10px 0;

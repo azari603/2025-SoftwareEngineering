@@ -35,10 +35,14 @@
 }
 
 .review-book-title {
+  width: 100%;
   font-size: 16px;
   font-weight: bold;
   text-align: center;
   margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .review-book-author {

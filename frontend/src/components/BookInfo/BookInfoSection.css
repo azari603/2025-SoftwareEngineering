@@ -42,14 +42,15 @@
   margin-bottom: 4px;
 }
 
-.book-author {
-  color: #666;
-  margin-bottom: 6px;
+.book-info-author {
+  font-weight: 100;
+  margin-bottom: 4px;
+  font-size: 1.0rem;
 }
 
-.book-pub {
+.book-info-pub {
   color: #888;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
 .book-rating-action-wrapper .book-rating {

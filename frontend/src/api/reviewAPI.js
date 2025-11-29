@@ -1,5 +1,3 @@
-import {dummyReviews} from "../mocks/dummyReviews";
-import dummyDetailedReviews from "../mocks/dummyDetailedReview";
 import axiosInstance from "./axiosInstance";
 
 //서평 작성
@@ -21,138 +19,251 @@ export async function createReview(reviewData){
     }
   }
 }
-//최신 피드 (임시)
-export const getLatestReviews = async () => {
-  return dummyReviews;
-};
+
+//서평 삭제
+export async function deleteReview(reviewId) {
+  try {
+    const res = await axiosInstance.delete(`/reviews/${reviewId}`);
+
+    // 204면 res.data 없음
+    return {
+      ok: true
+    };
+  } catch (err) {
+    const code = err.response?.data?.code;
+
+    return {
+      ok: false,
+      error: code || "UNKNOWN_ERROR"
+    };
+  }
+}
+
+async function mapReview(apiReview) {
+  return {
+    reviewId: apiReview.reviewId,
+    title: apiReview.title,
+    excerpt: apiReview.textExcerpt || "",       
+    starRating: apiReview.starRating,
+    createdAt: apiReview.createdAt,
+    likeCount: apiReview.likeCount,
+    commentCount: apiReview.commentCount,
+    likedByViewer: apiReview.likedByViewer,
+    profileImage:apiReview.profileImage,
+    nickname: apiReview.nickname,
+    username: apiReview.username,
+    avgStar: apiReview.avgStar,
+    book:{
+      bookId: apiReview.bookId,
+      title: apiReview.bookName,
+      author: apiReview.bookAuthor,
+      image: apiReview.bookImage,
+    }
+  }
+}
+//최신 피드
+export async function fetchLatestFeed({ page = 0, size = 8, sort = "createdAt,desc" }) {
+  try {
+    const res = await axiosInstance.get("/feed/latest", {
+      params: { page, size, sort },
+    });
+    const reviews=res.data.content;
+    const mappedReviews=await Promise.all(reviews.map(mapReview));
+    return {
+      content: mappedReviews,
+      totalPages: res.data.totalPages,
+      totalElements: res.data.totalElements
+    };
+  } catch (err) {
+    console.error("최신 피드 불러오기 오류:", err);
+    return { content: [], error: err.response?.data?.message };
+  }
+}
 
 // username 가 팔로잉한 사용자들의 리뷰만 필터링 (임시)
-export const getFollowingReviews = async (username) => {
-  return dummyReviews.filter((r) => r.writer.following === true);
-};
-
-//특정 책의 서평 목록 (임시)
-export async function getReviewsByBookId(bookId, page = 0, size = 10, sort = "latest") {
-  await new Promise((r) => setTimeout(r, 300)); // 로딩 흉내
-
-  // 1) PUBLIC만 필터
-  let filtered = dummyReviews.filter(
-    (r) => r.book.bookId === bookId && r.visibility === "PUBLIC"
-  );
-
-  // 2) 정렬
-  if (sort === "latest") {
-    filtered = filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+export async function fetchFollowingFeed({ page = 0, size = 8, sort = "createdAt,desc" }) {
+  try {
+    const res = await axiosInstance.get("/feed/following", {
+      params: { page, size, sort },
+    });
+    return res.data;
+  } catch (err) {
+    console.error("팔로잉 피드 불러오기 오류:", err);
+    return { content: [], error: err.response?.data?.message };
   }
-
-  // 3) 페이징 처리
-  const start = page * size;
-  const end = start + size;
-  const pageContent = filtered.slice(start, end);
-
-  return {
-    content: pageContent,
-    totalCount: filtered.length,
-    page,
-    size,
-  };
 }
 
-// 서평 상세 조회(임시)
+// 서평 상세 조회
 export async function fetchReviewDetail(reviewId) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      // 숫자 비교를 위해 Number 변환
-      const id = Number(reviewId);
-
-      const review = dummyDetailedReviews.find(r=>r.reviewId===id);
-      if(!review){
-        reject({error:"REVIEW_NOT_FOUND"});
-        return;
-      }
-      const currentUser="testuser";
-
-      if (review.visibility === "PRIVATE" && review.user.username !== currentUser) {
-        reject({ error: "FORBIDDEN" });
-        return;
-      }
-
-      // 백엔드 명세 + book 정보 포함한 구조 반환
-      resolve({
-        reviewId: review.reviewId,
-        title: review.title,
-        content: review.content,
-        myRating: review.myRating,
-        createdAt: review.createdAt,
-        visibility: review.visibility,
-
-        // 작성자 정보
-        user: {
-          username: review.user.username,
-          nickname: review.user.nickname,
-          profileImg: review.user.profileImg,
-        },
-
-        // 책 정보 (명세에는 없지만 프론트에서 필요)
-        book: review.book,
-
-        // 백엔드 명세 필드
-        likeCount: review.likeCount,
-        commentCount: review.commentCount,
-      });
-    }, 400);
-  });
+  try{
+    const res=await axiosInstance.get(`/reviews/${reviewId}`);
+    return{
+      ok: true,
+      ...res.data,
+    };
+  }catch(err){
+    const code=err.response?.data?.code;
+    if(code==="REVIEW_NOT_FOUND"){
+      throw{ok: false, error: "REVIEW_NOT_FOUND"}
+    }
+    if(code==="FORBIDDEN"){
+      throw{ok: false, error:"FORBIDDEN"};
+    }
+    if(code=="INTERNAL_SERVER_ERROR"){
+      throw{ok: false, error:"INTERNAL_SERVER_ERROR"};
+    }
+    
+  }
 }
 
-//내 서평 목록 조회 (임시)
-// 임시 내 서평 목록 조회 API
-export async function getMyReviews(currentUserName, {
+//좋아요 수 조회
+export async function fetchReviewLikeCount(reviewId) {
+  try {
+    const res = await axiosInstance.get(`/reviews/${reviewId}/likes/count`);
+    return res.data.likeCount; // 응답: { likeCount: number }
+  } catch (err) {
+    const code = err.response?.data?.code;
+    if (code === "REVIEW_NOT_FOUND") throw "REVIEW_NOT_FOUND";
+    if (code === "FORBIDDEN") throw "FORBIDDEN";
+    throw "UNKNOWN_ERROR";
+  }
+}
+
+//내 서평 목록 조회
+export async function getMyReviews({
   page = 0,
   size = 20,
   visibility = "ALL",
   status = "PUBLISHED",
-  sort = "createdAt,desc"
-} = {}) {
-
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // 1. user 필터
-      let list = dummyDetailedReviews.filter(
-        r => r.user.username === currentUserName
-      );
-
-      // 4. 정렬
-      if (sort === "createdAt,desc") {
-        list = list.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      }
-
-      // 5. 페이징
-      const start = page * size;
-      const end = start + size;
-      const content = list.slice(start, end);
-
-      // 6. 목록용 데이터 형식으로 변환
-      const mapped = content.map(r => ({
-        reviewId: r.reviewId,
-        title: r.title,
-        preview: r.content.slice(0, 80) + "...",
-        createdAt: r.createdAt,
-        likeCount: r.likeCount,
-        visibility: r.visibility,
-        status: r.status,
-        user: r.user,
-        book: r.book,
-      }));
-
-      resolve({
-        content: mapped,
-        totalCount: list.length,
+  sort = "createdAt,desc",
+}) {
+  try {
+    const res = await axiosInstance.get("/reviews/me", {
+      params: {
         page,
         size,
-      });
-    }, 300);
-  });
+        visibility,
+        status,
+        sort,
+      },
+    });
+    
+    return {
+      success: true,
+      content: res.data.content,
+      totalPages: res.data.totalPages,
+      totalElements: res.data.totalElements,
+    };
+  } catch (err) {
+    console.error("내 서평 목록 조회 오류:", err);
 
+    return {
+      success: false,
+      content: [],
+      error: err.response?.data?.message || "서평 조회 오류",
+      code: err.response?.data?.code,
+    };
+  }
 }
 
-//좋아요한 서평 목록 조회 (임시)
+//서평 좋아요
+export async function likeReview(reviewId) {
+  try {
+    const res = await axiosInstance.post(`/reviews/${reviewId}/likes`);
+
+    // 201 Created 또는 204 No Content → 성공
+    return { ok: true };
+  } catch (err) {
+    const code = err.response?.data?.code || "UNKNOWN_ERROR";
+    return { ok: false, code };
+  }
+}
+
+//서평 좋아요 취소
+export async function unlikeReview(reviewId) {
+  try {
+    await axiosInstance.delete(`/reviews/${reviewId}/likes`);
+    return { ok: true };
+  } catch (err) {
+    const code = err.response?.data?.code || "UNKNOWN_ERROR";
+    return { ok: false, code };
+  }
+}
+
+//특정 서평 좋아요 여부
+export async function fetchReviewLikeStatus(reviewId) {
+  try {
+    const res = await axiosInstance.get(`/reviews/${reviewId}/likes/status`);
+    return { ok: true, liked: res.data.liked };
+  } catch (err) {
+    const code = err.response?.data?.code || "UNKNOWN_ERROR";
+    return { ok: false, code };
+  }
+}
+
+
+//좋아요한 서평 목록 조회
+export async function getLikedReviews({ page = 0, size = 10, sort = "likedAt,desc" } = {}) {
+  try {
+    const res = await axiosInstance.get("/me/likes/reviews", {
+      params: { page, size, sort },
+    });
+
+    return {
+      ok: true,
+      content: res.data.content, // 리뷰 배열
+      totalElements: res.data.totalElements,
+      totalPages: res.data.totalPages,
+    };
+  } catch (err) {
+
+    return {
+      ok: false,
+      error: "UNKNOWN_ERROR",
+      content: [],
+    };
+  }
+}
+
+//댓글 목록 조회
+export async function fetchComments(reviewId, { page = 0, size = 10, sort = "createdAt,asc" } = {}) {
+  try {
+    const res = await axiosInstance.get(`/reviews/${reviewId}/comments`, {
+      params: { page, size, sort },
+    });
+
+    return {
+      ok: true,
+      ...res.data, // content, pageable 등
+    };
+  } catch (err) {
+    const code = err.response?.data?.code;
+
+    return {
+      ok: false,
+      error: code || "UNKNOWN_ERROR",
+    };
+  }
+}
+
+//댓글 작성
+export async function postComment(reviewId, text) {
+  try {
+    const res = await axiosInstance.post(`/reviews/${reviewId}/comments`, {
+      text,
+    });
+
+    return {
+      ok: true,
+      commentId: res.data.commentId,
+    };
+  } catch (err) {
+    const code = err.response?.data?.code;
+
+    return {
+      ok: false,
+      error: code || "UNKNOWN_ERROR",
+    };
+  }
+}
+

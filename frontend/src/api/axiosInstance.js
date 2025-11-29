@@ -11,6 +11,8 @@ axiosInstance.interceptors.request.use((config)=>{
     
     if(token){
         config.headers.Authorization=`Bearer ${token}`
+    }else{
+         delete config.headers.Authorization;
     }
     
     return config;
@@ -26,12 +28,11 @@ axiosInstance.interceptors.response.use(
             originalRequest._retry=true;
             try{
                 const {data}=await axiosInstance.post("/auth/token/refresh");
-                localStorage.setItem("accessToken",data.accessToken);
+                localStorage.setItem("accessToken",data.data.accessToken);
                 originalRequest.headers.Authorization=`Bearer ${data.accessToken}`;
                 return axiosInstance(originalRequest);
             }catch(err){
                 localStorage.removeItem("accessToken");
-                window.location.href="/login"; 
             }
         }
         /*if(error.response?.status===403){
@@ -39,9 +40,7 @@ axiosInstance.interceptors.response.use(
             localStorage.removeItem("refreshToken");
             window.location.href="/login";
         }*/
-        if (error.response?.status === 500) {
-        alert("서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-        }
+        
         return Promise.reject(error);
     }
 )

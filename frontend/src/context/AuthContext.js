@@ -10,9 +10,7 @@ export const AuthProvider = ({ children }) => {
   const [accessToken, setAccessToken]=useState(
     localStorage.getItem("accessToken")
   );
-  const [refreshToken, setRefreshToken]=useState(
-    localStorage.getItem("refreshToken")
-  );
+  
   const isLoggedIn=!!accessToken;
 
   //앱 시작 시 토큰 복구 -> 새로고침해도 안 날아가게
@@ -23,7 +21,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchMyInfo=async()=>{
     try{
-      const res=await axiosInstance.get("/auth/me");
+      const res=await authAPI.getMyAccount()
       setUser(res.data);
     }catch(err){
       console.log("유저 정보 불러오기 실패:",err);

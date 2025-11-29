@@ -5,7 +5,9 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import { useAuth } from "../../context/AuthContext";
 import "./Home.css";
 import { LayoutContext } from "../../context/LayoutContext";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
+import * as bookAPI from "../../api/bookAPI"
+import { fetchLatestFeed, fetchFollowingFeed } from "../../api/reviewAPI";
 
 /**
  * props
@@ -15,25 +17,70 @@ import { useContext, useEffect } from "react";
  * - followingReviews: Review[]       (로그인: 팔로잉 서평)
  */
 
-const Home = ({ 
-  todayBooks=[],
-  todayReviews=[],
-  recommendedBooks=[],
-  followingReviews=[],
-}) => {
+const Home = (
+) => {
 
   const {isLoggedIn, user}=useAuth();
   const nickname=user?.nickname||"guest";
 
-  const reviewSectionTitle=isLoggedIn?"팔로잉 서평":"오늘의 추천 서평";
-  const reviewForSection=isLoggedIn?followingReviews:todayReviews;
-  const booksForSection=isLoggedIn?recommendedBooks:todayBooks;
+  const [todayBooks, setTodayBooks] = useState([]);
+  const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [todayReviews, setTodayReviews] = useState([]);
+  const [followingReviews, setFollowingReviews] = useState([]);
 
   const { setFooterColor } = useContext(LayoutContext);
 
   useEffect(() => {
     setFooterColor("#FFFFFF"); // 흰색 테마
   }, [setFooterColor]);
+
+  useEffect(() => {
+    loadHomeData();
+  }, [isLoggedIn]);
+
+  async function loadHomeData() {
+    try{
+      //오늘의 서평
+    const latestRes = await fetchLatestFeed({ page: 0, size: 8 });
+    const latestContent = Array.isArray(latestRes?.content)
+        ? latestRes.content
+        : [];
+    setTodayReviews(latestContent);
+    if (isLoggedIn) {
+      //팔로잉 서평
+      const followRes = await fetchFollowingFeed({ page: 0, size: 8 });
+      const followContent = Array.isArray(followRes?.content)
+          ? followRes.content
+          : [];
+      setFollowingReviews(followContent);
+      // 개인화 추천 도서
+      const recoRes = await bookAPI.fetchPersonalizedBooks({ page: 0, size: 10 });
+      const recoBooks = Array.isArray(recoRes?.books)
+          ? recoRes.books
+          : [];
+      setRecommendedBooks(recoBooks);
+    } else {
+      // 인기 도서(비로그인)
+      const popularRes = await bookAPI.fetchPopularBooks({ page: 0, size: 10 });
+      const popularBooks = Array.isArray(popularRes?.books)
+          ? popularRes.books
+          : [];
+      setTodayBooks(popularBooks);
+    }
+    }catch (err) {
+      console.error("홈 데이터 로드 중 오류:", err);
+      // 에러 나면 전부 비워두기
+      setTodayReviews([]);
+      setFollowingReviews([]);
+      setRecommendedBooks([]);
+      setTodayBooks([]);
+    }
+    
+  }
+  const reviewSectionTitle=
+    isLoggedIn&&followingReviews.length>0?"팔로잉 서평":"오늘의 추천 서평";
+  const reviewForSection=isLoggedIn&&followingReviews.length>0?followingReviews:todayReviews;
+  const booksForSection=isLoggedIn?recommendedBooks:todayBooks;
 
   return (
     <div className="home">
@@ -46,14 +93,13 @@ const Home = ({
             </h1>
 
             <div className="main-hero__actions">
+              <Button variant="squareOutline" size="medium" to="/feed">서평 둘러보기</Button>
               {isLoggedIn?(
                 <>
-                  <Button variant="squareOutline" size="medium" to="/feed">서평 둘러보기</Button>
                   <Button variant="filled" size="medium" to="/write/book">책 기록하기</Button>
                 </>
               ):(
                 <>
-                  <Button variant="squareOutline" size="medium" to="/login">서평 둘러보기</Button>
                   <Button variant="filled" size="medium" to="/login">책 기록하기</Button>
                 </>
               )}

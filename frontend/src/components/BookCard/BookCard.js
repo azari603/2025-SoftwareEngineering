@@ -19,9 +19,9 @@ const BookCard = forwardRef(({ book, size = "lg" }, ref) => {
 
 
   return (
-    <Link to={`/book/${book.bookId}`} className={`book-card`} ref={ref} style={styleVars}>
+    <Link to={`/book/${book.id}`} className={`book-card`} ref={ref} style={styleVars}>
       <div className="book-image">
-        <img src={book.image} alt={book.title} />
+        <img src={book.image} alt={book.name} />
       </div>
       <div className="book-info">
         <h3 className="book-title">{book.name || "책제목"}</h3>

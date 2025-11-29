@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import "./SignupEmail.css";
 import Button from "../../../components/Button/Button";
 import emailIcon from "../../../assets/mail_sent.png";
-import { resendVerifyEmail } from "../../../api/authApi";
+import { resendVerifyEmail, checkEmailVerified } from "../../../api/authApi";
 
 export default function SignupEmail() {
   const navigate = useNavigate();
@@ -38,12 +38,29 @@ export default function SignupEmail() {
       }
     };
 
-  useEffect(() => {
-    const verifiedParam = searchParams.get("verified");
-    if (verifiedParam === "true") {
-      setIsVerified(true); // 인증된 경우 버튼 활성화
+    const handleNext = async () => {
+    if (!email) {
+      alert("이메일 정보를 찾을 수 없습니다.");
+      return;
     }
-  }, [searchParams]);
+
+    setLoading(true);
+    try {
+      const res = await checkEmailVerified(email);
+      setLoading(false);
+
+      if (res.verified) {
+        // 인증 완료 → 성공 페이지 이동
+        navigate("/signup/success");
+      } else {
+        // 인증 안 된 경우
+        alert("아직 이메일 인증이 완료되지 않았습니다.");
+      }
+    } catch (err) {
+      setLoading(false);
+      alert(err.message || "이메일 인증 확인 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div className="email-container">
@@ -59,8 +76,7 @@ export default function SignupEmail() {
         type="button"
         variant="filled"
         size="small"
-        onClick={() => navigate("/signup/success",{state:{username}})}
-        disabled={!isVerified} // 인증되지 않으면 비활성화 -> 시뮬레이션 시 url 뒤에 ?verified=true 입력 시 버튼 활성화 됨
+        onClick={handleNext}
       >
         다음
       </Button>

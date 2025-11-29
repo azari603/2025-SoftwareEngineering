@@ -1,6 +1,5 @@
-import { dummyBooks } from "../mocks/dummyBooks";
-import { dummyReviews } from "../mocks/dummyReviews";
 import axiosInstance from "./axiosInstance";
+const token = localStorage.getItem("accessToken");
 
 //회원가입
 export async function signup({username, email, password, passwordConfirm, agreeTerms}){
@@ -13,21 +12,19 @@ export async function signup({username, email, password, passwordConfirm, agreeT
       agreeTerms,
     });
     return res.data; //인증 메일 발송
-  }catch(error){
-    if(error.response){
-      const errorCode=error.response.data?.errorCode;
-      switch (errorCode){
-        case "DUBLICATE_USERNAME":
-          throw new Error("이미 사용 중인 아이디입니다.");
-        case "DUPLICATE_EMAIL":
-          throw new Error("이미 등록된 이메일입니다.");
-        case "VALIDATION_ERROR":
-          throw new Error("입력 값이 올바르지 않습니다.");
-        default:
-          throw new Error("회원가입 중 오류가 발생했습니다.");
-      }
-    }
-    throw error;
+  }catch (error) {
+    const errorCode = error.response?.data?.code;
+
+    const errorMap = {
+      DUPLICATE_USERNAME: "이미 사용 중인 아이디입니다.",
+      DUPLICATE_EMAIL: "이미 등록된 이메일입니다.",
+      VALIDATION_ERROR: "입력 값이 올바르지 않습니다.",
+    };
+
+    const message = errorMap[errorCode] || "회원가입 중 오류가 발생했습니다.";
+
+    // 코드 + 메시지 함께 throw
+    throw { code: errorCode, message };
   }
 }
 // 로그인
@@ -70,21 +67,42 @@ export async function resendVerifyEmail(email) {
   }
 }
 
-//내 계정 조회 (임시)
-export async function getMyAccount() {
-  await new Promise((r) => setTimeout(r, 400));
+//이메일 인증 확인
+export async function checkEmailVerified(email) {
+  try {
+    const res = await axiosInstance.get("/auth/email/verified", {
+      params: { email },
+    });
 
-  return {
-    account: {
-      username: "testuser",
-      email: "test@email.com",
-      nickname: "수진",
-      emailVerified: true,
-      provider: "LOCAL",
-      status: "ACTIVE",
-      createdAt: "2025-01-01T12:00:00Z",
-    },
-  };
+    return {
+      ok: res.data.success,
+      verified: res.data.data,  // true면 인증됨, false면 미인증
+      message: res.data.message,
+    };
+
+  } catch (error) {
+    console.error("이메일 인증 확인 실패:", error);
+
+    throw new Error(
+      error.response?.data?.message ||
+      "이메일 인증 여부를 확인하는 중 오류가 발생했습니다."
+    );
+  }
+}
+
+//내 계정 조회
+export async function getMyAccount() {
+  try{
+    const res=await axiosInstance.get("/auth/me");
+    return res.data;
+  }catch (err){
+    console.error("내 계정 조회 실패",err);
+    return {
+      ok: false,
+      code: err.response?.data?.code,
+      message: err.response?.data?.message || "내 계정 조회 중 오류가 발생했습니다.",
+    };
+  }
 }
 
 //내 프로필 조회
@@ -101,46 +119,107 @@ export async function getMyProfile(){
   }
 }
 
-// (타인) 프로필 조회 (임시)
-export async function getProfile(username, { include } = {}) {
-  await new Promise((r) => setTimeout(r, 500));
+// (타인/본인) 프로필 조회 
+export async function getProfile(username, { include =[]} = {}) {
+  try{
+    const res=await axiosInstance.get(`/profiles/${username}`,{
+      params: {
+        include: include.join(","),
+      },
+    });
+    return{
+      success: true,
+      profile: res.data,
+    }
+  }catch (err) {
+    console.error("프로필 조회 실패:", err);
 
-  const baseProfile = {
-    username,
-    nickname: "빙봉",
-    intro: "타인의 프로필입니다.",
-    profileImageUrl: "",
-    backgroundImageUrl: "",
-    followersCount: 3,
-    followingsCount: 1,
-    readBooksCount: dummyBooks.length,
-  };
+    if (err.response?.data?.code === "USER_NOT_FOUND") {
+      return {
+        success: false,
+        error: "USER_NOT_FOUND",
+      };
+    }
 
-  let stars, recentReviews;
-
-  if (include?.includes("reviews")) {
-    recentReviews = dummyReviews
-      .filter((rev) => rev.user.id === username)
-      .slice(0, 5);
+    return {
+      success: false,
+      error: err.response?.data || "서버 오류",
+    };
   }
 
-  if (include?.includes("stars")) {
-    stars = dummyReviews.reduce((acc, rev) => {
-      const r = Math.round(rev.rating);
-      acc[r] = (acc[r] || 0) + 1;
-      return acc;
-    }, {});
-  }
-
-  return {
-    profile: {
-      ...baseProfile,
-      stars,
-      recentReviews,
-    },
-  };
 }
 
+//닉네임/소개 수정
+export async function updateProfile({nickname, intro}){
+  try {
+      const body = {};
+      if (nickname) body.nickname = nickname;
+      if (intro) body.intro = intro;
+
+      const res = await axiosInstance.patch("/profiles/me", body);
+      return { success: true };
+    } catch (err) {
+      return {
+        success: false,
+        code: err.response?.data?.code,
+        message: err.response?.data?.message || "프로필 수정 오류",
+      };
+    }
+}
+
+//프로필 이미지 업로드
+export async function uploadProfileImage(file){
+  try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await axiosInstance.put("/profiles/me/image", formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data" },
+      });
+
+      return {
+        success: true,
+        profileImageUrl: res.data.profileImageUrl,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        code: err.response?.data?.code,
+        message: err.response?.data?.message || "프로필 이미지 업로드 오류",
+      };
+    }
+}
+
+//배경 이미지 업로드
+export async function uploadBackgroundImage(file){
+  try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await axiosInstance.put(
+        "/profiles/me/background",
+        formData,
+        {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      return {
+        success: true,
+        backgroundImageUrl: res.data.backgroundImageUrl,
+      };
+    } catch (err) {
+      return {
+        success: false,
+        code: err.response?.data?.code,
+        message: err.response?.data?.message || "배경 이미지 업로드 오류",
+      };
+    }
+}
 
 // 테스트용 비밀번호 검증 api
 export async function verifyPassword(username, currentPassword) {

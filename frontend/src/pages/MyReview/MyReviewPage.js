@@ -1,11 +1,9 @@
-import React, { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState } from "react";
 import "./MyReviewPage.css";
 import ReviewItem from "../../components/BookReviewList/BookReviewList";
 import { LayoutContext } from "../../context/LayoutContext";
-import { getLikedReviews } from "../../api/MyReviewApi";
 import { useAuth } from "../../context/AuthContext";
-import { makeDummyReviews } from "../../mocks/dummyReviewList";
-import { getMyReviews } from "../../api/reviewAPI";
+import { getMyReviews, getLikedReviews } from "../../api/reviewAPI";
 
 export default function MyReviewPage() {
   const { setFooterColor } = useContext(LayoutContext);
@@ -13,7 +11,6 @@ export default function MyReviewPage() {
   const [reviews, setReviews] = useState([]);
   const {user}=useAuth();
   const [likedTrigger, setLikedTrigger] = useState(0);
-  const [dummyReviews, setDummyReviews] = useState([]);
   
   useEffect(() => {
     setFooterColor("#FDFBF4");
@@ -23,17 +20,27 @@ export default function MyReviewPage() {
   if (!user) return; 
     async function load() {
       if (activeTab === "my") {
-        const data = await getMyReviews(user.username,{
-          page:0,
-          size:20,
-          visibility:"ALL",
-          status:"PIBLISHED",
-          sort:"createdAt,desc"
-        });
+        const data = await getMyReviews({
+        page: 0,
+        size: 20,
+        visibility: "ALL",
+        status: "PUBLISHED",
+        sort: "createdAt,desc",
+        }
+        );
         setReviews(data.content);
       } else {
-        const data = await getLikedReviews(dummyReviews);
-        setReviews(data);
+        const data = await getLikedReviews({
+          page: 0,
+          size: 10,
+          sort: "likedAt,desc"
+        });
+
+        if (data.ok) {
+          setReviews(data.content);
+        } else {
+          setReviews([]); 
+        }
       }
     }
     load();
