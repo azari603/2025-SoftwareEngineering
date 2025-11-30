@@ -1,13 +1,24 @@
 .header {
-  height: 80px;
+  height: 70px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding-left: 30px;
   padding-right: 30px;
-  border-bottom: 1px solid #eee;
   background-color: #fff;
+  background: transparent !important;
   user-select: none;
+  z-index: 10;
+}
+
+.header--transparent {
+  width: 100%;
+  background: transparent;
+  box-shadow: none;
+  position: absolute;
+  border-bottom: none;
+  top: 0;
+  left: 0;
 }
 
 .header-left{
@@ -37,6 +48,10 @@
   font-size: 24px;
 }
 
+.logo-text--transparent {
+  color: white;
+}
+
 .nav {
   display: flex;
   gap: 32px;
@@ -47,6 +62,36 @@
   text-decoration: none;
   color: #000000;
   font-size: 16px;
+  font-family: "Pretendard-Regular";
+}
+
+.nav--transparent a{
+  color: white;
+}
+
+.header .search-icon{
+  color: #a0a0a0;
+}
+
+.header--transparent .search-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+
+.header--transparent .search-bar {
+  background: rgba(255, 255, 255, 0.2); /* 배경 투명도 30% */
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.header--transparent .search-input::placeholder {
+  color: white;
+}
+
+.header--transparent .signup{
+  color: white;
 }
 
 .user-info{
@@ -58,6 +103,26 @@
   font-size : 0;
 }
 
+.header--transparent .btn.filled {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  font-family: "Pretendard-Regular";
+  margin-right: 10px;
+  padding-block: 6px;
+}
+
+.header .btn.filled{
+  padding-block: 5px;
+}
+
+/* hover 스타일도 별도로 */
+.header--transparent .btn.filled:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+}
 
 .auth {
   display: flex;
@@ -74,7 +139,10 @@
 .user-info .icon{
   display: block;
   cursor:pointer;
-  width: 28px;
-  height: 28px;
+  width: 20px;
+  height: 20px;
 }
 
+.header--transparent .user-info .icon{
+  color: white;
+}

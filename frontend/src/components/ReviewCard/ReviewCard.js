@@ -9,13 +9,14 @@ const ReviewCard = forwardRef(({ review, variant = "basic" }, ref) => {
     <Link to={`/review/${review.reviewId}`} state={{review}} className={`review-card ${variant}`} ref={ref}>
       {variant === "withBook" && review.book && (
         <div className="review-book-section">
+          <h4 className="review-book-title">{review.book.title}</h4>
+          <p className="review-book-author">{review.book.author}</p>
           <img
             src={review.book.image}
             alt={review.book.name}
             className="review-book-image"
           />
-          <h4 className="review-book-title">{review.book.title}</h4>
-          <p className="review-book-author">{review.book.author}</p>
+          
         </div>
       )}
 

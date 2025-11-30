@@ -7,6 +7,26 @@
   font-family: Pretendard, sans-serif;
 }
 
+.footer--transparent{
+  position: relative;
+  background: url("../../../assets/home_img.png");
+  background-size: cover;
+  background-position: top;
+}
+
+.footer--transparent::before{
+  content: "";
+  position: absolute;
+  background: rgba(0,0,0,0.4);
+  inset: 0;
+  z-index: 1;
+}
+
+.footer > * {
+  position: relative;
+  z-index: 2;
+}
+
 .footer-top {
   display: flex;
   justify-content: flex-start;
@@ -17,6 +37,8 @@
   border-top: 1px solid #eee;
   padding-top: 12px;
 }
+
+
 
 .footer-logo {
   display: flex;
@@ -34,6 +56,9 @@
   font-weight: 700;
   color: #299159;
 }
+.footer-text--tranparent{
+  color: white;
+}
 
 .footer-project p {
   margin: 2px 0;
@@ -41,10 +66,18 @@
   color: #666;
 }
 
+.footer-project--transparent p{
+  color: white;
+}
+
 .github-icon {
   color: #333;
   margin-top: 4px;
   display: inline-block;
+}
+
+.github-icon--transparent{
+  color: white;
 }
 
 .github-icon:hover {
@@ -65,10 +98,16 @@
   gap: 20px;
 }
 
+
 .footer-links a {
   text-decoration: none;
   color: #333;
 }
+
+.footer-links--transparent a{
+  color: white;
+}
+
 
 .footer-links a:hover {
   color: #299159;

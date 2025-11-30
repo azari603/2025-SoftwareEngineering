@@ -16,6 +16,7 @@ import { LayoutContext } from "../../context/LayoutContext";
 import * as reviewAPI from "../../api/reviewAPI"; //서평 상세 조회 API
 import * as followAPI from "../../api/followAPI"
 import CustomModal from "../../components/Modal/CustomModal"
+import { FaStar} from "react-icons/fa";
 
 const base=process.env.REACT_APP_BASE_URL;
 function fullUrl(path) {
@@ -295,13 +296,14 @@ const handleDeleteReview = async () => {
         <section className="book-info-review">
           <img src={book.image} alt={book.name} className="book-cover" />
           <div className="review-book-meta">
-            <h3 className="book-title-review">{book.name}</h3>
-            <p className="book-author">{book.author}</p>
-            <p className="book-read">읽은 날짜 : {review.startDate} - {review.finishDate}</p>
-
+            <div className="book-title-review">
+              <h3 className="title-review">{book.name}</h3>
+              <p className="book-author">{book.author}</p>
+            </div>
+          
             <div className="book-rating">
               <div className="book-rating__avg">
-                ⭐{book.avgStar} <span className="avg-count">({book.reviewCount})</span>
+                <FaStar className="book-rating-icon"/>{book.avgStar} <span className="avg-count">({book.reviewCount})</span>
               </div>
 
               <div className="book-rating__my">
@@ -309,7 +311,9 @@ const handleDeleteReview = async () => {
                 <StarRate value={review.starRating} readOnly={true} />
               </div>
             </div>
+            
           </div>
+          <p className="book-read">읽은 날짜: {review.startDate} - {review.finishDate}</p>
         </section>
 
         <hr className="review-divider" />
@@ -336,7 +340,7 @@ const handleDeleteReview = async () => {
           <button className="comment-btn" onClick={handleToggleComments}>
             <FaRegCommentDots />
             <span>댓글 {comments.length}</span>
-            {commentsOpen ? <SlArrowDown /> : <SlArrowRight />}
+            {commentsOpen ? <SlArrowDown className="comment-arrow-icon" /> : <SlArrowRight className="comment-arrow-icon"/>}
           </button>
         </footer>
 

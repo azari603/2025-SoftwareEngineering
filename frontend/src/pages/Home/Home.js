@@ -31,7 +31,7 @@ const Home = (
   const { setFooterColor } = useContext(LayoutContext);
 
   useEffect(() => {
-    setFooterColor("#FFFFFF"); // 흰색 테마
+    setFooterColor("#FDFbF4"); // 흰색 테마
   }, [setFooterColor]);
 
   useEffect(() => {
@@ -87,13 +87,13 @@ const Home = (
     
       <div className="home-main">
         <section className="main-hero">
-          <div className="main-hero__inner">
+          <div className="main-hero__inner fade-smooth">
             <h1 className="main-hero__title">
               당신의 서재와,<br />모두의 서평이 만나는 곳
             </h1>
 
             <div className="main-hero__actions">
-              <Button variant="squareOutline" size="medium" to="/feed">서평 둘러보기</Button>
+              
               {isLoggedIn?(
                 <>
                   <Button variant="filled" size="medium" to="/write/book">책 기록하기</Button>
@@ -103,20 +103,13 @@ const Home = (
                   <Button variant="filled" size="medium" to="/login">책 기록하기</Button>
                 </>
               )}
+              <Button variant="squareOutline" size="medium" to="/feed">서평 둘러보기</Button>
               
             </div>
 
             <div className="main-hero__search">
               <SearchBar variant="filled" placeholder="책 제목 또는 저자명을 검색해 보세요" />
             </div>
-          </div>
-        </section>
-
-        {/*서평 섹션 */}
-        <section className="home-section">
-          <div className="review wrapper">
-            <h2 className="section-title">{reviewSectionTitle}</h2>
-              <ReviewList reviews={reviewForSection} mode="carousel" visibleCount={4} />
           </div>
         </section>
 
@@ -135,6 +128,16 @@ const Home = (
             <BookList books={booksForSection} mode="carousel" visibleCount={6} cardSize="lg" />
           </div>
         </section>
+
+        {/*서평 섹션 */}
+        <section className="home-review-section">
+          <div className="review wrapper">
+            <h2 className="section-title">{reviewSectionTitle}</h2>
+              <ReviewList reviews={reviewForSection} mode="carousel" visibleCount={4} />
+          </div>
+        </section>
+
+        
       </div>
     </div>
   );
