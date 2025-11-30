@@ -3,6 +3,9 @@ import searchIcon from "../../assets/search.png"
 import {useEffect, useState} from "react"
 import {useNavigate} from "react-router-dom"
 import { useLocation } from "react-router-dom";
+import { IoIosSearch } from "react-icons/io";
+import { IoSearch } from "react-icons/io5";
+import { FiSearch } from "react-icons/fi";
 
 const SearchBar = ({ placeholder = "책 제목 또는 저자명을 검색해 보세요", variant}) => {
   const [query, setQuery]=useState("")
@@ -29,7 +32,7 @@ const SearchBar = ({ placeholder = "책 제목 또는 저자명을 검색해 보
         onChange={(e)=>setQuery(e.target.value)}
       />
       <button type="submit" className="search-btn">
-        <img src={searchIcon} alt="searchIcon" className="search-icon" />
+        <FiSearch className="search-icon"/>
       </button>
       
     </form>

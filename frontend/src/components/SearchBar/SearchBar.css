@@ -25,17 +25,17 @@
   border: 1px solid #A0A0A0;
   border-radius: 12px;
   padding-inline: 20px;
-  padding-block: 4px;
+  padding-block: 3px;
 }
 
 /*그림자*/
 .search-bar.filled {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  box-shadow: 0 4px 10px rgba(255,255,255,0.15);
 }
 
 .search-btn{
-  background-color: white;
+  background: transparent !important;
   border: none;
 }
