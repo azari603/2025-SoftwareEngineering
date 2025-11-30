@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { FaPencilAlt } from "react-icons/fa";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import GoalModal from "../../components/Modal/GoalModal/GoalModal";
 import "./StatsPage.css";
-import {
-  dummyOverview,
-  dummyStars,
-  dummyTimeline,
-  dummyAuthors,
-  dummyGoals,
-} from "../../mocks/dummyStats";
+import { fetchGoals, fetchOverview, fetchStars, fetchTopAuthors, updateMonthlyGoal } from "../../api/statsApi";
 
 
 export default function StatsPage() {
@@ -18,11 +12,19 @@ export default function StatsPage() {
   const [stars, setStars] = useState({});
   const [timeline, setTimeline] = useState(null);
   const [authors, setAuthors] = useState(null);
-  const [goals, setGoals] = useState(null);
+  const [goals, setGoals] = useState({
+    goal:0,
+    achieved:0,
+    rate:0,
+  });
 
   const [goalModalOpen, setGoalModalOpen] = useState(false);
   const [openAuthor, setOpenAuthor] = useState(null);
+  
+  //별점 최댓값 (0처리 방지)
   const maxCount = Math.max(...Object.values(stars));
+
+  //1~12월 placeholder
   const fullYear = timeline
     ? Array.from({ length: 12 }, (_, i) => {
         const month = String(i + 1).padStart(2, "0");
@@ -36,22 +38,61 @@ export default function StatsPage() {
   .slice(0, 4)
   :[];
 
+  //목표 달성률 계산
   const calcRate = (achieved, goal) => {
-    if (goal <= 0) return 100;  // 0 이하 목표 → 자동 100%
+    if(goal===0){
+      return achieved===0?0:100;
+    }
     const percent = Math.round((achieved / goal) * 100);
     return percent;  
   };
 
+  useEffect(()=>{
+    (async()=>{
+      try{
+        const data=await fetchOverview({
+          period: "year",
+        });
 
-  useEffect(() => {
-    setOverview(dummyOverview);
-    setStars(dummyStars);
-    setTimeline(dummyTimeline);
-    setAuthors(dummyAuthors);
-    setGoals(dummyGoals);
-  }, []);
+        setOverview({
+          completedCount: data.completedCount,
+          reviewCount: data.reviewCount,
+          averageRating: data.averageRating,
+          readingCount: data.readingCount,
+        });
+
+        const starsData=await fetchStars();
+        const mappedStars={};
+        starsData.counts.forEach((count, index)=>{
+          const score=index+1;
+          mappedStars[score]=count;
+        })
+        setStars(mappedStars);
+
+        setTimeline([]);
+        
+        const authorData = await fetchTopAuthors(10);
+        const mappedAuthors=authorData.authors.map(a=>({
+          name:a.author,
+          count: a.reviewCount
+        }));
+        setAuthors(mappedAuthors);
+
+        const goalData=await fetchGoals("month");
+
+        setGoals({
+          goal: goalData.goal,
+          completed:goalData.completed,
+        })
+      }catch(err){
+        console.error("통계 조회 실패:",err);
+      }
+    })();
+  },[]);
 
   if (!overview) return <div>Loading...</div>;
+  
+
 
   return (
     <div className="stats-container">
@@ -70,13 +111,13 @@ export default function StatsPage() {
             {/* 완독 */}
             <div className="stats-card">
               <p className="stats-label">완독 도서</p>
-              <p className="stats-value">{overview.totalRead} 권</p>
+              <p className="stats-value">{overview.completedCount} 권</p>
             </div>
 
             {/* 서평 */}
             <div className="stats-card">
               <p className="stats-label">작성한 서평 수</p>
-              <p className="stats-value">{overview.timeline.length} 개</p>
+              <p className="stats-value">{overview.reviewCount} 개</p>
             </div>
 
             {/* 이번달 독서량 */}
@@ -84,7 +125,7 @@ export default function StatsPage() {
               <div className="card-header-row">
                 <p className="stats-label">이번달 독서량</p>
               </div>
-              <p className="stats-value">{goals.achieved} 권</p>
+              <p className="stats-value">{goals.completed} 권</p>
             </div>
 
             {/* 이번달 목표 */}
@@ -102,29 +143,31 @@ export default function StatsPage() {
           <div className="stats-mid-row">
             <div className="stats-circle-card">
                 <h3>이번달 목표 달성률</h3>
-
-                <svg className="progress-svg" width="160" height="160">
+                
+                  <svg className="progress-svg" width="240" height="240">
                     <circle
                     className="bg"
-                    cx="80"
-                    cy="80"
-                    r="60"
-                    strokeWidth="15"
+                    cx="120"
+                    cy="120"
+                    r="95"
+                    strokeWidth="24"
                     />
                     <circle
                     className="progress"
-                    cx="80"
-                    cy="80"
-                    r="60"
-                    strokeWidth="18"
+                    cx="120"
+                    cy="120"
+                    r="95"
+                    strokeWidth="28"
                     style={{
-                        strokeDashoffset: 377 - (377 *Math.min(goals.rate,100)) / 100,
+                        strokeDashoffset: 597 - (597 *Math.min(calcRate(goals.completed, goals.goal),100)) / 100+1,
                     }}
                     />
-                    <text x="80" y="90" textAnchor="middle" className="percent">
-                    {goals.rate}%
+                    <text x="120" y="130" textAnchor="middle" className="percent">
+                    {calcRate(goals.completed, goals.goal)}%
                     </text>
                 </svg>
+                
+                
             </div>
 
             <div className="stats-rating-card">
@@ -132,7 +175,7 @@ export default function StatsPage() {
               <div className="rating-x-axis"></div>
               <div className="rating-y-axis" style={{left:"70px"}}></div>
               {Object.entries(stars)
-              .filter(([score]) => Number(score) >= 2)  
+              .filter(([score]) => Number(score) >= 1)  
               .sort(([a], [b]) => Number(b) - Number(a)) 
               .map(([score, count]) => (
                 <div className="rating-row" key={score}>
@@ -190,9 +233,9 @@ export default function StatsPage() {
               <div key={idx} className="author-item">
                 <div
                   className="author-header"
-                  onClick={() =>
+                  /*onClick={() =>
                     setOpenAuthor(openAuthor === idx ? null : idx)
-                  }
+                  }*/
                 >
                   <span>{idx + 1}. {author.name}</span>
                   <span className="author-book-count">
@@ -223,14 +266,19 @@ export default function StatsPage() {
       <GoalModal
         isOpen={goalModalOpen}
         onClose={()=>setGoalModalOpen(false)}
-        onSubmit={(value)=>{
+        onSubmit={async(value)=>{
           const newGoal=Number(value);
-          setGoals(prev=>({
+          const result=await updateMonthlyGoal(newGoal);
+          if(!result.ok){
+            alert("목표 설정 실패ㅠㅠ"+result.code);
+            return;
+          }
+          setGoals((prev)=>({
             ...prev,
             goal:newGoal,
             rate:calcRate(prev.achieved,newGoal)
           }));
-          console.log("입력된 목표 : ",value);
+          
           setGoalModalOpen(false);
         }}
         />
