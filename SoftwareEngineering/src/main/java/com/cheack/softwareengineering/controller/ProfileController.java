@@ -90,9 +90,15 @@ public class ProfileController {
         }
 
         if (include(include, "reviews")) {
-            // 프로필에서 보여줄 서평은 첫 페이지 N개 정도만 가져오는 식으로
             Pageable pageable = PageRequest.of(0, 10);
-            reviews = reviewService.getPublicByUser(targetUserId, pageable);
+
+            reviews = reviewService.getPublicByUserForProfile(
+                    targetUserId,
+                    targetUser.getUsername(),            // username
+                    summary.getNickname(),               // nickname
+                    summary.getProfileImageUrl(),        // 프로필 이미지
+                    pageable
+            );
         }
 
         // /{username} 에서는 email 정보는 채우지 않는다(공개용)
@@ -130,7 +136,14 @@ public class ProfileController {
 
         if (include(include, "reviews")) {
             Pageable pageable = PageRequest.of(0, 10);
-            reviews = reviewService.getPublicByUser(userId, pageable);
+
+            reviews = reviewService.getPublicByUserForProfile(
+                    userId,
+                    user.getUsername(),                  // username
+                    summary.getNickname(),
+                    summary.getProfileImageUrl(),
+                    pageable
+            );
         }
 
         return ProfileResponse.from(summary, user, monthlyGoal, stars, reviews);
@@ -191,6 +204,27 @@ public class ProfileController {
     }
 
     /**
+     * [프로필 이미지 기본값으로 되돌리기]
+     * DELETE /api/v1/profiles/me/image
+     *
+     * - DB에서 userImage 를 null 로 만들고
+     * - 실제 파일도 삭제
+     * - 프론트는 null 이면 기본 이미지를 사용하도록 처리
+     */
+    @DeleteMapping("/me/image")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetProfileImage(
+            @AuthenticationPrincipal String username
+    ) {
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증된 사용자가 아닙니다.");
+        }
+        UserDto me = userService.getByUsername(username);
+        profileService.removeAvatar(me.getId());
+    }
+
+
+    /**
      * [배경 이미지 업로드]
      * PUT /api/v1/profiles/me/background (Auth, multipart)
      *
@@ -209,6 +243,22 @@ public class ProfileController {
         Long userId = me.getId();
         String url = profileService.updateBackground(userId, file);
         return new BackgroundImageResponse(url);
+    }
+
+    /**
+     * [배경 이미지 기본값으로 되돌리기]
+     * DELETE /api/v1/profiles/me/background
+     */
+    @DeleteMapping("/me/background")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void resetBackgroundImage(
+            @AuthenticationPrincipal String username
+    ) {
+        if (username == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "인증된 사용자가 아닙니다.");
+        }
+        UserDto me = userService.getByUsername(username);
+        profileService.removeBackground(me.getId());
     }
 
     /**

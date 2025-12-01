@@ -96,7 +96,7 @@ public class BookBtiService {
      * BBTI 결과 저장 (사용자당 1개 유지)
      */
     @Transactional
-    public void saveResult(Long userId, BtiResultDto resultDto, List<Integer> rawAnswers) {
+    public Long saveResult(Long userId, BtiResultDto resultDto, List<Integer> rawAnswers) {
         // user 존재 체크 (optional)
         userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다. id=" + userId));
@@ -115,7 +115,8 @@ public class BookBtiService {
         entity.setResultType(code);
         // quizResult는 지금은 안 쓰므로 null 가능
 
-        btiResultRepository.save(entity);
+        BookBTI saved = btiResultRepository.save(entity);
+        return saved.getId();   // 🔹 resultId 반환
     }
 
     /**
@@ -124,6 +125,13 @@ public class BookBtiService {
     public BtiResultDto getResult(Long userId) {
         BookBTI entity = btiResultRepository.findByUserId(userId)
                 .orElseThrow(() -> new NoSuchElementException("저장된 BBTI 결과가 없습니다. userId=" + userId));
+
+        return BtiResultDto.fromEntity(entity);
+    }
+
+    public BtiResultDto getResultById(Long resultId) {
+        BookBTI entity = btiResultRepository.findById(resultId)
+                .orElseThrow(() -> new NoSuchElementException("저장된 BBTI 결과가 없습니다. resultId=" + resultId));
 
         return BtiResultDto.fromEntity(entity);
     }
@@ -140,11 +148,29 @@ public class BookBtiService {
             return recommendationService.fallbackPopular(pageable);
         }
 
-        // 일단은 BBTI와 무관하게 개인화 추천을 사용.
-        // 필요하다면 resultType(code)에 따라 다른 전략을 넣을 수 있음.
         BookBTI result = resultOpt.get();
         BtiType type = BtiType.fromCode(result.getResultType());
         // type 정보를 이용한 커스텀 로직을 여기에 덧붙일 수 있음.
+
+        return recommendationService.recommendForUser(userId, pageable);
+    }
+
+    /**
+     * resultId 기반 BBTI 결과를 바탕으로 책 추천.
+     */
+    public Page<BookCardDto> recommendFromResultId(Long resultId, Pageable pageable) {
+        BookBTI result = btiResultRepository.findById(resultId)
+                .orElseThrow(() -> new NoSuchElementException("저장된 BBTI 결과가 없습니다. resultId=" + resultId));
+
+        Long userId = result.getUserId();
+
+        // userId가 없으면 인기 도서 폴백
+        if (userId == null) {
+            return recommendationService.fallbackPopular(pageable);
+        }
+
+        BtiType type = BtiType.fromCode(result.getResultType());
+        // type 기반 커스텀 로직 추가 가능
 
         return recommendationService.recommendForUser(userId, pageable);
     }

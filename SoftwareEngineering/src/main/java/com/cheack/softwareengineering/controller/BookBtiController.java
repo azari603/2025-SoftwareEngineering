@@ -176,18 +176,19 @@ public class BookBtiController {
      *
      * - 8문항이 모두 채워졌을 때만 종료 가능.
      * - 로그인 사용자면 BookBtiService.saveResult 통해 결과 영속화.
-     * - 응답: BtiResultDto (코드/라벨/설명)
+     * - 응답: resultId(저장된 경우) + BtiResultDto
      */
     @PostMapping("/sessions/{sessionId}/finish")
-    public BtiResultDto finish(
+    public BtiFinishResponse finish(
             @PathVariable String sessionId,
             Authentication authentication
     ) {
         SessionState session = getSessionOrThrow(sessionId);
 
         if (session.isFinished()) {
-            // 이미 끝난 세션이면 그대로 다시 결과만 계산해서 내려준다.
-            return bookBtiService.calculateResult(session.getAnswers());
+            // 이미 끝난 세션이면, 저장은 하지 않고 계산 결과만 다시 내려준다.
+            BtiResultDto result = bookBtiService.calculateResult(session.getAnswers());
+            return new BtiFinishResponse(null, result);
         }
 
         if (session.getAnswers().size() != 8) {
@@ -198,6 +199,7 @@ public class BookBtiController {
 
         Long ownerUserId = session.getUserId();
 
+        // 세션 시작 시점에 userId가 없고, 지금은 로그인한 상태라면 userId 보정
         if (ownerUserId == null && authentication != null
                 && authentication.isAuthenticated()
                 && !"anonymousUser".equals(authentication.getPrincipal())) {
@@ -207,20 +209,24 @@ public class BookBtiController {
             ownerUserId = user.getId();
         }
 
+        Long resultId = null;
         if (ownerUserId != null) {
-            bookBtiService.saveResult(ownerUserId, result,
-                    new ArrayList<>(session.getAnswers()));
+            resultId = bookBtiService.saveResult(
+                    ownerUserId,
+                    result,
+                    new ArrayList<>(session.getAnswers())
+            );
         }
 
         session.setFinished(true);
-        return result;
+        return new BtiFinishResponse(resultId, result);
     }
 
     /**
      * [세션 기준 결과 조회]
      * GET /api/v1/bookbti/sessions/{sessionId}/result
      *
-     * - finish 호출 여부와 상관없이, 8개 답변이 있으면 계산해준다.
+     * (기존 기능 – 필요하면 계속 사용)
      */
     @GetMapping("/sessions/{sessionId}/result")
     public BtiResultDto result(@PathVariable String sessionId) {
@@ -233,37 +239,68 @@ public class BookBtiController {
         return bookBtiService.calculateResult(session.getAnswers());
     }
 
+
     /**
-     * [결과 기반 추천]
+     * [결과 기반 추천 - 세션 버전]
      * GET /api/v1/bookbti/sessions/{sessionId}/recommendations?page,size
      *
-     * - 가능한 경우 userId 기반 개인화 추천(BookBtiService.recommendFromResult) 사용
-     * - userId가 없으면 BookBtiService 쪽에서 fallbackPopular 사용
+     * (기존 기능 – 필요하면 유지)
      */
     @GetMapping("/sessions/{sessionId}/recommendations")
     public Page<BookCardDto> recommendFromResult(
             @PathVariable String sessionId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @AuthenticationPrincipal String principalUsername
+            Authentication authentication   // 🔁 변경
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        // 1) 로그인했으면 username -> userId 로 바꾸기
         Long targetUserId = null;
-        if (principalUsername != null && !"anonymousUser".equals(principalUsername)) {
-            UserDto me = userService.getByUsername(principalUsername);
+
+        // 1) JWT 로 인증된 경우: SecurityContext 에서 username 꺼내기
+        if (authentication != null
+                && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getPrincipal())) {
+
+            String username = authentication.getName();   // JwtAuthenticationFilter 에서 넣어준 username
+            UserDto me = userService.getByUsername(username);
             targetUserId = me.getId();
         }
 
-        // 2) 그래도 null이면, 세션에 저장된 userId 사용 (세션 시작할 때 로그인했던 유저)
+        // 2) 그래도 null이면 세션에 저장된 userId 사용 (세션 시작 당시 로그인 유저)
         if (targetUserId == null) {
             SessionState session = getSessionOrThrow(sessionId);
-            targetUserId = session.getUserId();  // 없으면 null 그대로 전달해서 service 쪽에서 fallbackPopular 사용
+            targetUserId = session.getUserId();  // 비로그인 세션이면 null → service 에서 fallbackPopular
         }
 
         return bookBtiService.recommendFromResult(targetUserId, pageable);
     }
+
+
+
+    /**
+     * [결과 조회 - resultId 기반]
+     * GET /api/v1/bookbti/results/{resultId}
+     */
+    @GetMapping("/results/{resultId}")
+    public BtiResultDto getResultById(@PathVariable Long resultId) {
+        return bookBtiService.getResultById(resultId);
+    }
+
+    /**
+     * [결과 기반 추천 - resultId 기반]
+     * GET /api/v1/bookbti/results/{resultId}/recommendations?page,size
+     */
+    @GetMapping("/results/{resultId}/recommendations")
+    public Page<BookCardDto> recommendFromResultId(
+            @PathVariable Long resultId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        return bookBtiService.recommendFromResultId(resultId, pageable);
+    }
+
 
 
     // ===================== 내부 유틸/DTO =====================
@@ -275,6 +312,8 @@ public class BookBtiController {
         }
         return session;
     }
+
+
 
     /**
      * 세션 상태(인메모리)
@@ -365,6 +404,29 @@ public class BookBtiController {
 
         public int getCurrentIndex() {
             return currentIndex;
+        }
+    }
+
+    /**
+     * finish 응답 DTO
+     * - 저장된 경우: resultId != null
+     * - 비로그인/미저장: resultId == null
+     */
+    public static class BtiFinishResponse {
+        private final Long resultId;
+        private final BtiResultDto result;
+
+        public BtiFinishResponse(Long resultId, BtiResultDto result) {
+            this.resultId = resultId;
+            this.result = result;
+        }
+
+        public Long getResultId() {
+            return resultId;
+        }
+
+        public BtiResultDto getResult() {
+            return result;
         }
     }
 }

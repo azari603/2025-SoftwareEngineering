@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/uploads/**"
                         ).permitAll()
 
                         // 2) 인증 불필요 엔드포인트 (Auth API – v1 경로)

@@ -247,6 +247,45 @@ public class ReviewService {
         });
     }
 
+    public Page<ReviewCardDto> getPublicByUserForProfile(
+            Long targetUserId,
+            String username,
+            String nickname,
+            String profileImageUrl,
+            Pageable pageable
+    ) {
+        Page<Review> page = reviewRepository
+                .findByUserIdAndVisibilityAndDeletedFalse(targetUserId, Visibility.PUBLIC, pageable);
+
+        // 이 페이지에 등장하는 bookId 들 미리 로딩
+        List<Long> bookIds = page.getContent().stream()
+                .map(Review::getBookId)
+                .distinct()
+                .toList();
+
+        Map<Long, Book> bookMap = bookRepository.findAllById(bookIds).stream()
+                .collect(Collectors.toMap(Book::getId, Function.identity()));
+
+        return page.map(review -> {
+            Book book = bookMap.get(review.getBookId());
+
+            // ⚠️ Book 엔티티의 필드명이 title/name 인지에 따라 이 부분은 확인해서 맞춰줘야 함
+            String bookName   = (book != null ? book.getName()  : null);   // 필요시 getName()
+            String bookAuthor = (book != null ? book.getAuthor() : null);
+            String bookImage  = (book != null ? book.getImage()  : null);
+
+            return ReviewCardDto.forProfile(
+                    review,
+                    username,
+                    nickname,
+                    profileImageUrl,
+                    bookName,
+                    bookAuthor,
+                    bookImage
+            );
+        });
+    }
+
     /**
      * 특정 사용자의 공개 서평 목록
      */

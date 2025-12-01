@@ -127,7 +127,49 @@ public class ReviewCardDto {
                 .build();
     }
 
-    // src/main/java/com/cheack/softwareengineering/dto/ReviewCardDto.java
+    public Long getReviewId() {
+        return this.id;
+    }
+
+    public static ReviewCardDto forProfile(
+            Review review,
+            String username,
+            String nickname,
+            String profileImage,
+            String bookName,
+            String bookAuthor,
+            String bookImage
+    ) {
+        String text = review.getText();
+        String excerpt = text == null
+                ? ""
+                : (text.length() <= 120 ? text : text.substring(0, 117) + "...");
+
+        BookInfo bookInfo = BookInfo.builder()
+                .name(bookName)
+                .author(bookAuthor)
+                .image(bookImage)
+                .avgStar(null)   // 프로필용 요구사항에는 없음
+                .build();
+
+        return ReviewCardDto.builder()
+                .id(review.getId())
+                .bookId(review.getBookId())
+                .userId(review.getUserId())
+                .title(review.getTitle())
+                .excerpt(excerpt)
+                .starRating(review.getStarRating())
+                .visibility(review.getVisibility())
+                .createdAt(review.getCreatedAt())
+                .nickname(nickname)
+                .username(username)
+                .profileImage(profileImage)
+                .book(bookInfo)
+                .likeCount(0L)       // 프로필용 요구사항엔 없으니 0
+                .commentCount(0L)
+                .likedByViewer(false)
+                .build();
+    }
 
     public static ReviewCardDto forMyReviews(
             Review review,
