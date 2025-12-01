@@ -181,7 +181,6 @@ useEffect(() => {
                 <div className="book-info">
                     <p className="book-title">{book.name}</p>
                     <p className="book-author">{book.author}</p>
-                    <p className="book-publisher">{book.publisher || "출판사 정보 없음"}</p>
                 </div>
                 </div>
             ))

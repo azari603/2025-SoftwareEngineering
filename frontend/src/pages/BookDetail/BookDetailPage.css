@@ -17,6 +17,9 @@
   padding-inline: 30px;
 }
 
+.book-description p{
+  padding: 10px 30px;
+}
 .review-wrapper{
   width: 100%;
   display: flex;
@@ -41,11 +44,15 @@
 }
 
 .review-wrapper .review-card{
-  width: 240px;
+  width: 250px;
 }
 
 .review-wrapper .carousel-container{
-  padding-inline: 40px;
+  padding-inline: 30px;
+}
+
+.review-wrapper .carousel-container .review-body{
+  padding-inline: 32px;
 }
 
 .review-wrapper .nav-button{
@@ -54,4 +61,8 @@
 
 .book-wrapper .book-title-span{
   color: #299159;
+}
+
+.book-wrapper .carousel-container{
+  padding-inline: 30px;
 }

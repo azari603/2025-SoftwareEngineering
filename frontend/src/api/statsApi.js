@@ -83,3 +83,20 @@ export async function fetchCategories() {
     throw err;
   }
 }
+
+//독서 타임라인 조회
+export async function fetchTimeline({ granularity = "month", from, to }) {
+  try {
+    const res = await axiosInstance.get("/stats/me/timeline", {
+      params: {
+        granularity,
+        from,
+        to,
+      },
+    });
+    return res.data;  
+  } catch (err) {
+    console.error("Failed to fetch timeline:", err);
+    throw err;
+  }
+}

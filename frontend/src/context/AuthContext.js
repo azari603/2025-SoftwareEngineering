@@ -45,11 +45,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   // 로그아웃 함수
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-  
-    setAccessToken(null);
-    setUser(null);
+  const logout = async() => {
+    const result=await authAPI.logout();
+    if(result.ok){
+      localStorage.removeItem("accessToken");
+      setAccessToken(null);
+      setUser(null);
+    }else{
+      alert("로그아웃 에러:", result.message);
+      localStorage.removeItem("accessToken");
+    }
+    
   };
 
   const value = { 
