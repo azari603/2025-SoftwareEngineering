@@ -32,4 +32,21 @@ public interface BookRepository extends JpaRepository<Book, Long> {
                       like concat('%', :keyword, '%')
            """)
     Page<Book> searchIgnoreSpaces(@Param("keyword") String keyword, Pageable pageable);
+
+    /**
+     * 특정 유저가 작성한 리뷰 중, 주어진 author 의 책 목록 (중복 제거, 페이징)
+     */
+    @Query("""
+           select distinct b
+             from Review r
+             join Book b on r.bookId = b.id
+            where r.userId = :userId
+              and r.deleted = false
+              and b.author = :author
+           """)
+    Page<Book> findBooksReviewedByUserAndAuthor(
+            @Param("userId") Long userId,
+            @Param("author") String author,
+            Pageable pageable
+    );
 }

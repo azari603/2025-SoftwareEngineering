@@ -1,6 +1,5 @@
 package com.cheack.softwareengineering.exception;
 
-import com.cheack.softwareengineering.dto.ApiResponse;
 import com.cheack.softwareengineering.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +39,17 @@ public class GlobalExceptionHandler {
     // CustomException 처리
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException ex) {
+        ErrorCode errorCode = ex.getErrorCode();
+
         ErrorResponse response = ErrorResponse.builder()
                 .success(false)
-                .code(ex.getErrorCode().name())
-                .message(ex.getErrorCode().getMessage())
+                .code(errorCode.name())
+                .message(errorCode.getMessage())
+                // ★ CustomException에 담긴 fields 그대로 내려보냄 (null이면 안 나감)
+                .fields(ex.getFields())
                 .build();
 
-        HttpStatus status = determineHttpStatus(ex.getErrorCode());
+        HttpStatus status = determineHttpStatus(errorCode);
         return ResponseEntity.status(status).body(response);
     }
 
@@ -72,8 +75,10 @@ public class GlobalExceptionHandler {
             case PASSWORD_NOT_MATCH:
             case INVALID_PASSWORD:
             case EMAIL_NOT_VERIFIED:
+            case VALIDATION_ERROR:
                 return HttpStatus.BAD_REQUEST;
             case INVALID_TOKEN:
+            case UNAUTHORIZED:
                 return HttpStatus.UNAUTHORIZED;
             default:
                 return HttpStatus.INTERNAL_SERVER_ERROR;

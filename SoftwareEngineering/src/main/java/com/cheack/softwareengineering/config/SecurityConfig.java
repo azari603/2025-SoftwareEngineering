@@ -84,9 +84,11 @@ public class SecurityConfig {
 
                         // 3) 인증 불필요 엔드포인트 (서평 상세 / 책 검색 / 도서 상세 + 공개 추천/피드/좋아요 수)
                         .requestMatchers(HttpMethod.GET,
-                                "/api/v1/reviews/*",                // 서평 상세 조회
+                                "/api/v1/reviews/*",                // 서평 단건 상세
+                                "/api/v1/reviews/books/*",          // ★ 이 책의 서평 목록 (reviews/books/{bookId})
                                 "/api/v1/books/search",             // (쓰고 있으면 유지)
                                 "/api/v1/books/*",                  // 도서 상세 조회
+                                "/api/v1/books/*/similar",          // ★ 유사 도서 (books/{bookId}/similar)
                                 "/api/v1/search/books",             // SearchController 매핑
                                 "/api/v1/search/**",                // 검색 확장용
 

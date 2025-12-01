@@ -1,4 +1,3 @@
-// src/main/java/com/cheack/softwareengineering/service/AuthService.java
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.dto.LoginRequest;
@@ -72,9 +71,16 @@ public class AuthService {
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
+
+        // ★ 이메일 미인증일 때 email 정보를 같이 내려주기
         if (!user.getIsEmailVerified()) {
-            throw new CustomException(ErrorCode.EMAIL_NOT_VERIFIED);
+            throw CustomException.withField(
+                    ErrorCode.EMAIL_NOT_VERIFIED,
+                    "email",
+                    user.getEmail()
+            );
         }
+
         if (user.getStatus() != UserStatus.ACTIVE) {
             throw new CustomException(ErrorCode.USER_LOCKED);
         }

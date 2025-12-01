@@ -1,3 +1,4 @@
+// src/main/java/com/cheack/softwareengineering/dto/ReviewDetailDto.java
 package com.cheack.softwareengineering.dto;
 
 import com.cheack.softwareengineering.entity.Review;
@@ -30,49 +31,37 @@ public class ReviewDetailDto {
 
     private final boolean mine; // viewer 기준 본인 글인지 여부
 
-    // 🔽 새로 추가
+    // 🔹 작성자 정보
+    private final String authorUsername;         // 새로 추가
     private final String authorNickname;
     private final String authorProfileImageUrl;
 
+    // 🔹 댓글 개수
+    private final long commentCount;             // 새로 추가
+
     private final BookInfo book;
 
-    // 기존 from(...)은 그대로 두고, 내부에서 새 버전 호출하도록 수정
+    // === 기존 from(...)은 호환성 유지용으로 남겨둠 ===
+
     public static ReviewDetailDto from(Review review, boolean mine) {
-        return from(review, mine, null, null, null);
+        // 예전 코드에서 쓰던 곳이 있을 수 있으니, 안전하게 기본값으로 채워 줌
+        return from(review, mine, null, null, null, null, 0L);
     }
 
-    // 🔽 작성자 정보까지 포함하는 오버로드
+    /**
+     * 작성자/책/댓글정보까지 한 번에 채우는 팩토리 메서드
+     */
     public static ReviewDetailDto from(
             Review review,
             boolean mine,
-            String authorNickname,
-            String authorProfileImageUrl
-    ) {
-        return ReviewDetailDto.builder()
-                .id(review.getId())
-                .userId(review.getUserId())
-                .bookId(review.getBookId())
-                .title(review.getTitle())
-                .text(review.getText())
-                .starRating(review.getStarRating())
-                .visibility(review.getVisibility())
-                .startDate(review.getStartDate())
-                .finishDate(review.getFinishDate())
-                .createdAt(review.getCreatedAt())
-                .updatedAt(review.getUpdatedAt())
-                .mine(mine)
-                .authorNickname(authorNickname)
-                .authorProfileImageUrl(authorProfileImageUrl)
-                .build();
-    }
-
-    public static ReviewDetailDto from(
-            Review review,
-            boolean mine,
+            String authorUsername,
             String authorNickname,
             String authorProfileImageUrl,
-            BookInfo bookInfo
+            BookInfo bookInfo,
+            Long commentCount
     ) {
+        long safeCommentCount = (commentCount != null ? commentCount : 0L);
+
         return ReviewDetailDto.builder()
                 .id(review.getId())
                 .userId(review.getUserId())
@@ -86,8 +75,10 @@ public class ReviewDetailDto {
                 .createdAt(review.getCreatedAt())
                 .updatedAt(review.getUpdatedAt())
                 .mine(mine)
+                .authorUsername(authorUsername)
                 .authorNickname(authorNickname)
                 .authorProfileImageUrl(authorProfileImageUrl)
+                .commentCount(safeCommentCount)
                 .book(bookInfo)
                 .build();
     }

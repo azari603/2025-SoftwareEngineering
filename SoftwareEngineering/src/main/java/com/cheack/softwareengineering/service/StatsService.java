@@ -190,9 +190,8 @@ public class StatsService {
     }
 
     /**
-     * 특정 YearMonth에 대한 목표 달성도
-     * - 현재는 Profile에 별도 목표 필드가 없으므로
-     *   goal 은 0으로 두고, 나중에 목표 필드가 추가되면 여기만 수정하면 됨.
+     * 특정 YearMonth 에 대한 목표 달성도
+     * - 목표 값은 Profile.monthlyGoal 사용
      */
     public GoalProgressDto getGoalProgress(Long userId, YearMonth ym) {
         int year = ym.getYear();
@@ -204,20 +203,34 @@ public class StatsService {
 
         long completed = page.getContent().stream()
                 .filter(rs -> rs.getCreatedAt() != null)
-                .filter(rs -> rs.getCreatedAt().getYear() == year &&
-                        rs.getCreatedAt().getMonthValue() == month)
+                .filter(rs -> rs.getCreatedAt().getYear() == year
+                        && rs.getCreatedAt().getMonthValue() == month)
                 .count();
 
-        // TODO: 실제로는 Profile에 "monthlyGoal" 같은 필드를 두고 읽어와야 함.
-        long goal = profileRepository.findByUserId(userId)
-                .map(Profile::getReadBook) // 임시로 readBook 사용 (원하면 0L 로 바꿔도 됨)
-                .orElse(0L);
+        // Profile.monthlyGoal 기준으로 목표 가져오기 (null이면 0)
+        int monthlyGoal = profileRepository.findByUserId(userId)
+                .map(Profile::getMonthlyGoal)
+                .orElse(0);
 
         return GoalProgressDto.builder()
                 .year(year)
                 .month(month)
-                .goal(goal)
+                .goal(monthlyGoal)   // int → long 자동 변환
                 .completed(completed)
                 .build();
+    }
+
+    /**
+     * 특정 저자의 책 중, 내가 리뷰한 책 목록 (BookCardDto 페이지)
+     */
+    public Page<BookCardDto> getMyBooksByAuthor(Long userId, String author, Pageable pageable) {
+        if (author == null || author.isBlank()) {
+            return Page.empty(pageable);
+        }
+
+        String trimmedAuthor = author.trim();
+        Page<Book> page = bookRepository.findBooksReviewedByUserAndAuthor(userId, trimmedAuthor, pageable);
+
+        return page.map(BookCardDto::from);
     }
 }

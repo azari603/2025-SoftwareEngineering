@@ -1,3 +1,4 @@
+// src/main/java/com/cheack/softwareengineering/service/ReviewService.java
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.dto.ReviewCardDto;
@@ -7,6 +8,7 @@ import com.cheack.softwareengineering.dto.ReviewUpdateRequest;
 import com.cheack.softwareengineering.dto.UserProfileSummaryDto;
 import com.cheack.softwareengineering.entity.*;
 import com.cheack.softwareengineering.repository.BookRepository;
+import com.cheack.softwareengineering.repository.CommentRepository;
 import com.cheack.softwareengineering.repository.ReadingStatusRepository;
 import com.cheack.softwareengineering.repository.ReviewRepository;
 import com.cheack.softwareengineering.repository.UserRepository;
@@ -34,6 +36,7 @@ public class ReviewService {
     private final ReadingStatusRepository readingStatusRepository;
     private final NotificationService notificationService;
     private final UserService userService;
+    private final CommentRepository commentRepository;   // 🔹 댓글 개수용 추가
 
     /**
      * 서평 생성
@@ -134,11 +137,13 @@ public class ReviewService {
             throw new IllegalArgumentException("Forbidden");
         }
 
-        // 작성자 정보 조회 (필드/메서드 이름은 프로젝트에 맞게 바꿔줘)
-        UserProfileSummaryDto author = userService.getPublicProfileSummary(review.getUserId());
-        String nickname = author != null ? author.getNickname() : null;
-        String profileImageUrl = author != null ? author.getProfileImageUrl() : null;
+        // 🔹 작성자 공개 프로필 요약 정보
+        UserProfileSummaryDto authorSummary = userService.getPublicProfileSummary(review.getUserId());
+        String authorUsername = (authorSummary != null ? authorSummary.getUsername() : null);
+        String nickname = authorSummary != null ? authorSummary.getNickname() : null;
+        String profileImageUrl = authorSummary != null ? authorSummary.getProfileImageUrl() : null;
 
+        // 🔹 책 정보 + 평균 별점/리뷰 개수
         Book book = bookRepository.findById(review.getBookId())
                 .orElse(null);
 
@@ -170,7 +175,18 @@ public class ReviewService {
                     .build();
         }
 
-        return ReviewDetailDto.from(review, mine, nickname, profileImageUrl, bookInfo);
+        // 🔹 댓글 개수
+        long commentCount = commentRepository.countByReviewId(review.getId());
+
+        return ReviewDetailDto.from(
+                review,
+                mine,
+                authorUsername,
+                nickname,
+                profileImageUrl,
+                bookInfo,
+                commentCount
+        );
     }
 
     /**
@@ -230,7 +246,6 @@ public class ReviewService {
             return ReviewCardDto.from(review, nickname);   // ✅ nickname 포함
         });
     }
-
 
     /**
      * 특정 사용자의 공개 서평 목록
