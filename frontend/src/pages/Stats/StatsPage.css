@@ -284,21 +284,21 @@
 
 .year-x-axis {
   position: absolute;
-  bottom: 20px;
+  bottom: 21px;
   left: 40px;
   right: 20px;
-  height: 2px;
-  background: #c4c4c4;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.4);
   z-index: 5;
 }
 
 .year-y-axis {
   position: absolute;
   top: 10px;
-  bottom: 20px;
+  bottom: 21px;
   left: 40px;
-  width: 2px;
-  background: #c4c4c4;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.4);
   z-index: 5;
 }
 
@@ -315,7 +315,7 @@
 
 .year-bar {
   position: relative;
-  width: 100%;
+  width: 90%;
   background: #2e7d32;
   border-radius: 13px 13px 0 0;
   display: flex;

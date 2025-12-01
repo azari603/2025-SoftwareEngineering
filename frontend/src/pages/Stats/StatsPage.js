@@ -4,7 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import GoalModal from "../../components/Modal/GoalModal/GoalModal";
 import "./StatsPage.css";
-import { fetchGoals, fetchOverview, fetchStars, fetchTopAuthors, updateMonthlyGoal } from "../../api/statsApi";
+import { fetchGoals, fetchOverview, fetchStars, fetchTimeline, fetchTopAuthors, updateMonthlyGoal } from "../../api/statsApi";
 
 
 export default function StatsPage() {
@@ -69,7 +69,19 @@ export default function StatsPage() {
         })
         setStars(mappedStars);
 
-        setTimeline([]);
+        const timelineData = await fetchTimeline({
+          granularity: "month",
+          from: "2025-01",
+          to: "2025-12",
+        });
+        const mappedTimeline=timelineData.completedByMonth.map((count,idx)=>{
+          const month=String(idx+1).padStart(2,"0");
+          return{
+            month: `${timelineData.year}-${month}`,
+            reviews: count,
+          }
+        })
+        setTimeline(mappedTimeline);
         
         const authorData = await fetchTopAuthors(10);
         const mappedAuthors=authorData.authors.map(a=>({

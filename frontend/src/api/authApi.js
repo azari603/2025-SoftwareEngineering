@@ -50,6 +50,25 @@ export async function login(username, password) {
   
 }
 
+//로그아웃
+export async function logout() {
+  try {
+    const response = await axiosInstance.post("/auth/logout", null, {
+      withCredentials: true,  // 쿠키 포함 (HttpOnly refreshToken 삭제 용)
+    });
+
+    // 204 No Content → 성공
+    if (response.data.success) {
+      return { ok: true };
+    }
+
+    return { ok: false, message: "로그아웃 실패ㅜㅜ" };
+  } catch (error) {
+    console.error("Logout failed:", error);
+    return { ok: false, message: error.response?.data?.message };
+  }
+}
+
 //인증 메일 재전송
 export async function resendVerifyEmail(email) {
   try {
