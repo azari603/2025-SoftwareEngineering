@@ -1,86 +1,143 @@
-import { useLocation } from "react-router-dom";
-import quizResults from "../../../mocks/dummyResults";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import bookbtiApi from "../../../api/bookbtiAPI";
+import BookList from "../../../components/BookList/BookList";
 import "./QuizResult.css";
-import BookList from "../../../components/BookList/BookList"; 
-import { dummyBooks } from "../../../mocks/dummyBooks";
+import {useAuth} from "../../../context/AuthContext";
 
-export default function QuizResult({ isLoggedIn = false }) {
+export default function QuizResult() {
+  const {user} =useAuth();
+  const navigate = useNavigate();
   const location = useLocation();
-  const scores = location.state?.scores || {};
-  const resultKey = location.state?.resultKey || "future";
-  const result = quizResults[resultKey];
 
-  // 점수 합계
-  const totalScore = Object.values(scores).reduce((sum, v) => sum + v, 0);
+  const result = location.state?.result;
+  const resultId=location.state?.resultId;
 
-  // 퍼센트 계산
-  const percentages = totalScore > 0 
-    ? Object.fromEntries(
-        Object.entries(scores).map(([category, score]) => [
-          category,
-          ((score / totalScore) * 100).toFixed(1),
-        ])
-      )
-    : {};
+  // 추천도서, 로딩 state
+  const [recommendations, setRecommendations] = useState([]);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const resultImageUrl = result ? `/results/${result.code}.png` : "";
+  console.log("result.code =", result.code); 
 
-  // 카테고리 라벨
-  const categoryLabels = {
-    romance: "로맨스",
-    history: "역사",
-    fantasy: "판타지",
-    thriller: "스릴러",
-    science: "과학",
-    future: "미래지향",
+
+useEffect(() => {
+  const loadRecommendations = async () => {
+    try {
+      const res = await bookbtiApi.getRecommendations(resultId);
+      const mapped = (res.data.content || []).map(item => ({
+        id: item.bookId,
+        name:item.name,
+        author: item.author,
+        image: item.imageUrl,
+        thumbnail: item.imageUrl,
+      }));
+
+      console.log(" 매핑된 추천 결과:", mapped);
+
+      setRecommendations(mapped);
+    } catch (err) {
+      console.error("추천 도서 로딩 실패:", err);
+    }
   };
 
-  // 점수 내림차순 정렬
-  const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  loadRecommendations();
+}, [resultId]);
 
-  // 3등 점수 찾기
-  let cutoffScore = 0;
-  if (sortedScores.length >= 3) {
-    cutoffScore = sortedScores[2][1]; // 3번째 항목 점수
+
+  if (!result) {
+    return (
+      <div className="quizresult">
+        <h2>결과 정보를 찾을 수 없습니다.</h2>
+        <button onClick={() => navigate("/")}>홈으로 돌아가기</button>
+      </div>
+    );
   }
 
-  // ✅ 3등 점수 이상인 모든 카테고리 출력
-  const topCategories = sortedScores.filter(([_, score]) => score >= cutoffScore);
+  if (!imageLoaded) {
+    return (
+      <div className="quizresult">
+        <main className="quizresult-main">
+          <div className="quizresult-card">
+            <h2 className="quizresult-title">로딩 중...</h2>
+              {/* 결과 이미지 표시 */}
+              <img
+                src={resultImageUrl}
+                alt=""
+                style={{ display: "none" }}
+                onLoad={() => setImageLoaded(true)}
+              />
+            </div>
+        </main>
+      </div>
+    );
+  }
 
-  
-
-  // 📌 return은 함수 안에서 딱 한 번만!
   return (
     <div className="quizresult">
       <main className="quizresult-main">
         <div className="quizresult-card">
-          <h2 className="quizresult-title">당신의 책BTI는 ...</h2>
-          <h3 className="quizresult-subtitle">{result.type}</h3>
+          <h2 className="quizresult-title">
+            <span className="nickname">{user?.nickname}</span>님의 책BTI는 ...
+          </h2>
 
-          {/* 상위 카테고리 태그 (퍼센트 포함) */}
-          <div className="quizresult-tags">
-            {topCategories
-            .filter(([_,percent])=>Number(percent)>0)
-            .map(([category]) => (
-              <span key={category}>
-                #{categoryLabels[category]} ({percentages[category]}%)
-              </span>
-            ))}
+          {/* 타입 출력 */}
+          <h3 className="quizresult-subtitle">{result.code}</h3>
+          <img
+              src={resultImageUrl}
+              alt={`${result.code} 타입 이미지`}
+              className="quizresult-image"
+            />
+
+          {/* 설명 */}
+          <div className="quizresult-desc">
+            {result.description
+              .split("\n")
+              .filter(line => line.trim() !== "")
+              .map((line, index) => {
+                
+                // 제목 라인 판별
+                const isTitleLine =
+                  line.trim().startsWith("✨") ||
+                  line.trim().startsWith("🌿") ||
+                  line.trim().startsWith("🌙") ||
+                  line.trim().startsWith("💛");
+
+                // 특정 단어만 강조하는 함수
+                const highlightWord = (text, word) => {
+                  // 단어 기준으로 split
+                  const parts = text.split(word);
+                  return parts.map((part, idx) => (
+                    <React.Fragment key={idx}>
+                      {part}
+                      {idx < parts.length - 1 && (
+                        <span className="highlight">{word}</span>
+                      )}
+                    </React.Fragment>
+                  ));
+                };
+
+                return (
+                  <p
+                    key={index}
+                    className={isTitleLine ? "desc-title-line" : ""}
+                  >
+                    {highlightWord(line, result.label)}
+                  </p>
+                );
+              })}
           </div>
 
-          <img
-            src={result.image}
-            alt={result.type}
-            className="quizresult-image"
-          />
 
-          <p className="quizresult-desc">{result.description}</p>
 
           <hr className="quizresult-divider" />
+
           <h4 className="quizresult-recommend-title">
-            당신에게 어울리는 책을 <span>AI</span>가 추천해보았어요 !!
+            당신에게 어울리는 책을 <span>AI</span>가 추천해보았어요!
           </h4>
+
           <div className="quizresult-books">
             <BookList
-              books={dummyBooks}
+              books={recommendations}
               mode="carousel"
               visibleCount={5}
               cardSize="md"
