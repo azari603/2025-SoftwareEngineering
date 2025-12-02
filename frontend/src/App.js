@@ -62,6 +62,7 @@ export default function App() {
                 <Route path="/profile/settings" element={<SettingsPage/>}/>
                 <Route path="/profile/settings/edit" element={<ProfileEditPage/>}/>
                 <Route path="/review/:reviewId" element={<ReviewDetail/>}/>
+                <Route path="/review/edit/:reviewId" element={<ReviewWrite />} />
                 <Route path="/book/:bookId" element={<BookDetailPage/>}/>
                 
                 <Route path="/write/book" element={<RequireAuth><BookSelectorView/></RequireAuth>}/>

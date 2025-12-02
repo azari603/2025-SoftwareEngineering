@@ -208,7 +208,7 @@ export default function StatsPage() {
 
           {/* ---- 올해 기록 ---- */}
           <div className="stats-year-box">
-            <h3>올해의 기록 현황</h3>
+            <h3>월별 독서량</h3>
             {timeline && (
               <div className="year-chart">
                 <div className="year-y-axis"></div>

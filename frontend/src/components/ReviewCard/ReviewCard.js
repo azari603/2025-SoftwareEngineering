@@ -5,11 +5,12 @@ import "./ReviewCard.css"
 
 const ReviewCard = forwardRef(({ review, variant = "basic" }, ref) => {
   const nickname=review.nickname||review.userId
+  const bookTitle=review.book.title||review.book.name;
   return (
     <Link to={`/review/${review.reviewId}`} state={{review}} className={`review-card ${variant}`} ref={ref}>
       {variant === "withBook" && review.book && (
         <div className="review-book-section">
-          <h4 className="review-book-title">{review.book.title}</h4>
+          <h4 className="review-book-title">{bookTitle}</h4>
           <p className="review-book-author">{review.book.author}</p>
           <img
             src={review.book.image}

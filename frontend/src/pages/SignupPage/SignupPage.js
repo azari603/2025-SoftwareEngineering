@@ -72,7 +72,7 @@ export default function SignUpPage() {
                 passwordConfirm: confirmPw,
                 agreeTerms:true,
             });
-            navigate("/signup/email",{state: {username, email}});
+            navigate("/signup/email",{state: {email}});
         }catch (err) {
     // err = { code: "...", message: "..." }
 

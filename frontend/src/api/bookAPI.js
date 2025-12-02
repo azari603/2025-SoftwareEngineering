@@ -288,3 +288,14 @@ export async function getBooksByStatus({ status, page = 0, size = 20 }) {
     };
   }
 }
+
+//서평 수정
+export async function updateReview(reviewId, payload) {
+  try {
+    const res = await axiosInstance.patch(`/reviews/${reviewId}`, payload);
+    return res; // status: 204
+  } catch (err) {
+    console.error("서평 수정 실패:", err);
+    throw err;
+  }
+}
