@@ -104,9 +104,9 @@ export default function LoginPage() {
 
         {/* 아이디/비번/회원가입 링크 */}
         <div className="sub-links">
-          <button type="button">아이디 찾기</button>
+          <button type="button" onClick={()=>navigate("/find-id")}>아이디 찾기</button>
           <span>|</span>
-          <button type="button">비밀번호 찾기</button>
+          <button type="button" onClick={()=> navigate("/find-password")}>비밀번호 찾기</button>
           <span>|</span>
           <button type="button" variant="outlined" size="small"
           onClick={() => navigate("/signup")}>회원가입</button>

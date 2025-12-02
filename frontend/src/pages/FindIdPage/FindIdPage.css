@@ -1,0 +1,91 @@
+/* 화면 전체 */
+.findid-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #fdfbf4;
+  user-select: none;
+}
+
+/* 중앙 박스 */
+.findid-box {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 400px;
+  text-align: center;
+}
+
+/* 타이틀 */
+.findid-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-top: 12px;
+}
+
+.findid-subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* 이메일 아이콘 (성공 페이지) */
+.findid-email-icon {
+  width: 120px;
+  margin: 20px 0 10px;
+}
+
+.findid-result-text {
+  font-size: 15px;
+  color: #333;
+  line-height: 1.6;
+}
+
+.findid-result-text strong {
+  font-weight: 600;
+}
+
+/* 성공 버튼 묶음 */
+.findid-success-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.findid-success-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.findid-success-buttons button {
+  width: 150px;    /* 원하는 크기 */
+  height: 45px;    /* 버튼 높이 고정 */
+  white-space: nowrap;   /* 텍스트 세로줄 방지 */
+}
+
+
+/* 로고 (기존과 동일) */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+
+.logo-icon {
+  width: 31px;
+  height: 36px;
+}
+
+.logo-text {
+  font-weight: bold;
+  color: #299159;
+  font-size: 24px;
+}
