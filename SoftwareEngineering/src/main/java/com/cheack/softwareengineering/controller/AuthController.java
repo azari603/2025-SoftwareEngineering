@@ -41,16 +41,14 @@ public class AuthController {
     public ResponseEntity<ApiResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest request) {
         TokenResponse token = authService.login(request);
 
-        // refreshToken을 HttpOnly 쿠키로 세팅
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .httpOnly(true)
-                .secure(false) // HTTPS 환경이면 true로
+                .secure(false)
                 .path("/")
                 .maxAge(jwtProvider.getRefreshExpSeconds())
                 .sameSite("Lax")
                 .build();
 
-        // 바디에는 accessToken만 쓰도록 refreshToken을 null로 교체 (FE는 쿠키만 사용)
         TokenResponse bodyToken = new TokenResponse(
                 token.getTokenType(),
                 token.getAccessToken(),
@@ -73,12 +71,12 @@ public class AuthController {
             @CookieValue(name = "refreshToken", required = false) String refreshToken
     ) {
         TokenResponse token = authService.refreshToken(
-                new RefreshTokenRequest(refreshToken) // 필요 시 생성자/빌더에 맞게 수정
+                new RefreshTokenRequest(refreshToken)
         );
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .httpOnly(true)
-                .secure(false) // HTTPS면 true
+                .secure(false)
                 .path("/")
                 .maxAge(jwtProvider.getRefreshExpSeconds())
                 .sameSite("Lax")
@@ -105,7 +103,6 @@ public class AuthController {
     public ResponseEntity<ApiResponse<?>> logout(
             @CookieValue(name = "refreshToken", required = false) String refreshToken
     ) {
-        // 서버 쪽에서 별도 상태를 안 들고 있으니, 지금은 쿠키만 삭제
         ResponseCookie deleteCookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
                 .secure(false)
@@ -135,8 +132,6 @@ public class AuthController {
 
     /**
      * 비로그인 상태에서 이메일 인증 여부 확인
-     * GET /api/v1/auth/email/verified?email=...
-     * 응답 data: true(인증됨) / false(미인증 or 해당 이메일 없음)
      */
     @GetMapping("/email/verified")
     public ResponseEntity<ApiResponse<Boolean>> isEmailVerified(@RequestParam String email) {
@@ -160,15 +155,22 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success(new CheckResponse(available, message)));
     }
 
-    // ========== 찾기  ==========
-    /** 비밀번호 찾기(메일 발송) */
+    // ========== 비밀번호 찾기 ==========
+    /**
+     * 비밀번호 찾기
+     * 동작:
+     *  1. 이메일로 계정 찾기
+     *  2. 임시 비밀번호 생성
+     *  3. DB 비밀번호를 임시 비밀번호로 업데이트
+     *  4. 임시 비밀번호를 메일로 발송
+     */
     @PostMapping("/password/forgot")
     public ResponseEntity<ApiResponse<?>> forgotPassword(
             @Valid @RequestBody EmailRequest request
     ) {
-        accountService.requestPasswordReset(request.getEmail().trim().toLowerCase());
+        accountService.forgotPassword(request.getEmail().trim().toLowerCase());
         return ResponseEntity.status(HttpStatus.ACCEPTED)
-                .body(ApiResponse.success("비밀번호 재설정 메일을 전송했습니다."));
+                .body(ApiResponse.success("입력하신 이메일로 임시 비밀번호를 전송했습니다. 로그인 후 반드시 비밀번호를 변경해주세요."));
     }
 
     // ========== 아이디 찾기 ==========
@@ -187,7 +189,6 @@ public class AuthController {
     ) {
         TokenResponse tokenResponse = authService.completeSocialSignup(request);
 
-        // 여기서도 새로 발급된 refreshToken을 쿠키로 내려줄 수 있음
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", tokenResponse.getRefreshToken())
                 .httpOnly(true)
                 .secure(false)

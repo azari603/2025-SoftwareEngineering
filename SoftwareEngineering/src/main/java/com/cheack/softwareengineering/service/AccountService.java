@@ -1,14 +1,17 @@
-// src/main/java/com/cheack/softwareengineering/service/AccountService.java
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.entity.ProviderType;
 import com.cheack.softwareengineering.entity.User;
 import com.cheack.softwareengineering.entity.UserStatus;
+import com.cheack.softwareengineering.exception.CustomException;
+import com.cheack.softwareengineering.exception.ErrorCode;
 import com.cheack.softwareengineering.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
 
 @Service
 @RequiredArgsConstructor
@@ -19,16 +22,30 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final EmailService emailService;
 
+    private static final String TEMP_PASSWORD_CHARS =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+    private String generateTemporaryPassword(int length) {
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        int n = TEMP_PASSWORD_CHARS.length();
+        for (int i = 0; i < length; i++) {
+            int idx = random.nextInt(n);
+            sb.append(TEMP_PASSWORD_CHARS.charAt(idx));
+        }
+        return sb.toString();
+    }
+
     /**
      * (예전에 만든) 순수 Account용 회원가입.
      * 현재는 AuthService.signUp()을 쓰고 있어서 안 써도 된다.
      */
     public User register(String username, String email, String rawPassword) {
         if (userRepository.existsByUsername(username)) {
-            throw new IllegalArgumentException("username already exists");
+            throw new CustomException(ErrorCode.DUPLICATE_USERNAME);
         }
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("email already exists");
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         String normUsername = username.trim().toLowerCase();
@@ -46,7 +63,6 @@ public class AccountService {
 
         User saved = userRepository.save(user);
 
-        // 가입 후 이메일 인증 메일 발송
         emailService.sendVerificationMail(saved.getEmail(), saved.getUsername());
 
         return saved;
@@ -61,14 +77,14 @@ public class AccountService {
         String normUsername = username.trim().toLowerCase();
 
         User user = userRepository.findByUsername(normUsername)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normUsername));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getProvider() != ProviderType.LOCAL) {
-            throw new IllegalArgumentException("social account cannot change password here");
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
         }
 
         if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-            throw new IllegalArgumentException("current password not matched");
+            throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
@@ -82,10 +98,9 @@ public class AccountService {
         String normEmail = email.trim().toLowerCase();
 
         User user = userRepository.findByEmail(normEmail)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normEmail));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getIsEmailVerified()) {
-            // 이미 인증된 계정이면 그냥 종료
             return;
         }
 
@@ -93,13 +108,13 @@ public class AccountService {
     }
 
     /**
-     * username 기준 재전송 – 필요하면 그대로 사용
+     * username 기준 재전송
      */
     public void resendVerificationMail(String username) {
         String normUsername = username.trim().toLowerCase();
 
         User user = userRepository.findByUsername(normUsername)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normUsername));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getIsEmailVerified()) {
             return;
@@ -115,11 +130,11 @@ public class AccountService {
         String normEmail = newEmail.trim().toLowerCase();
 
         if (userRepository.existsByEmail(normEmail)) {
-            throw new IllegalArgumentException("email already exists");
+            throw new CustomException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + userId));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         user.setEmail(normEmail);
         user.setIsEmailVerified(false);
@@ -128,80 +143,72 @@ public class AccountService {
         emailService.sendVerificationMail(normEmail, user.getUsername());
     }
 
-    // ================== 비밀번호 찾기 / 재설정 ==================
+    // ================== 비밀번호 찾기 (임시 비밀번호 발급) ==================
 
     /**
-     * 비밀번호 찾기 – 재설정 메일 발송 (AuthController에서 사용)
+     * 비밀번호 찾기
+     * 1. 이메일로 User 조회
+     * 2. ProviderType.LOCAL이 아닌 경우 에러
+     * 3. 임시 비밀번호 생성 후 DB에 저장
+     * 4. 해당 임시 비밀번호를 메일로 발송
      */
     public void forgotPassword(String email) {
         String normEmail = email.trim().toLowerCase();
-        emailService.sendPasswordResetMail(normEmail);
+
+        User user = userRepository.findByEmail(normEmail)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        if (user.getProvider() != ProviderType.LOCAL) {
+            throw new CustomException(ErrorCode.UNAUTHORIZED);
+        }
+
+        String tempPassword = generateTemporaryPassword(12);
+
+        user.setPassword(passwordEncoder.encode(tempPassword));
+        userRepository.save(user);
+
+        emailService.sendTemporaryPasswordMail(
+                normEmail,
+                user.getUsername(),
+                tempPassword
+        );
     }
 
     /**
-     * 비밀번호 찾기 – 재설정 메일 발송 (AccountController에서 사용하던 이름)
-     * => 위 forgotPassword() 래핑
+     * 예전 이름 호환용 래퍼
      */
     public void requestPasswordReset(String email) {
         forgotPassword(email);
     }
 
-    /**
-     * 비밀번호 재설정 – 토큰 검증 후 새 비밀번호로 변경
-     */
-    public void resetPassword(String token, String newPassword) {
-        Long userId = emailService.verifyPasswordResetToken(token);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + userId));
-
-        if (user.getProvider() != ProviderType.LOCAL) {
-            throw new IllegalArgumentException("social account cannot reset password here");
-        }
-
-        user.setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user);
-    }
-
     // ================== 아이디 찾기 ==================
 
-    /**
-     * 아이디 찾기 – 이메일로 username 반환
-     */
     public String findUsernameByEmail(String email) {
         String normEmail = email.trim().toLowerCase();
 
         User user = userRepository.findByEmail(normEmail)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normEmail));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         return user.getUsername();
     }
 
     // ================== 계정 탈퇴 ==================
 
-    /**
-     * 계정 탈퇴 – status=DEACTIVATED (AuthController에서 사용하는 이름)
-     */
     public void deleteAccount(String username, String password) {
         String normUsername = username.trim().toLowerCase();
 
         User user = userRepository.findByUsername(normUsername)
-                .orElseThrow(() -> new IllegalArgumentException("user not found: " + normUsername));
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         if (user.getProvider() == ProviderType.LOCAL) {
             if (password == null || !passwordEncoder.matches(password, user.getPassword())) {
-                throw new IllegalArgumentException("password not matched");
+                throw new CustomException(ErrorCode.INVALID_PASSWORD);
             }
         }
-        // 소셜 계정은 나중에 reauthToken 등으로 검증 로직 추가 가능
 
         user.setStatus(UserStatus.DELETED);
         userRepository.save(user);
     }
 
-    /**
-     * 계정 탈퇴 – AccountController에서 사용하던 이름
-     * => deleteAccount() 래핑
-     */
     public void deactivateAccount(String username, String password) {
         deleteAccount(username, password);
     }
