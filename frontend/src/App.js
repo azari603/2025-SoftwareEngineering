@@ -28,6 +28,10 @@ import RequireAuth from "./components/RequireAuth";
 import ReviewWrite from "./pages/ReviewWrite/ReviewWrite";
 import Stats from "./pages/Stats/StatsPage";
 import FeedPage from "./pages/FeedPage/FeedPage";
+import FindIdPage from "./pages/FindIdPage/FindIdPage";
+import FindIdSuccessPage from "./pages/FindIdPage/FindIdSuccessPage";
+import FindPasswordPage from "./pages/FindPasswordPage/FindPasswordPage";
+import FindPasswordSuccessPage from "./pages/FindPasswordPage/FindPasswordSuccessPage";
 
 export default function App() {
   const todaysBooks = dummyBooks;
@@ -77,12 +81,16 @@ export default function App() {
                
                 
           </Route>
-          
+          <Route path="email" element={<SignupEmail />} />
+          <Route path="/find-id" element={<FindIdPage/>}/>
+          <Route path="/find-id/success" element={<FindIdSuccessPage/>}/>
+          <Route path="/find-password" element={<FindPasswordPage />} />
+          <Route path="/find-password/success" element={<FindPasswordSuccessPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupLayout />}>
           <Route index element={<SignupPage />} />
           <Route path="success" element={<SignupSuccess />} />
-          <Route path="email" element={<SignupEmail />} />
+
           </Route>
         </Routes>
       </Router>

@@ -1,0 +1,68 @@
+.findid-success-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #fdfbf4;
+  user-select: none;
+}
+
+.findid-success-box {
+  width: 420px;
+  padding: 40px 30px;
+  background: #fff;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 로고 (LoginPage와 동일 스타일 사용) */
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  margin-bottom: 8px;
+}
+
+.logo-icon {
+  width: 31px;
+  height: 36px;
+}
+
+.logo-text {
+  font-weight: bold;
+  color: #299159;
+  font-size: 24px;
+}
+
+
+/* 아이디 표시 */
+.found-id-text {
+  font-size: 18px;
+  color: #767676;
+  margin-top:35px;
+  margin-bottom: 45px;
+}
+
+.found-id-text strong {
+  color: #299159;
+  font-weight: 600;
+}
+
+/* 하단 안내 텍스트 */
+.bottom-text {
+  margin-top: 16px;
+  font-size: 13px;
+  color: #666;
+}
+
+.pw-link {
+  color: #228b56;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pw-link:hover {
+  text-decoration: underline;
+}

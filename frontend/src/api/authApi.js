@@ -109,6 +109,28 @@ export async function checkEmailVerified(email) {
   }
 }
 
+//아이디 찾기
+export async function findId(email) {
+  try {
+    const res = await axiosInstance.get("/auth/find-id", {
+      params: { email },
+    });
+
+    return {
+      ok: true,
+      data: res.data.data,   // { username: "..." }
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      code: err.response?.data?.code,
+      message: err.response?.data?.message || "아이디 찾기 실패",
+    };
+  }
+}
+
+
+
 //내 계정 조회
 export async function getMyAccount() {
   try{
