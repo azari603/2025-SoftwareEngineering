@@ -16,7 +16,7 @@ const base=process.env.REACT_APP_BASE_URL;
 function fullUrl(path) {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  return `${base}/${path}`; // base 붙이기
+  return `${base}${path}`; // base 붙이기
 }
 
 export default function ProfilePage() {

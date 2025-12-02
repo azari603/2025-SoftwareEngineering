@@ -41,10 +41,12 @@ export async function login(username, password) {
   }catch(err){
     const code=err.response?.data?.code;
     const message=err.response?.data?.message;
+    const fields=err.response?.data?.fields;
     return {
       ok: false,
       code,
       message,
+      fields,
     };
   }
   

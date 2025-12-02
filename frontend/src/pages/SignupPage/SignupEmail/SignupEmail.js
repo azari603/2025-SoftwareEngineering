@@ -8,17 +8,10 @@ import { resendVerifyEmail, checkEmailVerified } from "../../../api/authApi";
 export default function SignupEmail() {
   const navigate = useNavigate();
   const location=useLocation();
-  const [searchParams] = useSearchParams();
   const [isVerified, setIsVerified] = useState(false);
   const [loading, setLoading]=useState(false);
 
-  const usernameFromState=location.state?.username;
-  const usernameFromStorage=sessionStorage.getItem("username");
-  const username=usernameFromState || usernameFromStorage || null;
-
-  const emailFromState = location.state?.email;
-  const emailFromStorage = sessionStorage.getItem("email"); 
-  const email = emailFromState || emailFromStorage || "";
+  const email= location.state?.email;
 
   const handleResend = async (e) => {
       e.preventDefault(); // a 태그 링크 이동 막기

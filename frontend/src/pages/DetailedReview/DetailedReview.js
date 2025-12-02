@@ -97,9 +97,12 @@ const ReviewDetail = () => {
             setLiked(status.liked);
           }
 
-          /*if(!reviewData.mine){
-            const followStatus=await followAPI.fetchFollowStatus(reviewData)
-          }*/
+          if(!reviewData.mine){
+            const followStatus=await followAPI.fetchFollowStatus(reviewData.authorUsername)
+            if(followStatus.ok){
+              setIsFollowing(followStatus.following);
+            }
+          }
         
         setBook(reviewData.book);
         }
@@ -234,6 +237,34 @@ const handleDeleteReview = async () => {
   navigate(-1); // 뒤로가기
 };
 
+//팔로우 버튼 클릭
+const handleFollowClick = async () => {
+  if (!isLoggedIn) {
+    setShowLoginModal(true);
+    return;
+  }
+
+  const target = review.authorUsername;
+  if (!target) return;
+
+  // UI update
+  const next = !isFollowing;
+  setIsFollowing(next);
+
+  let res;
+  if (next) {
+    res = await followAPI.follow(target);
+  } else {
+    res = await followAPI.unfollow(target);
+  }
+
+  if (!res.ok) {
+    // rollback UI
+    setIsFollowing(!next);
+    alert("팔로우 처리에 실패했습니다.");
+  }
+};
+
   /** JSX 렌더링 */
   return (
     <div className="card">
@@ -256,7 +287,8 @@ const handleDeleteReview = async () => {
 
                 {menuOpen && (
                   <div className="menu-dropdown">
-                    <button className="menu-item">수정</button>
+                    <button className="menu-item"
+                    onClick={() => navigate(`/review/edit/${reviewId}`)}>수정</button>
                     <button className="menu-item delete" onClick={() => setShowDeleteModal(true)}>삭제</button>
                   </div>
                 )}
@@ -265,7 +297,9 @@ const handleDeleteReview = async () => {
           </div>
 
           <div className="review-user_">
-            <div className="review-user__profile">
+            <div className="review-user__profile"
+              onClick={()=>navigate(`/profile/${review.authorUsername}`)}
+              style={{cursor:"pointer"}}>
               {<img src={profileImg} 
               onError={(e) => (e.target.src = profile_img)}
               alt="user" className="review-user__img" />} 
@@ -275,20 +309,14 @@ const handleDeleteReview = async () => {
               </div>
             </div>
 
-            {/*{!isMyReview && (
+            {!isMyReview && (
               <button
                 className={`follow-btn ${isFollowing ? "following" : ""}`}
-                onClick={() => {
-                  if (!isLoggedIn) {
-                    setShowLoginModal(true);
-                    return;
-                  }
-                  setIsFollowing(!isFollowing);
-                }}
+                onClick={handleFollowClick}
               >
                 {isFollowing ? "팔로잉" : "+ 팔로우"}
               </button>
-            )}*/}
+            )}
           </div>
         </header>
 
@@ -339,7 +367,7 @@ const handleDeleteReview = async () => {
 
           <button className="comment-btn" onClick={handleToggleComments}>
             <FaRegCommentDots />
-            <span>댓글 {comments.length}</span>
+            <span>댓글 {review.commentCount}</span>
             {commentsOpen ? <SlArrowDown className="comment-arrow-icon" /> : <SlArrowRight className="comment-arrow-icon"/>}
           </button>
         </footer>

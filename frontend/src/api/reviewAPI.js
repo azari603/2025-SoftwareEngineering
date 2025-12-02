@@ -80,13 +80,20 @@ export async function fetchLatestFeed({ page = 0, size = 8, sort = "createdAt,de
   }
 }
 
-// username 가 팔로잉한 사용자들의 리뷰만 필터링 (임시)
+// username 가 팔로잉한 사용자들의 리뷰만 필터링
 export async function fetchFollowingFeed({ page = 0, size = 8, sort = "createdAt,desc" }) {
   try {
     const res = await axiosInstance.get("/feed/following", {
       params: { page, size, sort },
     });
-    return res.data;
+    const reviews=res.data.content;
+    const mappedReviews=await Promise.all(reviews.map(mapReview));
+    return{
+      content: mappedReviews,
+      totalPages: res.data.totalPages,
+      totalElements: res.data.totalElements
+    }
+    
   } catch (err) {
     console.error("팔로잉 피드 불러오기 오류:", err);
     return { content: [], error: err.response?.data?.message };

@@ -9,6 +9,7 @@ import google_logo from "../../assets/google_logo.png"
 import naver_logo from "../../assets/naver_logo.png"
 import kakao_logo from "../../assets/kakao_logo.png"
 import CustomModal from "../../components/Modal/CustomModal"
+import { resendVerifyEmail } from "../../api/authApi";
 export default function LoginPage() {
     const navigate=useNavigate();
     const {login}=useAuth();
@@ -43,7 +44,7 @@ export default function LoginPage() {
               setPasswordError("비밀번호가 틀렸습니다.");
               break;
             case "EMAIL_NOT_VERIFIED":
-              setUnverifiedEmail(result.email);
+              setUnverifiedEmail(result.fields.email);
               setShowVerifyModal(true);
               break;
             case "USER_LOCKED":
@@ -126,14 +127,16 @@ export default function LoginPage() {
     title="이메일 인증 필요"
     message={`로그인을 계속하려면 이메일 인증이 필요합니다. 
       인증 페이지로 이동하시겠습니까?`}
-    /*onConfirm={() => {
-      navigate("/signup/email", {
-        state: {
-          email: unverifiedEmail,
-          username,
-        },
-      });
-    }}*/
+    onConfirm={async () => {
+      const result = await resendVerifyEmail(unverifiedEmail);
+
+      if (result.ok) {
+        navigate("/signup/email", { state: { email: unverifiedEmail } });
+      } else {
+        alert("인증 이메일 재전송에 실패했습니다.");
+      }
+      }
+    }
     onCancel={() => setShowVerifyModal(false)}
   />
 )}
