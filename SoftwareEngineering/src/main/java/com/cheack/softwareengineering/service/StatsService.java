@@ -1,11 +1,7 @@
 package com.cheack.softwareengineering.service;
 
 import com.cheack.softwareengineering.dto.*;
-import com.cheack.softwareengineering.entity.Book;
-import com.cheack.softwareengineering.entity.Profile;
-import com.cheack.softwareengineering.entity.ReadingStatus;
-import com.cheack.softwareengineering.entity.ReadingStatusType;
-import com.cheack.softwareengineering.entity.Review;
+import com.cheack.softwareengineering.entity.*;
 import com.cheack.softwareengineering.repository.BookRepository;
 import com.cheack.softwareengineering.repository.ProfileRepository;
 import com.cheack.softwareengineering.repository.ReadingStatusRepository;
@@ -146,6 +142,32 @@ public class StatsService {
                 .counts(counts)
                 .build();
     }
+
+    /**
+     * 내가 매긴 별점(rating)에 해당하는 책 목록
+     */
+    public Page<BookCardDto> getMyBooksByRating(Long userId, Double star, Pageable pageable) {
+        // 리뷰들 먼저 가져오고, 거기에 매핑되는 Book 을 합쳐서 BookCardDto 로 변환하는 방식
+        Page<Review> page = reviewRepository.findByUserIdAndStarRatingAndVisibilityAndDeletedFalseOrderByCreatedAtDesc(
+                userId, star, Visibility.PUBLIC, pageable);
+
+        return page.map(review -> {
+            Book book = bookRepository.findById(review.getBookId())
+                    .orElse(null);
+
+            // ⚠ BookCardDto 생성 부분은 프로젝트에 있는 팩토리 메서드에 맞춰 수정해야 함
+            // 예: BookCardDto.from(book) 또는 from(book, review.getStarRating()) 등
+            return BookCardDto.builder()
+                    .bookId(book.getId())
+                    .name(book.getName())
+                    .author(book.getAuthor())
+                    .imageUrl(book.getImage())
+                    .avgStar(review.getStarRating()) // 혹은 book 의 평균 별점
+                    // 필요하면 추가 필드 세팅
+                    .build();
+        });
+    }
+
 
     /**
      * 가장 많이 읽은(리뷰 작성한) 작가 TOP N

@@ -87,6 +87,28 @@ public class StatsController {
         return statsService.getRatingHistogram(userId);
     }
 
+    /**
+     * [내가 매긴 별점별 책 목록]
+     * GET /api/v1/stats/me/stars/books?rating=1~5&page=0&size=20
+     */
+    @GetMapping("/me/stars/books")
+    public Page<BookCardDto> getMyBooksByRating(
+            @AuthenticationPrincipal String username,
+            @RequestParam("rating") Double rating,
+            org.springframework.data.domain.Pageable pageable
+    ) {
+        if (username == null || "anonymousUser".equals(username)) {
+            throw new IllegalArgumentException("UNAUTHORIZED");
+        }
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("rating 은 1~5 사이여야 합니다.");
+        }
+
+        Long userId = userService.getByUsername(username).getId();
+        return statsService.getMyBooksByRating(userId, rating, pageable);
+    }
+
+
     // ======================= 타임라인 =======================
 
     /**

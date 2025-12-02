@@ -2,6 +2,7 @@
 package com.cheack.softwareengineering.repository;
 
 import com.cheack.softwareengineering.entity.Review;
+import com.cheack.softwareengineering.entity.ReviewStatus;
 import com.cheack.softwareengineering.entity.Visibility;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -62,6 +63,13 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
 
     long countByBookIdAndVisibilityAndDeletedFalse(Long bookId, Visibility visibility);
+
+    Page<Review> findByUserIdAndStarRatingAndVisibilityAndDeletedFalseOrderByCreatedAtDesc(
+            Long userId,
+            Double starRating,
+            Visibility visibility,
+            Pageable pageable
+    );
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Review r set r.deleted = true where r.id = :id")
