@@ -100,3 +100,23 @@ export async function fetchTimeline({ granularity = "month", from, to }) {
     throw err;
   }
 }
+
+//자주읽은 저자별 도서 목록
+export async function fetchAuthorBooks(author, page = 0, size = 20) {
+  try {
+    const res = await axiosInstance.get(
+      "/stats/me/authors/books",
+      {
+        params: {
+          author,
+          page,
+          size
+        }
+      }
+    );
+    return res.data.content;
+  } catch (err) {
+    console.error("저자별 책 목록 조회 실패:", err);
+    throw err;
+  }
+}

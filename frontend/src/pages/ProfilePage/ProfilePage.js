@@ -9,7 +9,7 @@ import settings_btn from "../../assets/option.png";
 import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
 import { LayoutContext } from "../../context/LayoutContext";
-import { getProfile, getMyProfile } from "../../api/authApi";
+import { getProfile, getMyProfile, getMyStarredBooks } from "../../api/authApi";
 import dummyReviews from "../../mocks/dummyReviews";
 
 const base=process.env.REACT_APP_BASE_URL;
@@ -28,7 +28,8 @@ export default function ProfilePage() {
   const [loading, setLoading]=useState(true);
   const {username: paramUsername}=useParams();
   const targetUsername=paramUsername??user?.username; //조회할 username 결정
-  
+  const [starredBooks, setStarredBooks]=useState([]) //별점별 책목록
+
 
   useEffect(() => {
     setFooterColor("#FDFBF4"); // 흰색 테마
@@ -45,16 +46,30 @@ export default function ProfilePage() {
     loadProfile();
   },[user]);
 
+  useEffect(()=>{
+    async function loadStarredBooks(){
+      const res=await getMyStarredBooks(selectedRating,0,20);
+      const mapped=res.content.map((b)=>({
+        id:b.bookId,
+        name:b.name,
+        author:b.author,
+        image:b.imageUrl,
+        avgStar:b.avgStar??0,
+        reviewCount:b.reviewCount??0,
+        rating:selectedRating,
+      }));
+      setStarredBooks(mapped);
+    }
+    loadStarredBooks();
+  },[selectedRating]);
+
+  const filteredBooks = starredBooks;
   if(loading){
     return <div className="profile-container">로딩 중...</div>
   }
   if (!profile) {
     return <div className="profile-container">프로필 정보를 불러올 수 없습니다.</div>;
   }
-
-  const filteredBooks = dummyBooks.filter(
-    (book) => book.rating === selectedRating
-  );
 
   return (
     <div className="profile-container">

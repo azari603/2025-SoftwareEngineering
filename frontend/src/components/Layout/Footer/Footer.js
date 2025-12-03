@@ -9,7 +9,7 @@ export default function Footer({isTransparent, bgColor="#FFFFFF"}){
             <div className="footer-top">
                 <div className="footer-logo">
                     <img src={isTransparent?logo_white:logo} alt="logo" className="logo-icon" />
-                    <span className={`logo-text ${isTransparent?"logo-text--transparent":""}`}>CHAECK</span>
+                    <span className={`home-logo-text ${isTransparent?"home-logo-text--transparent":""}`}>CHAECK</span>
                 </div>
         
                 <div className={`footer-project ${isTransparent?"footer-project--transparent":""}`}>
