@@ -289,9 +289,49 @@ export async function verifyPassword(username, currentPassword) {
 }
 
 // 새 비밀번호 변경
-export async function changePassword(username, newPassword) {
-  console.log("📡 Mock changePassword 호출", { username, newPassword });
-  await new Promise((r) => setTimeout(r, 700));
+export async function changePassword(currentPassword, newPassword) {
+  try {
+    const res = await axiosInstance.post("/auth/password/change", {
+      currentPassword,
+      newPassword,
+    });
 
-  return { message: "비밀번호가 성공적으로 변경되었습니다." };
+    return {
+      success: true,
+      message: res.data.data || res.data.message, // “비밀번호가 변경되었습니다.”
+    };
+  } catch (err) {
+    const code = err.response?.data?.code;
+
+    return {
+      success: false,
+      code,
+      message:
+        code === "INVALID_PASSWORD"
+          ? "현재 비밀번호가 일치하지 않습니다."
+          : "서버 오류가 발생했습니다.",
+    };
+  }
+}
+
+//계정 탈퇴
+export async function deleteAccount(password) {
+  try {
+    const res = await axiosInstance.delete("/auth/me", {
+      data: { password },
+    });
+
+    return { success: true };
+  } catch (err) {
+    const code = err.response?.data?.code;
+
+    return {
+      success: false,
+      code,
+      message:
+        code === "INVALID_PASSWORD"
+          ? "비밀번호가 일치하지 않습니다."
+          : "계정 삭제 중 오류가 발생했습니다."
+    };
+  }
 }

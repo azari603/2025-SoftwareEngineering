@@ -4,6 +4,7 @@ import profile_img from "../../../assets/profile_img.png";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ChangePasswordModal from "../../../components/Modal/ChangePasswordModal/ChangePasswordModal.js";
+import DeleteAccountModal from "../../../components/Modal/DeleteAccountModal/DeleteAccountModal.js";
 import { getMyProfile } from "../../../api/authApi.js";
 
 const base=process.env.REACT_APP_BASE_URL;
@@ -18,6 +19,7 @@ export default function SettingsPage() {
   const navigate=useNavigate();
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const[profile,setProfile]=useState();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   
 
@@ -128,12 +130,18 @@ export default function SettingsPage() {
       </div>
 
       <div className="delete-btn-wrapper">
-        <button className="delete-btn">계정 삭제</button>
+        <button className="delete-btn" onClick={() => setShowDeleteModal(true)}>
+          계정 삭제
+        </button>
       </div>
       {showPasswordModal && (
         <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
       )}
+      {showDeleteModal && (
+        <DeleteAccountModal onClose={() => setShowDeleteModal(false)} />
+      )}
     </div>
   );
 }
+
 

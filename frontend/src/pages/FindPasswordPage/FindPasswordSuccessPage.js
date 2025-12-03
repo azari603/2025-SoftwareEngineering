@@ -3,17 +3,39 @@ import "./FindPasswordSuccessPage.css";
 import logo from "../../assets/logo.png";
 import mailIcon from "../../assets/mail_sent.png";
 import Button from "../../components/Button/Button";
+import axiosInstance from "../../api/axiosInstance";
+import { useState } from "react";
 
 export default function FindPasswordSuccessPage() {
   const { state } = useLocation();
   const email = state?.email;
   const navigate = useNavigate();
 
+  const [resendMessage, setResendMessage] = useState("");
+
+  const handleResend = async () => {
+    setResendMessage("");
+
+    try {
+      const res = await axiosInstance.post("/auth/email/resend", { email });
+
+      if (res.data.success) {
+        setResendMessage("인증 이메일을 다시 전송했습니다.");
+      }
+    } catch (error) {
+      const code = error.response?.data?.code;
+
+      if (code === "EMAIL_ALREADY_VERIFIED")
+        setResendMessage("이미 인증된 이메일입니다.");
+      else
+        setResendMessage("메일 전송 중 오류가 발생했습니다.");
+    }
+  };
+
   return (
     <div className="pw-success-container">
       <div className="pw-success-box">
 
-        {/* 로고 */}
         <Link to="/" className="logo">
           <img src={logo} alt="logo" className="logo-icon" />
           <span className="logo-text">CHEACK</span>
@@ -24,18 +46,26 @@ export default function FindPasswordSuccessPage() {
         <img src={mailIcon} alt="메일" className="pw-mail-icon" />
 
         <p className="pw-msg">
-          <strong>{email}</strong> 으로<br/> 임시 비밀번호가 전송되었습니다.<br />
+          <strong>{email}</strong> 으로<br />
+          임시 비밀번호가 발송되었습니다.<br />
           메일함을 확인해주세요.
         </p>
 
         <p className="pw-resend">
           이메일을 받지 못하셨나요?{" "}
-          <span className="resend-link">재전송하기</span>
+          <span className="resend-link" onClick={handleResend}>
+            재전송하기
+          </span>
         </p>
+
+        {/* 재전송 알림 메시지 */}
+        {resendMessage && (
+          <p className="resend-result">{resendMessage}</p>
+        )}
 
         <Button
           type="button"
-          variant="filled"
+          variant="login-btn"
           size="medium"
           onClick={() => navigate("/login")}
         >
