@@ -264,6 +264,17 @@ export async function uploadBackgroundImage(file){
     }
 }
 
+//별점별 책 목록
+export async function getMyStarredBooks(rating, page = 0, size = 20) {
+  const res = await axiosInstance.get(
+    `/stats/me/stars/books`,
+    {
+      params: { rating, page, size }
+    }
+  );
+  return res.data; 
+}
+
 // 테스트용 비밀번호 검증 api
 export async function verifyPassword(username, currentPassword) {
   console.log("Mock verifyPassword 호출", { username, currentPassword });

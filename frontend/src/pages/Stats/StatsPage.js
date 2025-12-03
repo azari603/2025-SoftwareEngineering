@@ -4,7 +4,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowBack } from "react-icons/io";
 import GoalModal from "../../components/Modal/GoalModal/GoalModal";
 import "./StatsPage.css";
-import { fetchGoals, fetchOverview, fetchStars, fetchTimeline, fetchTopAuthors, updateMonthlyGoal } from "../../api/statsApi";
+import { fetchAuthorBooks, fetchGoals, fetchOverview, fetchStars, fetchTimeline, fetchTopAuthors, updateMonthlyGoal } from "../../api/statsApi";
 
 
 export default function StatsPage() {
@@ -46,6 +46,9 @@ export default function StatsPage() {
     const percent = Math.round((achieved / goal) * 100);
     return percent;  
   };
+
+  //저자별 책 목록
+  const [authorBooks, setAuthorBooks]=useState()
 
   useEffect(()=>{
     (async()=>{
@@ -245,9 +248,27 @@ export default function StatsPage() {
               <div key={idx} className="author-item">
                 <div
                   className="author-header"
-                  /*onClick={() =>
-                    setOpenAuthor(openAuthor === idx ? null : idx)
-                  }*/
+                  onClick={async()=>{
+                    //현재 열려있는 경우 닫음
+                    if(openAuthor===idx){
+                      setOpenAuthor(null);
+                      return;
+                    }
+                    //처음 여는 경우: 해당 저자의 책목록 호출
+                    const authorName=author.name;
+                    try{
+                      const books=await fetchAuthorBooks(authorName);
+                      setAuthorBooks((prev)=>({
+                        ...prev,
+                        [authorName]: books,
+                  
+                      }));
+                      setOpenAuthor(idx);
+
+                    }catch(err){
+                      alert("저자별 책목록 조회 실패 ㅜㅜ");
+                    }
+                  }}
                 >
                   <span>{idx + 1}. {author.name}</span>
                   <span className="author-book-count">
@@ -258,14 +279,17 @@ export default function StatsPage() {
                 </div>
                 {openAuthor === idx && (
                   <div className="author-books">
-                    {author.books.map((b, i) => (
-                      <div className="author-book-item" key={i}>
-                        <img src={b.image}
-                        alt={b.title} className="author-book-cover"/>
-                        <span className="author-book-title">{b.title}</span>
-                      </div>
-                    ))}
-                  </div>
+                  {(authorBooks[author.name] || []).map((b, i) => (
+                    <div className="author-book-item" key={i}>
+                      <img 
+                        src={b.imageUrl} 
+                        alt={b.name}
+                        className="author-book-cover"
+                      />
+                      <span className="author-book-title">{b.name}</span>
+                    </div>
+                  ))}
+                </div>
                 )}
               </div>
             ))}

@@ -5,7 +5,7 @@ import "./ReviewCard.css"
 
 const ReviewCard = forwardRef(({ review, variant = "basic" }, ref) => {
   const nickname=review.nickname||review.userId
-  const bookTitle=review.book.title||review.book.name;
+  const bookTitle=review?.book?.title||review?.book?.name;
   return (
     <Link to={`/review/${review.reviewId}`} state={{review}} className={`review-card ${variant}`} ref={ref}>
       {variant === "withBook" && review.book && (

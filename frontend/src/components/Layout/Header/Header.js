@@ -25,7 +25,7 @@ const Header = ({isTransparent}) => {
         {/* 로고 */}
         <Link to="/" className="logo">
           <img src={isTransparent?logo_white:logo} alt="logo" className="logo-icon" />
-          <span className={`logo-text ${isTransparent?"logo-text--transparent":""}`}>CHAECK</span>
+          <span className={`home-logo-text ${isTransparent?"home-logo-text--transparent":""}`}>CHAECK</span>
         </Link>
 
         {/* 메뉴 */}

@@ -82,7 +82,7 @@ export default function App() {
                
                 
           </Route>
-          <Route path="email" element={<SignupEmail />} />
+          <Route path="/signup/email" element={<SignupEmail />} />
           <Route path="/find-id" element={<FindIdPage/>}/>
           <Route path="/find-id/success" element={<FindIdSuccessPage/>}/>
           <Route path="/find-password" element={<FindPasswordPage />} />
