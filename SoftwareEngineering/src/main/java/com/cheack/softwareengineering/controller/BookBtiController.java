@@ -97,7 +97,7 @@ public class BookBtiController {
      * GET /api/v1/bookbti/sessions/{sessionId}/question
      *
      * - 아직 답변하지 않은 "다음" 문항 하나를 내려준다.
-     * - 8문항 모두 답변했다면 예외 발생(글로벌 핸들러에서 적절히 에러 포맷으로 래핑).
+     * - 20문항 모두 답변했다면 예외 발생(글로벌 핸들러에서 적절히 에러 포맷으로 래핑).
      */
     @GetMapping("/sessions/{sessionId}/question")
     public BtiQuestionDto getQuestion(
@@ -137,7 +137,7 @@ public class BookBtiController {
             throw new IllegalArgumentException("choice는 1~3 사이여야 합니다.");
         }
 
-        if (session.getAnswers().size() >= 8) {
+        if (session.getAnswers().size() >= 20) {
             throw new IllegalStateException("이미 모든 문항에 답변했습니다.");
         }
 
@@ -174,7 +174,7 @@ public class BookBtiController {
      * [종료/결과 산출]
      * POST /api/v1/bookbti/sessions/{sessionId}/finish
      *
-     * - 8문항이 모두 채워졌을 때만 종료 가능.
+     * - 20문항이 모두 채워졌을 때만 종료 가능.
      * - 로그인 사용자면 BookBtiService.saveResult 통해 결과 영속화.
      * - 응답: resultId(저장된 경우) + BtiResultDto
      */
@@ -191,8 +191,8 @@ public class BookBtiController {
             return new BtiFinishResponse(null, result);
         }
 
-        if (session.getAnswers().size() != 8) {
-            throw new IllegalStateException("모든 문항(8개)에 답변한 후 종료할 수 있습니다.");
+        if (session.getAnswers().size() != 20) {
+            throw new IllegalStateException("모든 문항(20개)에 답변한 후 종료할 수 있습니다.");
         }
 
         BtiResultDto result = bookBtiService.calculateResult(session.getAnswers());
@@ -232,7 +232,7 @@ public class BookBtiController {
     public BtiResultDto result(@PathVariable String sessionId) {
         SessionState session = getSessionOrThrow(sessionId);
 
-        if (session.getAnswers().size() != 8) {
+        if (session.getAnswers().size() != 20) {
             throw new IllegalStateException("아직 모든 문항에 답변하지 않았습니다.");
         }
 

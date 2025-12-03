@@ -53,6 +53,9 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     implementation 'software.amazon.awssdk:s3:2.25.0'
+
+    // OpenAI Java SDK
+    implementation 'com.openai:openai-java:4.8.0'
 }
 
 

@@ -29,6 +29,7 @@ public class BookBtiService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;   // 일단 향후 확장용
     private final RecommendationService recommendationService;
+    private final BtiAiRecommendationService btiAiRecommendationService;
 
     // Q1~Q4: 첫 번째 축 (E/T/I)
     // answers: 1 -> A, 2 -> B, 3 -> C
@@ -36,15 +37,28 @@ public class BookBtiService {
             {'E', 'T', 'I'},   // Q1
             {'E', 'T', 'I'},   // Q2
             {'E', 'T', 'I'},   // Q3
-            {'E', 'I', 'T'}    // Q4 (A→E, B→I, C→T)
+            {'E', 'T', 'I'},   // Q4 (A→E, B→I, C→T)
+            {'E', 'T', 'I'},   // Q5
+            {'E', 'T', 'I'},   // Q6
+            {'E', 'T', 'I'},   // Q7
+            {'E', 'T', 'I'},   // Q8
+            {'E', 'T', 'I'},   // Q9
+            {'E', 'T', 'I'}    // Q10
     };
 
     // Q5~Q8: 두 번째 축 (R/S/W)
     private static final char[][] SECOND_AXIS_MAPPING = new char[][]{
-            {'R', 'S', 'W'},   // Q5
-            {'R', 'S', 'W'},   // Q6
-            {'R', 'S', 'W'},   // Q7
-            {'R', 'S', 'W'}    // Q8
+            {'R', 'S', 'W'},   // Q11
+            {'R', 'S', 'W'},   // Q12
+            {'R', 'S', 'W'},   // Q13
+            {'R', 'S', 'W'},   // Q14
+            {'R', 'S', 'W'},   // Q15
+            {'R', 'S', 'W'},   // Q16
+            {'R', 'S', 'W'},   // Q17
+            {'R', 'S', 'W'},   // Q18
+            {'R', 'S', 'W'},   // Q19
+            {'R', 'S', 'W'}    // Q20
+
     };
 
     /**
@@ -63,7 +77,7 @@ public class BookBtiService {
      * @param answers 크기 8, 각 원소 1~3 (A/B/C)
      */
     public BtiResultDto calculateResult(List<Integer> answers) {
-        if (answers == null || answers.size() != 8) {
+        if (answers == null || answers.size() != 20) {
             throw new IllegalArgumentException("answers는 8개의 선택(1~3)을 포함해야 합니다.");
         }
 
@@ -71,16 +85,16 @@ public class BookBtiService {
         Map<Character, Integer> secondAxisCount = new HashMap<>();
 
         // Q1~Q4 (0~3)
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 10; i++) {
             int choice = answers.get(i);
             char letter = mapChoice(FIRST_AXIS_MAPPING[i], choice);
             firstAxisCount.merge(letter, 1, Integer::sum);
         }
 
         // Q5~Q8 (4~7)
-        for (int i = 4; i < 8; i++) {
+        for (int i = 10; i < 20; i++) {
             int choice = answers.get(i);
-            char letter = mapChoice(SECOND_AXIS_MAPPING[i - 4], choice);
+            char letter = mapChoice(SECOND_AXIS_MAPPING[i - 10], choice);
             secondAxisCount.merge(letter, 1, Integer::sum);
         }
 
@@ -138,41 +152,32 @@ public class BookBtiService {
 
     /**
      * BBTI 결과를 바탕으로 책 추천.
-     * 지금은 간단히 RecommendationService 를 통해 추천을 가져오도록 구성.
-     * (나중에 코드별 큐레이션 로직을 추가할 수 있음)
+     * 기존에는 RecommendationService.recommendForUser 를 사용했는데,
+     * 이제는 BBTI 전용 AI 추천 서비스로 위임한다.
      */
     public Page<BookCardDto> recommendFromResult(Long userId, Pageable pageable) {
-        // 결과가 없으면 일단 인기 도서 폴백
         Optional<BookBTI> resultOpt = btiResultRepository.findByUserId(userId);
         if (resultOpt.isEmpty()) {
+            // 기존 로직 유지: BBTI가 없으면 인기 도서
             return recommendationService.fallbackPopular(pageable);
         }
 
         BookBTI result = resultOpt.get();
-        BtiType type = BtiType.fromCode(result.getResultType());
-        // type 정보를 이용한 커스텀 로직을 여기에 덧붙일 수 있음.
+        BtiResultDto dto = BtiResultDto.fromEntity(result);
 
-        return recommendationService.recommendForUser(userId, pageable);
+        // 🔹 여기서 AI 추천 사용
+        return btiAiRecommendationService.recommendByBti(dto, pageable);
     }
 
     /**
      * resultId 기반 BBTI 결과를 바탕으로 책 추천.
      */
     public Page<BookCardDto> recommendFromResultId(Long resultId, Pageable pageable) {
-        BookBTI result = btiResultRepository.findById(resultId)
+        BookBTI entity = btiResultRepository.findById(resultId)
                 .orElseThrow(() -> new NoSuchElementException("저장된 BBTI 결과가 없습니다. resultId=" + resultId));
 
-        Long userId = result.getUserId();
-
-        // userId가 없으면 인기 도서 폴백
-        if (userId == null) {
-            return recommendationService.fallbackPopular(pageable);
-        }
-
-        BtiType type = BtiType.fromCode(result.getResultType());
-        // type 기반 커스텀 로직 추가 가능
-
-        return recommendationService.recommendForUser(userId, pageable);
+        BtiResultDto resultDto = BtiResultDto.fromEntity(entity);
+        return btiAiRecommendationService.recommendByBti(resultDto, pageable);
     }
 
     // === 내부 헬퍼 메서드들 ===

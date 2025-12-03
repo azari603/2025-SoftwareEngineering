@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,12 +25,16 @@ public class BtiResultDto {
     /** 짧은 설명 */
     private String description;
 
+    /** 결과에 붙는 #카테고리 3개 */
+    private List<String> categories;
+
     public static BtiResultDto fromCode(String code) {
         BtiType type = BtiType.fromCode(code);
         return BtiResultDto.builder()
                 .code(type.getCode())
                 .label(type.getLabel())
                 .description(type.getDescription())
+                .categories(type.getCategories())
                 .build();
     }
 
