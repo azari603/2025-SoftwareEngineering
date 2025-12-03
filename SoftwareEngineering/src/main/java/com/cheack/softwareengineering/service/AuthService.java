@@ -68,6 +68,11 @@ public class AuthService {
         User user = userRepository.findByUsername(req.getUsername().trim().toLowerCase())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
+         if (user.getStatus() == UserStatus.DELETED) {
+            // 탈퇴 계정은 "존재하지 않는 계정"처럼 보이도록
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
         if (!passwordEncoder.matches(req.getPassword(), user.getPassword())) {
             throw new CustomException(ErrorCode.INVALID_PASSWORD);
         }
