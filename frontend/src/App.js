@@ -8,8 +8,6 @@ import QuizStart from "./pages/Quiz/QuizStart/QuizStart";
 import QuizPage from "./pages/Quiz/QuizPage/QuizPage";
 import Home from "./pages/Home/Home";
 import QuizResult from "./pages/Quiz/QuizResult/QuizResult";
-import { dummyBooks } from "./mocks/dummyBooks";
-import { dummyReviews } from "./mocks/dummyReviews";
 import { AuthProvider } from "./context/AuthContext";
 import BaseLayout from "./components/Layout/BaseLayout";
 import SearchPage from "./pages/SearchPage/SearchPage"
@@ -34,12 +32,6 @@ import FindPasswordPage from "./pages/FindPasswordPage/FindPasswordPage";
 import FindPasswordSuccessPage from "./pages/FindPasswordPage/FindPasswordSuccessPage";
 
 export default function App() {
-  const todaysBooks = dummyBooks;
-  const todaysReviews = dummyReviews;
-  const recommendedBooks = dummyBooks;
-  const followingReviews = dummyReviews;
-
-
   return (
     <AuthProvider>
     <LayoutProvider>
@@ -50,12 +42,7 @@ export default function App() {
           <Route
             path="/"
             element={
-                <Home
-                  
-                 
-                  
-                  followingReviews={followingReviews}
-                />}/>
+                <Home/>}/>
 
                 <Route path="/quiz/start" element={<QuizStart/>}/>
                 <Route path="/quiz" element={<QuizPage/>}/>

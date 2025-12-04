@@ -272,13 +272,10 @@ const handleFollowClick = async () => {
 
         {/* 뒤로가기 */}
         <header className="review-header">
-          <button className="back-btn" onClick={() => navigate(-1)}>
+          <div className="menu-btn-row">
+            <button className="back-btn" onClick={() => navigate(-1)}>
             <IoIosArrowBack />
-          </button>
-
-          <div className="review-title-row">
-            <h1 className="review-title">{review.title}</h1>
-
+            </button>
             {isMyReview && (
               <div className="user-action-area" ref={menuRef}>
                 <button className="menu-btn" onClick={() => setMenuOpen(!menuOpen)}>
@@ -294,6 +291,13 @@ const handleFollowClick = async () => {
                 )}
               </div>
             )}
+          </div>
+          
+          <div className="title-profile-wrapper">
+            <div className="review-title-row">
+            <h1 className="review-title">{review.title}</h1>
+
+            
           </div>
 
           <div className="review-user_">
@@ -318,6 +322,9 @@ const handleFollowClick = async () => {
               </button>
             )}
           </div>
+          </div>
+
+          
         </header>
 
         {/* 책 정보 */}
@@ -353,8 +360,6 @@ const handleFollowClick = async () => {
           ))}
         </article>
 
-        <hr className="review-divider" />
-
         {/* 좋아요 & 댓글 열기 */}
         <footer className="review-footer">
           <button className="like-btn" onClick={handleLikeClick}>
@@ -365,11 +370,11 @@ const handleFollowClick = async () => {
             <span>{likeCount}</span>
           </button>
 
-          <button className="comment-btn" onClick={handleToggleComments}>
-            <FaRegCommentDots />
-            <span>댓글 {review.commentCount}</span>
-            {commentsOpen ? <SlArrowDown className="comment-arrow-icon" /> : <SlArrowRight className="comment-arrow-icon"/>}
-          </button>
+          <button className={`comment-btn ${commentsOpen ? "open" : ""}`} onClick={handleToggleComments}>
+          <FaRegCommentDots />
+          <span>댓글 {review.commentCount}</span>
+          <SlArrowRight className="comment-arrow-icon" />
+        </button>
         </footer>
 
         {/* 댓글 영역 */}
@@ -409,7 +414,7 @@ const handleFollowClick = async () => {
                   <input
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="서로가 존중해지는 댓글을 작성해보세요."
+                    placeholder="서로를 존중하는 댓글을 작성해보세요."
                   />
                   <button onClick={handleCommentSubmit}>등록</button>
                 </>

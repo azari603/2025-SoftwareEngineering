@@ -28,8 +28,7 @@
   border-radius: 8px;
 }
 
-.book-info-meta {
-  height: 260px;
+.book-info-wrapper .book-info-meta {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -37,8 +36,7 @@
 }
 
 .book-info-meta .book-title {
-  font-size: 1.8rem;
-  font-weight: 600;
+  font-size: 24px;
   margin-bottom: 4px;
 }
 
@@ -61,8 +59,8 @@
 }
 
 .book-rating-action-wrapper .book-rating .rating-container .star-icon{
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
 }
 
 .book-actions {
@@ -77,7 +75,14 @@
   padding: 6px 10px;
   cursor: pointer;
   transition: 0.2s;
+
+  transition: 
+    background-color 0.5s ease,
+    color 0.5s ease,
+    border-color 0.5s ease,
+    transform 0.5s ease;
 }
+
 
 .action-btn:hover {
   background: #f2f2f2;
@@ -87,6 +92,10 @@
   border-color: #299159;
   background: #299159;
   color: #fff;
+}
+
+.action-btn:hover {
+  transform: scale(1.03);
 }
 
 .review-btn {
