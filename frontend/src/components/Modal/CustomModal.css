@@ -1,6 +1,4 @@
-/* CustomModal.css */
-
-.modal-backdrop {
+.goal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -10,38 +8,55 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: 2000;
 }
 
-.modal-box {
+.goal-modal {
   background: #fff;
-  width: 300px;
+  width: 300px; /* CustomModal과 동일 */
   padding: 22px 20px;
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  animation: fadeIn 0.25s ease-out;
 }
 
-.modal-title {
-  font-size: 18px;
+.goal-title {
+  font-size: 18px;       /* CustomModal title 크기 */
   font-weight: 600;
   margin-bottom: 12px;
 }
 
-.modal-message {
+.goal-message {
   font-size: 14px;
   color: #555;
   white-space: pre-line;
   margin-bottom: 20px;
 }
 
-.custom-modal-buttons {
+.goal-input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  font-size: 15px;
+  border: 1.5px solid #ccc;
+  border-radius: 10px;  /* CustomModal 스타일로 맞춤 */
+  outline: none;
+  transition: border-color 0.2s ease;
+  margin-bottom: 18px;
+}
+
+.goal-input:focus {
+  border-color: #299159;
+}
+
+.goal-buttons {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
-.modal-btn {
+.goal-btn {
   padding: 8px 16px;
   border-radius: 8px;
   border: none;
@@ -49,12 +64,17 @@
   font-size: 14px;
 }
 
-.modal-btn.confirm {
+.goal-btn.confirm {
   background: #299159;
   color: #fff;
 }
 
-.modal-btn.cancel {
+.goal-btn.cancel {
   background: #ddd;
   color: #333;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: translateY(0); }
 }

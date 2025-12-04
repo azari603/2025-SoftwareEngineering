@@ -93,9 +93,9 @@ export default function SettingsPage() {
             <div
               className="background-preview"
               style={{
-                backgroundImage: user?.backgroundImg
-                  ? `url(${user.backgroundImg})`
-                  : "none",
+                backgroundImage: profile?.backgroundImageUrl
+                ? `url(${fullUrl(profile.backgroundImageUrl)})`
+                : "none",
                 backgroundColor: user?.backgroundColor || "#D2E8CD",
                 backgroundSize: "cover",
                 backgroundPosition: "center",

@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import "./ProfilePage.css";
 import profile_img from "../../assets/profile_img.png";
-import { dummyBooks } from "../../mocks/dummyBooks";
 import ReviewList from "../../components/ReviewList/ReviewList";
 import no_result from "../../assets/no_result.png";
 import BookList from "../../components/BookList/BookList";
@@ -10,13 +9,13 @@ import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
 import { LayoutContext } from "../../context/LayoutContext";
 import { getProfile, getMyProfile, getMyStarredBooks } from "../../api/authApi";
-import dummyReviews from "../../mocks/dummyReviews";
+import { FaStar } from "react-icons/fa";
 
 const base=process.env.REACT_APP_BASE_URL;
 function fullUrl(path) {
   if (!path) return null;
   if (path.startsWith("http")) return path;
-  return `${base}${path}`; // base 붙이기
+  return `${base}/${path}`; // base 붙이기
 }
 
 export default function ProfilePage() {
@@ -76,7 +75,7 @@ export default function ProfilePage() {
       <div className="profile-card">
         <div className="profile-header-bg" style={{
             backgroundImage: profile.backgroundImageUrl
-              ? `url(${profile.backgroundImageUrl})`
+              ? `url(${fullUrl(profile.backgroundImageUrl)})`
               : "none",
             backgroundSize: "cover",
             backgroundPosition: "center",
@@ -95,12 +94,16 @@ export default function ProfilePage() {
         <div className="profile-info">
           <div className="profile-img">
             <img src={fullUrl(profile.profileImageUrl)||profile_img} 
-            onError={(e) => (e.target.src = profile_img)}
+            
             alt="프로필 이미지" />
           </div>
           <h2 className="username">{profile.nickname}</h2>
           <p className="userid">@{profile.username}</p>
-
+          <p className="intro">
+            {profile.intro && profile.intro.trim() !== ""
+              ? profile.intro
+              : "나를 소개할 수 있는 한 문장을 적어보세요"}
+          </p>
           <div className="follow-info">
             <span>
               팔로잉 <b>{profile.followingCount}</b>
@@ -113,13 +116,9 @@ export default function ProfilePage() {
             </span>
           </div>
 
-          <p className="intro">
-            {profile.intro && profile.intro.trim() !== ""
-              ? profile.intro
-              : "나를 소개할 수 있는 한 문장을 적어보세요"}
-          </p>
+          
 
-          <div className="goal-section">
+          {/*<div className="goal-section">
             <div className="goal-header">
               <h4>이달의 목표</h4>
               <p className="goal-count">
@@ -130,7 +129,7 @@ export default function ProfilePage() {
             <div className="goal-progress">
               <div className="goal-fill" style={{ width: "80%" }}></div>
             </div>
-          </div>
+          </div>*/}
         </div>
 
         {/* 별점 섹션 */}
@@ -146,7 +145,7 @@ export default function ProfilePage() {
                 className={`tab ${selectedRating === r ? "active" : ""}`}
                 onClick={() => setSelectedRating(r)}
               >
-                ⭐ {r}
+                 <FaStar className="star-icon"/>{r}
               </button>
             ))}
           </div>
@@ -174,12 +173,12 @@ export default function ProfilePage() {
 
         {/* 리뷰 섹션 */}
         <div className="review-section">
-          <h3>공개된 서평</h3>
+          <h3 className="review-section-title">공개된 서평</h3>
           <div className="review-list">
             <ReviewList
               reviews={profile.reviews.content}
               mode="carousel"
-              visibleCount={3}
+              visibleCount={4}
             />
           </div>
         </div>

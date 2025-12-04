@@ -48,7 +48,7 @@ export default function StatsPage() {
   };
 
   //저자별 책 목록
-  const [authorBooks, setAuthorBooks]=useState()
+  const [authorBooks, setAuthorBooks]=useState({})
 
   useEffect(()=>{
     (async()=>{
@@ -111,7 +111,7 @@ export default function StatsPage() {
 
   return (
     <div className="stats-container">
-      <main className="stats-main">
+      <main className="stats-main fade-in-up">
         <div className="stats-header">
           <h2>
             나의 기록 &gt; <span className="stats-breadcrumb">독서 통계</span>
@@ -157,7 +157,11 @@ export default function StatsPage() {
           {/* ---- 원형 그래프 + 도서별 평점 ---- */}
           <div className="stats-mid-row">
             <div className="stats-circle-card">
+              <div className="title-row">
                 <h3>이번달 목표 달성률</h3>
+                <p>다 읽은 책 기준</p>
+              </div>
+                
                 
                   <svg className="progress-svg" width="240" height="240">
                     <circle
@@ -271,18 +275,21 @@ export default function StatsPage() {
                   }}
                 >
                   <span>{idx + 1}. {author.name}</span>
-                  <span className="author-book-count">
-                    {author.count}권 
-                    {openAuthor === idx ? <IoIosArrowBack /> : <IoIosArrowDown />}
-                  </span>
+                  <span className={`author-book-count ${openAuthor === idx ? "open" : ""}`}>
+                  {author.count}권  
+                  <IoIosArrowDown className="author-arrow" />
+                </span>
 
                 </div>
-                {openAuthor === idx && (
-                  <div className="author-books">
+                <div
+                  className={`author-books ${
+                    openAuthor === idx ? "open" : ""
+                  }`}
+                >
                   {(authorBooks[author.name] || []).map((b, i) => (
                     <div className="author-book-item" key={i}>
-                      <img 
-                        src={b.imageUrl} 
+                      <img
+                        src={b.imageUrl}
                         alt={b.name}
                         className="author-book-cover"
                       />
@@ -290,7 +297,6 @@ export default function StatsPage() {
                     </div>
                   ))}
                 </div>
-                )}
               </div>
             ))}
           </div>
