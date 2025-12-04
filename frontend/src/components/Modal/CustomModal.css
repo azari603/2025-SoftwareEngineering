@@ -1,4 +1,4 @@
-.goal-overlay {
+.modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -21,20 +21,25 @@
   animation: fadeIn 0.25s ease-out;
 }
 
-.goal-title {
+.modal-title {
   font-size: 18px;       /* CustomModal title 크기 */
   font-weight: 600;
   margin-bottom: 12px;
 }
 
-.goal-message {
+.modal-message {
   font-size: 14px;
   color: #555;
   white-space: pre-line;
   margin-bottom: 20px;
 }
 
-.goal-input {
+.modal-box{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.modal-input {
   width: 100%;
   height: 42px;
   padding: 0 12px;
@@ -46,17 +51,17 @@
   margin-bottom: 18px;
 }
 
-.goal-input:focus {
+.modal-input:focus {
   border-color: #299159;
 }
 
-.goal-buttons {
+.modal-buttons {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 
-.goal-btn {
+.modal-btn {
   padding: 8px 16px;
   border-radius: 8px;
   border: none;
@@ -64,16 +69,20 @@
   font-size: 14px;
 }
 
-.goal-btn.confirm {
+.modal-btn.confirm {
   background: #299159;
   color: #fff;
 }
 
-.goal-btn.cancel {
+.modal-btn.cancel {
   background: #ddd;
   color: #333;
 }
 
+.custom-modal-buttons{
+  display: flex;
+  gap: 10px;
+}
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: translateY(0); }

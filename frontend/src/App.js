@@ -76,10 +76,10 @@ export default function App() {
           <Route path="/find-password/success" element={<FindPasswordSuccessPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupLayout />}>
-          <Route index element={<SignupPage />} />
-          <Route path="success" element={<SignupSuccess />} />
-
+            <Route index element={<SignupPage />} />
+          
           </Route>
+          <Route path="/auth/verify-email" element={<SignupSuccess />} />
         </Routes>
       </Router>
       </LayoutProvider>

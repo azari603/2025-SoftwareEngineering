@@ -45,7 +45,7 @@ export default function SignupEmail() {
 
       if (res.verified) {
         // 인증 완료 → 성공 페이지 이동
-        navigate("/signup/success");
+        navigate("/auth/verify-email");
       } else {
         // 인증 안 된 경우
         alert("아직 이메일 인증이 완료되지 않았습니다.");
