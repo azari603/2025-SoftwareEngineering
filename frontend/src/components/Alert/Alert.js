@@ -12,8 +12,27 @@ import {
   getNotifications,
   readNotification,
   deleteNotification,
-  readAllNotifications
+  readAllNotifications,
+  getUserById
 } from "../../api/authApi";
+
+//알림 메세지
+const formatContent = (n) => {
+  const actor = n.actorNickname || "사용자";
+  const title = n.reviewTitle|| "";
+
+  if (n.type.includes("LIKE"))
+    return `${actor} 님이 "${title}" 글에 좋아요를 눌렀습니다.`;
+
+  if (n.type.includes("COMMENT"))
+    return `${actor} 님이 "${title}" 글에 댓글을 작성했습니다.`;
+
+  if (n.type.includes("FOLLOW"))
+    return `${actor} 님이 회원님을 팔로우했습니다.`;
+
+  return n.content || "";
+};
+
 
 const Alert = ({ isOpen, setIsOpen }, ref) => {
   const [notifications, setNotifications] = useState([]);
@@ -129,11 +148,17 @@ const Alert = ({ isOpen, setIsOpen }, ref) => {
               key={n.id}
               className={`alert-item ${n.read ? "read" : ""}`}
               onClick={() => {
-                if(n.type=="FOLLOW"){  //팔로우 알림이 오면 임시로 삭제
-                  handleDelete(n.id);
-                  return;
-                }
                 handleRead(n.id);
+                  console.log(" 알림 타입:", n.type, " | actor:", n.actor);
+
+                if(n.type=="FOLLOW"){  
+                   const username=n.actorUsername;
+                   if(username){
+                    handleRead(n.id);
+                    navigate(`/profile/${username}`);
+                   }
+                    return;
+                }
                 if (n.targetUrl) {
                   const fixed = n.targetUrl.replace("/reviews", "/review");
                   navigate(fixed);
@@ -153,7 +178,7 @@ const Alert = ({ isOpen, setIsOpen }, ref) => {
               </div>
 
 
-              <div className="alert-message">{n.content}</div>
+              <div className="alert-message">{formatContent(n)}</div>
 
               <button
                 className="delete-btn"

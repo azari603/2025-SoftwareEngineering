@@ -17,6 +17,16 @@ import { getUnreadCount } from "../../../api/authApi";
 
 const Header = ({ isTransparent }) => {
   const { isLoggedIn } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const isActive = (paths) => {
+    if (typeof paths === "string") {
+      return currentPath.startsWith(paths);
+    }
+    return paths.some((p) => currentPath.startsWith(p));
+  };
+
 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -51,22 +61,7 @@ const Header = ({ isTransparent }) => {
     }
   }, [isLoggedIn]);
 
-const Header = ({isTransparent}) => {
-  /*useAuth 훅을 사용하여 isLoggined랑 logout 함수 가져오기*/
-  const {isLoggedIn}=useAuth();
-  /* 알림창, 프로필 메뉴 열렸는지 상태 확인 배열 */
-  const [isAlertOpen, setIsAlertOpen]=useState(false);
-  const [isProfileOpen, setIsProfileOpen] =useState(false);
-  
-  const location = useLocation();
-  const currentPath = location.pathname;
-  const isActive = (paths) => {
-  if (typeof paths === "string") {
-      return currentPath.startsWith(paths);
-    }
-    // 배열이면: 하나라도 true면 active
-    return paths.some((p) => currentPath.startsWith(p));
-  };
+
   return (
     <header className={`header ${isTransparent ? "header--transparent" : ""}`}>
       <div className="header-left">
