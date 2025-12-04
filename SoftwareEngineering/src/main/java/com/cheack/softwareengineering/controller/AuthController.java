@@ -7,11 +7,15 @@ import com.cheack.softwareengineering.service.AuthService;
 import com.cheack.softwareengineering.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -23,7 +27,8 @@ public class AuthController {
     private final UserService userService;
     private final JwtProvider jwtProvider;
 
-    // ========== 회원가입 / 로그인 / 토큰 ==========
+    @Value("${app.frontend-url}")
+    private String frontendUrl;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<?>> signUp(@Valid @RequestBody SignUpRequest request) {
@@ -32,11 +37,6 @@ public class AuthController {
                 .body(ApiResponse.success("회원가입 성공. 이메일 인증을 완료해주세요."));
     }
 
-    /**
-     * 로그인
-     * - 응답 JSON: accessToken 중심(TokenResponse)
-     * - refreshToken: HttpOnly 쿠키로 내려감
-     */
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<TokenResponse>> login(@Valid @RequestBody LoginRequest request) {
         TokenResponse token = authService.login(request);
@@ -61,18 +61,11 @@ public class AuthController {
                 .body(ApiResponse.success(bodyToken));
     }
 
-    /**
-     * 토큰 재발급
-     * - refreshToken은 HttpOnly 쿠키에서 읽어옴
-     * - 새 refreshToken도 쿠키로 재설정
-     */
     @PostMapping("/token/refresh")
     public ResponseEntity<ApiResponse<TokenResponse>> refresh(
             @CookieValue(name = "refreshToken", required = false) String refreshToken
     ) {
-        TokenResponse token = authService.refreshToken(
-                new RefreshTokenRequest(refreshToken)
-        );
+        TokenResponse token = authService.refreshToken(new RefreshTokenRequest(refreshToken));
 
         ResponseCookie refreshCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                 .httpOnly(true)
@@ -94,11 +87,6 @@ public class AuthController {
                 .body(ApiResponse.success(bodyToken));
     }
 
-    /**
-     * 로그아웃
-     * - refreshToken 쿠키 삭제(Set-Cookie Max-Age=0)
-     * - accessToken은 FE에서 버리면 됨
-     */
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse<?>> logout(
             @CookieValue(name = "refreshToken", required = false) String refreshToken
@@ -116,12 +104,21 @@ public class AuthController {
                 .body(ApiResponse.success("로그아웃 완료"));
     }
 
-    // ========== 이메일 인증, 재전송 ==========
-
     @GetMapping("/verify-email")
-    public ResponseEntity<ApiResponse<?>> verifyEmail(@RequestParam String token) {
-        authService.verifyEmail(token);
-        return ResponseEntity.ok(ApiResponse.success("이메일 인증 완료"));
+    public ResponseEntity<Void> verifyEmail(@RequestParam String token) {
+        String successUrl = frontendUrl + "/auth/verify-email?status=success";
+        String failUrlBase = frontendUrl + "/auth/verify-email?status=fail&reason=";
+        try {
+            authService.verifyEmail(token);
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                    .header(HttpHeaders.LOCATION, successUrl)
+                    .build();
+        } catch (Exception e) {
+            String reason = URLEncoder.encode("invalid_or_expired", StandardCharsets.UTF_8);
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                    .header(HttpHeaders.LOCATION, failUrlBase + reason)
+                    .build();
+        }
     }
 
     @PostMapping("/email/resend")
@@ -130,16 +127,11 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success("인증 이메일 재전송 완료"));
     }
 
-    /**
-     * 비로그인 상태에서 이메일 인증 여부 확인
-     */
     @GetMapping("/email/verified")
     public ResponseEntity<ApiResponse<Boolean>> isEmailVerified(@RequestParam String email) {
         boolean verified = authService.isEmailVerifiedByEmail(email);
         return ResponseEntity.ok(ApiResponse.success(verified));
     }
-
-    // ========== 중복 체크 ==========
 
     @GetMapping("/check/username")
     public ResponseEntity<ApiResponse<CheckResponse>> checkUsername(@RequestParam String value) {
@@ -155,33 +147,18 @@ public class AuthController {
         return ResponseEntity.ok(ApiResponse.success(new CheckResponse(available, message)));
     }
 
-    // ========== 비밀번호 찾기 ==========
-    /**
-     * 비밀번호 찾기
-     * 동작:
-     *  1. 이메일로 계정 찾기
-     *  2. 임시 비밀번호 생성
-     *  3. DB 비밀번호를 임시 비밀번호로 업데이트
-     *  4. 임시 비밀번호를 메일로 발송
-     */
     @PostMapping("/password/forgot")
-    public ResponseEntity<ApiResponse<?>> forgotPassword(
-            @Valid @RequestBody EmailRequest request
-    ) {
+    public ResponseEntity<ApiResponse<?>> forgotPassword(@Valid @RequestBody EmailRequest request) {
         accountService.forgotPassword(request.getEmail().trim().toLowerCase());
         return ResponseEntity.status(HttpStatus.ACCEPTED)
                 .body(ApiResponse.success("입력하신 이메일로 임시 비밀번호를 전송했습니다. 로그인 후 반드시 비밀번호를 변경해주세요."));
     }
-
-    // ========== 아이디 찾기 ==========
 
     @GetMapping("/find-id")
     public ResponseEntity<ApiResponse<FindIdResponse>> findId(@RequestParam String email) {
         String username = accountService.findUsernameByEmail(email);
         return ResponseEntity.ok(ApiResponse.success(new FindIdResponse(username)));
     }
-
-    // ========== 소셜 1회 가입 완료 ==========
 
     @PostMapping("/social/complete-signup")
     public ResponseEntity<ApiResponse<TokenResponse>> completeSocialSignup(
