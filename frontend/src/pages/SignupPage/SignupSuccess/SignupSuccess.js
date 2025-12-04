@@ -14,9 +14,11 @@ export default function SignupSuccess() {
 
   return (
     <div className="success-container">
-      <h2 className="success-title">회원가입 완료!</h2>
+      <div className="success-box">
+        <img src={successIcon} alt="성공 아이콘" className="success-icon" />
+        <h2 className="success-title">회원가입 완료!</h2>
 
-      <img src={successIcon} alt="성공 아이콘" className="success-icon" />
+      
 
       <p className="success-welcome">
         환영합니다!
@@ -32,6 +34,8 @@ export default function SignupSuccess() {
       onClick={()=> navigate("/login")}>
         로그인 하러가기
       </Button>
+      </div>
+      
     </div>
   );
 }
