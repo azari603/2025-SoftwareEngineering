@@ -64,7 +64,7 @@ const StarRate = ({ value = 0, readOnly = false, onChange}) => {
 
         {/* 별점 숫자 표시 */}
         <span className="score">
-          <span className="score-number">{rating}</span>
+          <span className="score-number">{rating.toFixed(1)}</span>
           <span className="score-total"> / 5</span>
         </span>
       </div>
