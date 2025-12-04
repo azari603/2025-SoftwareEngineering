@@ -414,7 +414,7 @@ const handleFollowClick = async () => {
                   <input
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="서로가 존중해지는 댓글을 작성해보세요."
+                    placeholder="서로를 존중하는 댓글을 작성해보세요."
                   />
                   <button onClick={handleCommentSubmit}>등록</button>
                 </>

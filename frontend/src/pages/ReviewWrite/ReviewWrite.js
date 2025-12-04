@@ -41,7 +41,7 @@ const ReviewWrite = () => {
             fetchReviewDetail(reviewId).then(data=>{
                 setTitle(data.title);
                 setContent(data.text);
-                setRating(data.starRting);
+                setRating(data.starRating);
                 setEndDate(data.book.finishDate);
                 setStartDate(data.book.startDate);
 
