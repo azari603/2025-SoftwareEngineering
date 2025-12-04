@@ -1,60 +1,87 @@
-/* 페이지 전체 구조 — review-write-view 기반 */
-.feed-list-view {
+.feed-page-wrapper {
   width: 100%;
+  background: #FDFBF4;
   min-height: 100vh;
-  background-color: #FDFBF4;
+  padding-bottom: 100px;
+}
+
+.feed-hero {
+  width: 100%;
+  height: 280px;
+  background: #FDFBF4;
+  background-image: url("../../assets/feed_img.png");
+  background-position: 3px;
+  background-size: cover;
+  background-attachment: fixed;
   display: flex;
   justify-content: center;
-  
+  align-items: center;
+  position: relative;
+  text-align: center;
+  overflow: hidden;
 }
 
-/* 카드 박스 — review-write-card 기반 */
-.feed-list-card {
-  width: 808px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-  display: flex;
-  flex-direction: column;
-  margin-top: 60px;
-  margin-bottom: 80px;
+.feed-hero-text {
+  position: relative;
+  z-index: 2;
 }
 
-/***********************************************
-   탭 영역
-***********************************************/
+.feed-hero-title {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.feed-hero-desc {
+  color: #555;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
 .feed-tabs-row {
   display: flex;
-  width: 100%;
-  border-bottom: 1px solid #ddd;
-  padding: 0 40px;
-  margin-top: 20px;
+  justify-content: center;
+  gap: 50px;
+  padding-top: 60px;
 }
 
 .feed-tab {
-  flex: 1;
-  padding: 18px 0;
-  text-align: center;
-  font-size: 17px;
-  color: #666;
+  padding: 16px 0;
+  font-size: 18px;
   background: none;
   border: none;
   cursor: pointer;
+  color: #1a1a1a;
 }
 
 .feed-tab.active {
   color: #299159;
-  font-weight: 600;
   border-bottom: 3px solid #299159;
+  font-weight: 600;
 }
 
-/***********************************************
-   리뷰 리스트
-***********************************************/
-.feed-list {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  padding: 40px 60px;
+.feed-grid {
+  max-width: 1100px;
+  margin: 40px auto 120px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 28px 24px; /* row gap, column gap */
+}
+
+.feed-sentinel {
+  height: 40px;
+}
+
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(25px);
+  animation: fadeUp 0.8s ease-out forwards;
+}
+
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

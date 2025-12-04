@@ -16,16 +16,21 @@
   flex: 1;
   border: none;
   outline: none;
-  font-size: 16px;
+  font-size: 14px;
   background: transparent;
+}
+
+input::placeholder {
+  color: #999999; /* 원하는 색 */
 }
 
 /*테두리*/
 .search-bar.outlined {
-  border: 1px solid #A0A0A0;
+  border: 1px solid #c9c9c9;
   border-radius: 12px;
   padding-inline: 20px;
   padding-block: 3px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 /*그림자*/
@@ -38,4 +43,10 @@
 .search-btn{
   background: transparent !important;
   border: none;
+}
+
+.search-bar .search-btn .search-icon{
+  color: #c8c8c8;
+  width: 22px;
+  height: 22px;
 }

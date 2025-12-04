@@ -1,4 +1,3 @@
-import { dummyBooks } from "../mocks/dummyBooks"
 import axiosInstance from "./axiosInstance";
 
 
@@ -146,11 +145,6 @@ export async function fetchPersonalizedBooks({ page = 0, size = 10 }) {
   }
 }
 
-//(임시) 추천 도서 리스트 요청
-export async function getRecommendBooks(){
-    const recommended=dummyBooks
-    return {books:recommended}
-}
 
 //책 검색
 export async function searchBooks({q="", page=1, size=10}){
@@ -182,14 +176,6 @@ export async function searchBooks({q="", page=1, size=10}){
   }
 }
 
-export const getMyLibraryBooks = async (type) => {
-  // 실제 API 연결 시 fetch로 교체
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true, books: dummyBooks });
-    }, 300); // 로딩 딜레이 시뮬레이션
-  });
-};
 
 
 //책 상태 지정/변경

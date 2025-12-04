@@ -78,8 +78,8 @@
 
 /* 날짜 input 박스 */
 .date-input {
-  width: 240px;
-  height: 44px;
+  width: 200px;
+  height: 40px;
 
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -213,6 +213,7 @@
 }
 
 .review-write-card .star-icon {
-  width: 45px ;
-  height: 45px ;
+  width: 32px ;
+  height: 32px ;
 }
+

@@ -48,7 +48,7 @@ export default function MyReviewPage() {
 
   return (
     <div className="myReview-container">
-      <main className="myReview-main">
+      <main className="myReview-main fade-in-up">
         <div className="myReview-header">
           <h2>
             나의 기록 &gt; <span className="myReview-breadcrumb">나의 서평</span>

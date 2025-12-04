@@ -51,7 +51,7 @@ const CarouselLayout = ({ items, renderItem, visibleCount = 3 }) => {
         <button
           className="nav-button right"
           onClick={handleNext}
-          style={{ left: `${rightBtnPos - 30}px` }}
+          
         >
           <img src={arrowRight} alt="다음" />
         </button>

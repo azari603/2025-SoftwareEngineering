@@ -1,6 +1,5 @@
 import { useLocation } from "react-router-dom";
 import { useContext, useEffect, useRef, useState } from "react";
-import { dummyBooks } from "../../mocks/dummyBooks";
 import BookList from "../../components/BookList/BookList";
 import bookImg from "../../assets/search_book.png"
 import Pagination from "../../components/Pagination/Pagination"

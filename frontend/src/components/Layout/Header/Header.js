@@ -1,7 +1,9 @@
 import "./Header.css";
-import logo from "../../../assets/logo.png";
-import logo_white from "../../../assets/logo_white.png";
-import { Link } from "react-router-dom";
+import logo from "../../../assets/logo.png"
+import logo_white from "../../../assets/logo_white.png"
+import userIcon from "../../../assets/user.png"
+import alarmIcon from "../../../assets/alarm.png"
+import { Link, useLocation } from "react-router-dom" 
 import SearchBar from "../../SearchBar/SearchBar";
 import Button from "../../Button/Button";
 import Alert from "../../Alert/Alert";
@@ -41,6 +43,16 @@ const Header = ({ isTransparent }) => {
       console.error("읽지 않은 알림 수 조회 실패:", err);
     }
   };
+  
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isActive = (paths) => {
+  if (typeof paths === "string") {
+      return currentPath.startsWith(paths);
+    }
+    // 배열이면: 하나라도 true면 active
+    return paths.some((p) => currentPath.startsWith(p));
+  };
 
   // 로그인 되어 있으면 헤더 처음 렌더링할 때 한번 가져오기
   useEffect(() => {
@@ -69,10 +81,13 @@ const Header = ({ isTransparent }) => {
         </Link>
 
         {/* 메뉴 */}
-        <nav className={`nav ${isTransparent ? "nav--transparent" : ""}`}>
-          <Link to={isLoggedIn ? "/profile/library" : "/login"}>나의 서재</Link>
-          <Link to="/feed">둘러보기</Link>
-          <Link to={isLoggedIn ? "/quiz/start" : "/login"}>책BTI</Link>
+        <nav className={`nav ${isTransparent?"nav--transparent":""}`}>
+          <Link to={isLoggedIn ? "/profile/library" : "/login"}
+          className={isActive(["/profile/library","profile/stats","profile/reviews"])?"active":""}>나의 서재</Link>
+          <Link to="/feed"
+          className={isActive(["/feed"])?"active":""}>둘러보기</Link>
+          <Link to={isLoggedIn ? "/quiz/start" : "/login"}
+          className={isActive(["/quiz"])?"active":""}>책BTI</Link>
         </nav>
 
         {!isTransparent && (

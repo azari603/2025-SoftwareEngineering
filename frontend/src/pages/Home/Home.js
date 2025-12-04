@@ -78,7 +78,7 @@ const Home = (
     
   }
   const reviewSectionTitle=
-    isLoggedIn&&followingReviews.length>0?"팔로잉 서평":"오늘의 추천 서평";
+    isLoggedIn&&followingReviews.length>0?"팔로잉 서평":"오늘의 서평을 둘러보세요!";
   const reviewForSection=isLoggedIn&&followingReviews.length>0?followingReviews:todayReviews;
   const booksForSection=isLoggedIn?recommendedBooks:todayBooks;
 
