@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { useEffect, useState} from "react";
+import { useLocation, useNavigate, useSearchParams,Link  } from "react-router-dom";
 import "./SignupEmail.css";
 import Button from "../../../components/Button/Button";
 import emailIcon from "../../../assets/mail_sent.png";
 import { resendVerifyEmail, checkEmailVerified } from "../../../api/authApi";
+import logo from "../../../assets/logo.png";     
 
 export default function SignupEmail() {
   const navigate = useNavigate();
@@ -56,7 +57,15 @@ export default function SignupEmail() {
   };
 
   return (
-    <div className="email-container">
+    <div className="signup-email-container">
+      <div className="signup-email-box">
+        {/* 로고 영역 */}
+        <div className="signup-logo">
+          <Link to="/" className="logo">
+            <img src={logo} alt="logo" className="logo-icon" />
+            <span className="logo-text">CHEACK</span>
+          </Link>
+        </div>
       <img src={emailIcon} alt="메일 아이콘" className="email-icon" />
 
       <p className="email-text">
@@ -80,6 +89,7 @@ export default function SignupEmail() {
           인증메일 재발송
         </a>
       </p>}
+      </div>
     </div>
   );
 }

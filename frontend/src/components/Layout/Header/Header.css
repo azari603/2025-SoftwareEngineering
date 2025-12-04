@@ -151,3 +151,24 @@
 .header--transparent .user-info .icon{
   color: white;
 }
+
+.notification-wrapper {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+}
+
+.bell-icon {
+  font-size: 28px;
+  color: #222;
+}
+
+.red-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  background: #ff3b3b;
+  border-radius: 50%;
+}

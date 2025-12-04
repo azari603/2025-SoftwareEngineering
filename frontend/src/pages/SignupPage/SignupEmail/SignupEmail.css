@@ -1,11 +1,22 @@
-.email-container {
+
+.signup-email-container {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 24px;
-  text-align: center;
-  padding: 20px 0;
+  height: 100vh;
+  background: #fbf9f2;
+  user-select: none;
 }
+
+.signup-email-box {
+  width: 420px;
+  padding: 45px 35px;
+  background: #ffffff;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
 
 .email-icon {
   width: 120px;
@@ -16,6 +27,7 @@
   font-size: 16px;
   line-height: 1.6;
   color: #333;
+  margin-bottom: 35px;
 }
 
 .email-text strong {
@@ -24,7 +36,7 @@
 }
 
 .email-resend {
-  margin-top: 12px;
+  margin-top: 20px;
   font-size: 13px;
   color: #666;
 }
