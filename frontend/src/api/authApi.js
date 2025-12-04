@@ -365,3 +365,8 @@ export async function readAllNotifications() {
 export async function deleteNotification(id) {
   await axiosInstance.delete(`/notifications/${id}`);
 }
+
+export async function getUserById(userId) {
+  const res = await axiosInstance.get(`/users/${userId}`);
+  return res.data; // { id, username, nickname, ... }
+}

@@ -17,6 +17,16 @@ import { getUnreadCount } from "../../../api/authApi";
 
 const Header = ({ isTransparent }) => {
   const { isLoggedIn } = useAuth();
+  const location = useLocation();
+  const currentPath = location.pathname;
+
+  const isActive = (paths) => {
+    if (typeof paths === "string") {
+      return currentPath.startsWith(paths);
+    }
+    return paths.some((p) => currentPath.startsWith(p));
+  };
+
 
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -43,16 +53,6 @@ const Header = ({ isTransparent }) => {
       console.error("읽지 않은 알림 수 조회 실패:", err);
     }
   };
-  
-  const location = useLocation();
-  const currentPath = location.pathname;
-  const isActive = (paths) => {
-  if (typeof paths === "string") {
-      return currentPath.startsWith(paths);
-    }
-    // 배열이면: 하나라도 true면 active
-    return paths.some((p) => currentPath.startsWith(p));
-  };
 
   // 로그인 되어 있으면 헤더 처음 렌더링할 때 한번 가져오기
   useEffect(() => {
@@ -60,6 +60,7 @@ const Header = ({ isTransparent }) => {
       loadUnreadCount();
     }
   }, [isLoggedIn]);
+
 
   return (
     <header className={`header ${isTransparent ? "header--transparent" : ""}`}>
