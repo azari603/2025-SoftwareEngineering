@@ -155,6 +155,7 @@ public class BookBtiService {
      * 기존에는 RecommendationService.recommendForUser 를 사용했는데,
      * 이제는 BBTI 전용 AI 추천 서비스로 위임한다.
      */
+    @Transactional(readOnly = false)
     public Page<BookCardDto> recommendFromResult(Long userId, Pageable pageable) {
         Optional<BookBTI> resultOpt = btiResultRepository.findByUserId(userId);
         if (resultOpt.isEmpty()) {
@@ -172,6 +173,7 @@ public class BookBtiService {
     /**
      * resultId 기반 BBTI 결과를 바탕으로 책 추천.
      */
+    @Transactional(readOnly = false)
     public Page<BookCardDto> recommendFromResultId(Long resultId, Pageable pageable) {
         BookBTI entity = btiResultRepository.findById(resultId)
                 .orElseThrow(() -> new NoSuchElementException("저장된 BBTI 결과가 없습니다. resultId=" + resultId));
