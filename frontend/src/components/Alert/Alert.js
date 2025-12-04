@@ -1,69 +1,166 @@
 import React, { useState, useEffect, useRef } from "react";
+import { forwardRef, useImperativeHandle } from "react";
+import { useNavigate } from "react-router-dom";
+import { FaRegCommentDots } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa6";
+import { IoNotificationsOutline } from "react-icons/io5";
+import { IoPersonAdd } from "react-icons/io5";
+
+
 import "./Alert.css";
+import {
+  getNotifications,
+  readNotification,
+  deleteNotification,
+  readAllNotifications
+} from "../../api/authApi";
 
-const Alert = ({isOpen,setIsOpen}) => {
-  const [notifications, setNotifications] = useState([
-    { id: 1, type:"like", time: "방금 전", text: "수진님이 ‘침묵속에서 들…’ 서평에 좋아요를 눌렀어요." },
-    { id: 2, type: "comment", time: "어제 오후 6:30", text: "수진님 외 3명이 ‘침묵속에서 들…’ 서평에 댓글을 달았어요." },
-    { id: 3, type:"like", time: "방금 전", text: "수진님이 ‘침묵속에서 들…’ 서평에 좋아요를 눌렀어요." },
-    { id: 4, type: "comment", time: "어제 오후 6:30", text: "수진님 외 3명이 ‘침묵속에서 들…’ 서평에 댓글을 달았어요." }
-  ]);
-
+const Alert = ({ isOpen, setIsOpen }, ref) => {
+  const [notifications, setNotifications] = useState([]);
   const wrapperRef = useRef(null);
-  
-  const getEmoji = (type) => {
-  switch (type) {
-    case "like":
-      return "❤️";
-    case "comment":
-      return "💬";
-    default:
-      return "🔔"; // 기본 아이콘
-  }
-};
+  const navigate = useNavigate();
 
-
-  // 알림 삭제
-  const removeNotification = (id) => {
-    setNotifications(notifications.filter((n) => n.id !== id));
+  // 알림 목록 불러오기
+  const loadNotifications = async () => {
+    try {
+      const list = await getNotifications(0, 20);
+      const unreadOnly = list.filter((n) => !n.read);
+      setNotifications(unreadOnly);
+    } catch (err) {
+      console.error("알림 조회 실패:", err);
+    }
   };
 
-  // 알림창 외부 클릭 시 닫기
+  useImperativeHandle(ref, () => ({
+    reload: () => loadNotifications()
+  }));
+
+  // 읽음 처리
+  const handleRead = async (id) => {
+    try {
+      await readNotification(id);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (err) {
+      console.error("읽음 처리 실패:", err);
+    }
+  };
+
+  // 삭제
+  const handleDelete = async (id) => {
+    try {
+      await deleteNotification(id);
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
+    } catch (err) {
+      console.error("삭제 실패:", err);
+    }
+  };
+
+  // 외부 클릭 시 닫기
   useEffect(() => {
-    function handleClickOutside(event){
-      if(wrapperRef.current && !wrapperRef.current.contains(event.target) &&
-    !event.target.classList.contains("alarm")){
+    function handleClickOutside(event) {
+      if (
+        wrapperRef.current &&
+        !wrapperRef.current.contains(event.target) &&
+        !event.target.classList.contains("alarm")
+      ) {
         setIsOpen(false);
       }
     }
-    if(isOpen){
-      document.addEventListener("mousedown",handleClickOutside);
-    }
-    return()=>{
-      document.removeEventListener("mousedown",handleClickOutside);
-    };
-  },[isOpen,setIsOpen]);
 
-    if(!isOpen) return null;
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      loadNotifications();
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  if (!isOpen) return null;
+
+  // 아이콘
+  const getIcon = (type) => {
+    if (!type) return <IoNotificationsOutline size={20} />;
+
+    if (type.includes("LIKE"))
+      return <FaRegHeart size={20} color="#cd5e5e" />;
+
+    if (type.includes("COMMENT"))
+      return <FaRegCommentDots size={20} color="#767676" />;
+
+    if(type.includes("FOLLOW"))
+      return <IoPersonAdd size={20} color="#000000ff" />;
+
+    return <IoNotificationsOutline size={20} />;
+  };
+
+  // 타입 → 제목
+  const formatTitle = (type) => {
+    if (!type) return "알림";
+    if (type.includes("LIKE")) return "좋아요";
+    if (type.includes("COMMENT")) return "댓글";
+    if (type.includes("FOLLOW")) return "팔로우";
+    return "알림";
+  };
 
   return (
     <div className="alert-wrapper" ref={wrapperRef}>
       <div className="alert-popup">
         <div className="popup-header">
           <h3>알림</h3>
+          <span
+            className="read-all"
+            onClick={async () => {
+              try {
+                await readAllNotifications();
+                setNotifications([]);         
+              } catch (err) {
+                console.error("전체 읽음 처리 실패:", err);
+              }
+            }}
+          >
+            전체 읽음
+          </span>
+
+
         </div>
 
         <div className="alert-list">
           {notifications.map((n) => (
-            <div key={n.id} className="alert-item">
-              <span className="icon">{getEmoji(n.type)}</span>
-              <div className="content">
-                  <span className="time">{n.time}</span>
-                  <p>{n.text}</p>
+            <div
+              key={n.id}
+              className={`alert-item ${n.read ? "read" : ""}`}
+              onClick={() => {
+                if(n.type=="FOLLOW"){  //팔로우 알림이 오면 임시로 삭제
+                  handleDelete(n.id);
+                  return;
+                }
+                handleRead(n.id);
+                if (n.targetUrl) {
+                  const fixed = n.targetUrl.replace("/reviews", "/review");
+                  navigate(fixed);
+                }
+              }}
+            >
+              <div className="alert-top">
+                <span className="icon">{getIcon(n.type)}</span>
+
+                <div className="alert-title-area">
+                  <span className="alert-title">{formatTitle(n.type)}</span>
+                  <span className="alert-dot">·</span>
+                  <span className="alert-time">
+                    {new Date(n.createdAt).toLocaleString()}
+                  </span>
+                </div>
               </div>
+
+
+              <div className="alert-message">{n.content}</div>
+
               <button
                 className="delete-btn"
-                onClick={() => removeNotification(n.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDelete(n.id);
+                }}
               >
                 ×
               </button>
@@ -79,4 +176,4 @@ const Alert = ({isOpen,setIsOpen}) => {
   );
 };
 
-export default Alert;
+export default forwardRef(Alert);

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import profile_img from "../../assets/profile_img.png";
 import "./DetailedReview.css";
 import { FaHeart, FaRegHeart, FaRegCommentDots } from "react-icons/fa";
@@ -27,7 +27,7 @@ function fullUrl(path) {
 
 const ReviewDetail = () => {
   const navigate = useNavigate();
-  const { isLoggedIn, user: currentUser } = useAuth();
+  const { isLoggedIn} = useAuth();
   const { reviewId } = useParams();
   
   /* Hook은 무조건 return보다 위! */
@@ -348,8 +348,8 @@ const handleFollowClick = async () => {
 
         {/* 본문 */}
         <article className="review-content">
-          {review.text?.split("\n").map((line, idx) => (
-            <p key={idx}>{line}</p>
+          {(review.text ? review.text.split("\n") : []).map((line, idx) => (
+            <p key={`${idx}-${line}`}>{line}</p>
           ))}
         </article>
 

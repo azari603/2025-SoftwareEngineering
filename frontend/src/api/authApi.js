@@ -335,3 +335,33 @@ export async function deleteAccount(password) {
     };
   }
 }
+
+// 알림 목록 조회
+export async function getNotifications(page = 0, size = 20) {
+  const res = await axiosInstance.get("/notifications", {
+    params: { page, size, sort: "createdAt,desc" }
+  });
+
+  return res.data?.content || [];
+}
+
+// 알림 읽지 않은 개수
+export async function getUnreadCount() {
+  const res = await axiosInstance.get("/notifications/unread-count");
+  return res.data.unreadCount;
+}
+
+// 단건 읽음 처리
+export async function readNotification(id) {
+  await axiosInstance.patch(`/notifications/${id}/read`);
+}
+
+//  전체 읽음 처리
+export async function readAllNotifications() {
+  await axiosInstance.patch("/notifications/read-all");
+}
+
+// 단건 삭제
+export async function deleteNotification(id) {
+  await axiosInstance.delete(`/notifications/${id}`);
+}
