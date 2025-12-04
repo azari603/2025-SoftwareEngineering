@@ -28,6 +28,7 @@
   border: 1px solid #e6e6e6;
   border-radius: 10px;
   padding: 25px 40px;
+  margin-bottom: 20px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
@@ -37,7 +38,6 @@
   align-items: center;
   border-bottom: 1.5px solid #f0f0f0;
   padding-bottom: 0;
-  margin-bottom: 20px;
 }
 
 .myReview-tab-buttons {
@@ -71,8 +71,9 @@
   display: flex;
   flex-direction: column;
   gap: 25px;
-  padding: 20px 0;
+  padding: 20px 30px;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .myReview-empty {

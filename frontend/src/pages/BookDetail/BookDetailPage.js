@@ -1,7 +1,5 @@
 import { useParams } from "react-router-dom";
 import {useContext, useEffect, useState} from "react"
-import { dummyBooks } from "../../mocks/dummyBooks";
-import {dummyReviews} from "../../mocks/dummyReviews"
 import BookInfoSection from "../../components/BookInfo/BookInfoSection";
 import BookList from "../../components/BookList/BookList"
 import ReviewList from "../../components/ReviewList/ReviewList"

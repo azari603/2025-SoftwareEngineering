@@ -57,13 +57,17 @@ export default function FeedReviewCard({ review }) {
         <div className="feed-date">{formattedDate}</div>
       </div>
 
-      {/* REVIEW STAR RATING (이 서평의 별점) */}
-      <div className="feed-stars">
-        <StarRate value={starRating} readOnly={true}/>
+      <div className="rating-title-wrapper">
+        {/* REVIEW STAR RATING (이 서평의 별점) */}
+        <div className="feed-stars">
+          <StarRate value={starRating} readOnly={true}/>
+        </div>
+        <div className="feed-title">{title}</div>
       </div>
+      
 
       {/* REVIEW TITLE & EXCERPT */}
-      <div className="feed-title">{title}</div>
+      
       <div className="feed-excerpt">{excerpt}</div>
 
       {/* BOOK BOX */}

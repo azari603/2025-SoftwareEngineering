@@ -4,7 +4,7 @@ import logo from "../../../assets/logo.png"
 import logo_white from "../../../assets/logo_white.png"
 import userIcon from "../../../assets/user.png"
 import alarmIcon from "../../../assets/alarm.png"
-import { Link } from "react-router-dom" 
+import { Link, useLocation } from "react-router-dom" 
 import SearchBar from "../../SearchBar/SearchBar";
 import Button from "../../Button/Button";
 import Alert from "../../Alert/Alert";
@@ -19,6 +19,16 @@ const Header = ({isTransparent}) => {
   /* 알림창, 프로필 메뉴 열렸는지 상태 확인 배열 */
   const [isAlertOpen, setIsAlertOpen]=useState(false);
   const [isProfileOpen, setIsProfileOpen] =useState(false);
+  
+  const location = useLocation();
+  const currentPath = location.pathname;
+  const isActive = (paths) => {
+  if (typeof paths === "string") {
+      return currentPath.startsWith(paths);
+    }
+    // 배열이면: 하나라도 true면 active
+    return paths.some((p) => currentPath.startsWith(p));
+  };
   return (
     <header className={`header ${isTransparent?"header--transparent":""}`}>
       <div className="header-left">
@@ -30,9 +40,12 @@ const Header = ({isTransparent}) => {
 
         {/* 메뉴 */}
         <nav className={`nav ${isTransparent?"nav--transparent":""}`}>
-          <Link to={isLoggedIn ? "/profile/library" : "/login"}>나의 서재</Link>
-          <Link to="/feed">둘러보기</Link>
-          <Link to={isLoggedIn ? "/quiz/start" : "/login"}>책BTI</Link>
+          <Link to={isLoggedIn ? "/profile/library" : "/login"}
+          className={isActive(["/profile/library","profile/stats","profile/reviews"])?"active":""}>나의 서재</Link>
+          <Link to="/feed"
+          className={isActive(["/feed"])?"active":""}>둘러보기</Link>
+          <Link to={isLoggedIn ? "/quiz/start" : "/login"}
+          className={isActive(["/quiz"])?"active":""}>책BTI</Link>
         </nav>
         
         {!isTransparent&&(

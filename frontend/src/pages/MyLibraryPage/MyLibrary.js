@@ -58,7 +58,7 @@ export default function MyLibraryPage() {
   return (
     <div className="library-container">
 
-      <main className="library-main">
+      <main className="library-main fade-in-up">
         <div className="library-header">
           <h2>
             나의 기록  &gt; <span className="breadcrumb"> 나의 서재</span>

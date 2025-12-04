@@ -64,12 +64,12 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 850px;
 }
 
 .right {
   display: flex;
   align-items: center;
+  margin-left: 50px;
 }
 
 .bookImg {
