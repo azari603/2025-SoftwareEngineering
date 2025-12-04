@@ -16,6 +16,22 @@ import {
   getUserById
 } from "../../api/authApi";
 
+const Alert = ({ isOpen, setIsOpen }, ref) => {
+  const [notifications, setNotifications] = useState([]);
+  const wrapperRef = useRef(null);
+  const navigate = useNavigate();
+
+  // 알림 목록 불러오기
+  const loadNotifications = async () => {
+    try {
+      const list = await getNotifications(0, 20);
+      const unreadOnly = list.filter((n) => !n.read);
+      setNotifications(unreadOnly);
+    } catch (err) {
+      console.error("알림 조회 실패:", err);
+    }
+  };
+
 //알림 메세지
 const formatContent = (n) => {
   const actor = n.actorNickname || "사용자";
@@ -33,22 +49,10 @@ const formatContent = (n) => {
   return n.content || "";
 };
 
+  useImperativeHandle(ref, () => ({
+    reload: () => loadNotifications()
+  }));
 
-const Alert = ({ isOpen, setIsOpen }, ref) => {
-  const [notifications, setNotifications] = useState([]);
-  const wrapperRef = useRef(null);
-  const navigate = useNavigate();
-
-  // 알림 목록 불러오기
-  const loadNotifications = async () => {
-    try {
-      const list = await getNotifications(0, 20);
-      const unreadOnly = list.filter((n) => !n.read);
-      setNotifications(unreadOnly);
-    } catch (err) {
-      console.error("알림 조회 실패:", err);
-    }
-  };
 
   useImperativeHandle(ref, () => ({
     reload: () => loadNotifications()
