@@ -63,8 +63,7 @@ public class SecurityConfig {
                                 "/images/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
-                                "/uploads/**",
-                                "/avatars/**"
+                                "/uploads/**"
                         ).permitAll()
 
                         // 2) 인증 불필요 엔드포인트 (Auth API – v1 경로)
@@ -98,7 +97,9 @@ public class SecurityConfig {
                                 "/api/v1/recommendations/popular",  // 인기 도서
                                 "/api/v1/feed/latest",              // 최신 피드
                                 "/api/v1/reviews/*/likes/count",    // 리뷰 좋아요 수 조회
-                                "/api/v1/reviews/*/likes/status"    // 좋아요 상태 조회
+                                "/api/v1/reviews/*/likes/status",   // 좋아요 상태 조회
+                                "/avatars/**",                      // 프로필 이미지 불러오기
+                                "/backgrounds/**"                   // 배경 이미지 불러오기
                         ).permitAll()
 
                         // 소셜 로그인 진입/콜백은 누구나 접근 가능
