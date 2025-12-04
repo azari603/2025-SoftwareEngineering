@@ -483,7 +483,7 @@
   display: flex;
   align-items: left;
   border: 1px solid #ccc;
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -499,8 +499,10 @@
   background: #299159;
   color: white;
   border: none;
-  padding: 0.8rem 1.2rem;
-  font-size: 0.9rem;
+  border-radius: 12px;
+  font-size: 14px;
+  margin: 4px;
+  padding: 10px 16px;
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -537,6 +539,6 @@
 .no-comment {
   text-align: center;
   color: #999999;
-  font-size: 12px;
+  font-size: 14px;
   padding: 1rem 0;
 }
