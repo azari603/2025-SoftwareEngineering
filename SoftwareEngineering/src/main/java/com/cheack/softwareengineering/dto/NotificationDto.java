@@ -2,44 +2,41 @@ package com.cheack.softwareengineering.dto;
 
 import com.cheack.softwareengineering.entity.Notification;
 import com.cheack.softwareengineering.entity.NotificationType;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 
 import java.time.LocalDateTime;
 
-@Getter
-@AllArgsConstructor
+@Value
 @Builder
 public class NotificationDto {
+    Long id;
+    Long receiverId;
+    Long actorId;
+    String actorUsername;
+    String actorNickname;
+    Long reviewId;
+    String reviewTitle;
+    NotificationType type;
+    String targetUrl;
+    String content;
+    boolean read;
+    LocalDateTime createdAt;
 
-    private final Long id;
-    private final NotificationType type;
-
-    private final Long actorId;
-    private final String actorUsername; // 나중에 필요 없으면 null 로 두고 사용
-
-    private final String content;
-    private final String targetUrl;
-
-    private final boolean read;
-    private final LocalDateTime createdAt;
-
-    public static NotificationDto from(Notification n, String actorUsername) {
+    public static NotificationDto from(Notification n) {
         return NotificationDto.builder()
                 .id(n.getId())
-                .type(n.getType())
+                .receiverId(n.getReceiverId())
                 .actorId(n.getActorId())
-                .actorUsername(actorUsername)
-                .content(n.getContent())
+                .actorUsername(n.getActorUsername())
+                .actorNickname(n.getActorNickname())
+                .reviewId(n.getReviewId())
+                .reviewTitle(n.getReviewTitle())
+                .type(n.getType())
                 .targetUrl(n.getTargetUrl())
+                .content(n.getContent())
                 .read(n.isRead())
                 .createdAt(n.getCreatedAt())
                 .build();
-    }
-
-    public static NotificationDto from(Notification n) {
-        // actorUsername 아직 안 쓰면 이 메서드 사용
-        return from(n, null);
     }
 }

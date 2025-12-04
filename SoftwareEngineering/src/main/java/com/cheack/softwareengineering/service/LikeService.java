@@ -31,11 +31,6 @@ public class LikeService {
     private final UserRepository userRepository;
     private final NotificationService notificationService;
 
-    /**
-     * 좋아요 토글
-     * - 아직 좋아요 안 한 상태면 like 수행 후 true 반환
-     * - 이미 좋아요 상태면 unlike 수행 후 false 반환
-     */
     @Transactional
     public boolean toggle(Long userId, Long reviewId) {
         boolean exists = reviewLikeRepository.existsByUserIdAndReviewId(userId, reviewId);
@@ -48,12 +43,8 @@ public class LikeService {
         }
     }
 
-    /**
-     * 좋아요 생성 (멱등 보장)
-     */
     @Transactional
     public void like(Long userId, Long reviewId) {
-        // 이미 좋아요라면 아무 것도 안 함
         if (reviewLikeRepository.existsByUserIdAndReviewId(userId, reviewId)) {
             return;
         }
@@ -68,85 +59,53 @@ public class LikeService {
 
         reviewLikeRepository.save(like);
 
-        // 서평 작성자에게 좋아요 알림
         Long receiverId = review.getUserId();
-
-        // 자기 서평 좋아요 알림을 막고 싶으면 이 조건 유지
         if (!Objects.equals(receiverId, userId)) {
-            String targetUrl = "/reviews/" + reviewId;
-            String content = "회원님의 서평에 좋아요가 추가되었습니다.";
-
             notificationService.create(
-                    receiverId,              // 알림 받는 사람
-                    userId,                  // 행동한 사람
+                    receiverId,
+                    userId,
                     NotificationType.REVIEW_LIKE,
-                    targetUrl,
-                    content,
-                    reviewId                 // 어떤 서평에 대한 알림인지
+                    "/reviews/" + reviewId,
+                    null,
+                    reviewId
             );
         }
     }
 
-    /**
-     * 좋아요 취소 (멱등)
-     */
     @Transactional
     public void unlike(Long userId, Long reviewId) {
         reviewLikeRepository.deleteByUserIdAndReviewId(userId, reviewId);
     }
 
-    /**
-     * 특정 서평을 좋아요 한 유저 목록
-     */
     public Page<UserMiniDto> getLikers(Long reviewId, Pageable pageable) {
         Page<ReviewLike> page = reviewLikeRepository.findByReviewId(reviewId, pageable);
-
-        List<Long> userIds = page.getContent().stream()
-                .map(ReviewLike::getUserId)
-                .toList();
-
+        List<Long> userIds = page.getContent().stream().map(ReviewLike::getUserId).toList();
         var userMap = userRepository.findAllById(userIds).stream()
                 .collect(Collectors.toMap(User::getId, Function.identity()));
-
         List<UserMiniDto> dtos = page.getContent().stream()
                 .map(like -> userMap.get(like.getUserId()))
-                .filter(Objects::nonNull)
+                .filter(java.util.Objects::nonNull)
                 .map(this::toUserMiniDto)
                 .toList();
-
         return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 
-    /**
-     * 내가 좋아요 한 서평 목록
-     */
     public Page<ReviewCardDto> getLikedReviews(Long userId, Pageable pageable) {
         Page<ReviewLike> page = reviewLikeRepository.findByUserId(userId, pageable);
-
-        List<Long> reviewIds = page.getContent().stream()
-                .map(ReviewLike::getReviewId)
-                .toList();
-
+        List<Long> reviewIds = page.getContent().stream().map(ReviewLike::getReviewId).toList();
         var reviewMap = reviewRepository.findAllById(reviewIds).stream()
                 .collect(Collectors.toMap(Review::getId, Function.identity()));
-
         List<ReviewCardDto> dtos = page.getContent().stream()
                 .map(like -> reviewMap.get(like.getReviewId()))
-                .filter(Objects::nonNull)
+                .filter(java.util.Objects::nonNull)
                 .map(this::toReviewCardDto)
                 .toList();
-
         return new PageImpl<>(dtos, pageable, page.getTotalElements());
     }
 
-    /**
-     * 서평별 좋아요 개수
-     */
     public long countByReview(Long reviewId) {
         return reviewLikeRepository.countByReviewId(reviewId);
     }
-
-    // ==== 내부 변환 메서드들 ====
 
     private UserMiniDto toUserMiniDto(User user) {
         return UserMiniDto.builder()
@@ -158,7 +117,7 @@ public class LikeService {
 
     private ReviewCardDto toReviewCardDto(Review review) {
         return ReviewCardDto.builder()
-                .id(review.getId())                // ← 여기 reviewId → id 로 수정
+                .id(review.getId())
                 .bookId(review.getBookId())
                 .title(review.getTitle())
                 .excerpt(extractExcerpt(review.getText()))
