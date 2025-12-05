@@ -6,10 +6,18 @@ import { useNavigate } from "react-router-dom";
 import camera_img from "../../../../src/assets/camera.png";
 import * as authAPI from "../../../api/authApi";
 
+const base=process.env.REACT_APP_BASE_URL;
+function fullUrl(path) {
+  if (!path) return null;
+  if (path.startsWith("http")) return path;
+  return `${base}/${path}`; // base 붙이기
+}
 export default function ProfileEditPage() {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
   const[profile,setProfile]=useState();
+
+  
 
   useEffect(()=>{
       async function loadProfiles(){
@@ -35,19 +43,22 @@ export default function ProfileEditPage() {
   const profileInputRef = useRef(null);
   const bgInputRef = useRef(null);
 
+  const [isProfileChanged, setIsProfileChanged] = useState(false);
+  const [isBgChanged, setIsBgChanged] = useState(false);
+
   useEffect(() => {
     if (profile) {
       const base=process.env.REACT_APP_BASE_URL;
       const fullProfileImage = profile.profileImageUrl
       ? (profile.profileImageUrl.startsWith("http")
-          ? profile.profileImageUrl
-          : base+ profile.profileImageUrl)
+          ? fullUrl(profile.profileImageUrl)
+          : fullUrl(profile.profileImageUrl))
       : profile_img;
 
     const fullBgImage = profile.backgroundImageUrl
       ? (profile.backgroundImageUrl.startsWith("http")
-          ? profile.backgroundImageUrl
-          : base + profile.backgroundImageUrl)
+          ? fullUrl(profile.backgroundImageUrl)
+          : fullUrl(profile.backgroundImageUrl))
       : null;
 
       setNickname(profile.nickname || "");
@@ -64,6 +75,7 @@ export default function ProfileEditPage() {
       setProfileImage(file);
       const previewURL = URL.createObjectURL(file);
       setProfileImagePreview(previewURL); // 프리뷰용 URL
+      setIsProfileChanged(true); 
     }
   };
 
@@ -74,6 +86,7 @@ export default function ProfileEditPage() {
       setBgImage(file);
       const previewURL = URL.createObjectURL(file);
       setBgImagePreview(previewURL); // 프리뷰용 URL
+      setIsBgChanged(true);
     }
   };
 
@@ -91,7 +104,7 @@ export default function ProfileEditPage() {
         updatedUser.intro = intro;
       }
       // 프로필 이미지 업로드
-      if (profileImage) {
+      if (isProfileChanged) {
         const res = await authAPI.uploadProfileImage(profileImage);
         if (!res.success) {
           alert(res.message || "프로필 이미지 업로드 중 오류");
@@ -100,7 +113,7 @@ export default function ProfileEditPage() {
         updatedUser.profileImg = res.profileImageUrl;
       }
       // 배경 이미지 업로드
-      if (bgImage) {
+      if (isBgChanged) {
         const res = await authAPI.uploadBackgroundImage(bgImage);
         if (!res.success) {
           alert(res.message || "배경 이미지 업로드 중 오류");
