@@ -3,6 +3,7 @@
   background: #FDFBF4;
   min-height: 100vh;
   padding-bottom: 100px;
+  user-select: none;
 }
 
 .feed-hero {
