@@ -24,7 +24,10 @@ export default function LoginPage() {
     const [showVerifyModal, setShowVerifyModal] = useState(false);
     const [unverifiedEmail, setUnverifiedEmail] = useState("");
 
-
+    //소셜 로그인
+    const handleSocialLogin = (provider) => {
+        window.location.href = `http://localhost:8080/oauth2/authorization/${provider}`;
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -116,10 +119,28 @@ export default function LoginPage() {
         <div className="sns-section">
           <p>SNS 계정으로 로그인/가입</p>
           <div className="sns-icons">
-            <img src={naver_logo} alt="naver login" />
-            <img src={kakao_logo} alt="kakao login" />
-            <img src={google_logo} alt="google login" />
+            <img
+              src={naver_logo}
+              alt="naver login"
+              onClick={() => handleSocialLogin("naver")}
+              className="sns-icon"
+            />
+
+            <img
+              src={kakao_logo}
+              alt="kakao login"
+              onClick={() => handleSocialLogin("kakao")}
+              className="sns-icon"
+            />
+
+            <img
+              src={google_logo}
+              alt="google login"
+              onClick={() => handleSocialLogin("google")}
+              className="sns-icon"
+            />
           </div>
+
         </div>
       </div>
       {showVerifyModal && (
