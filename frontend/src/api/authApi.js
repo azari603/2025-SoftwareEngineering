@@ -371,16 +371,3 @@ export async function getUserById(userId) {
   return res.data; // { id, username, nickname, ... }
 }
 
-
-export async function completeSocialSignup({ username, signupToken }) {
-  try {
-    const res = await axiosInstance.post("/auth/social/complete-signup", {
-      username,
-      signupToken,
-    });
-
-    return res.data; // TokenResponse(accessToken, refreshToken)
-  } catch (err) {
-    throw err.response?.data || err;
-  }
-}

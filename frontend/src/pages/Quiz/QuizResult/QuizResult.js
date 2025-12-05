@@ -99,7 +99,8 @@ useEffect(() => {
                 const isTitleLine =
                   line.trim().startsWith("✨") ||
                   line.trim().startsWith("🌿") ||
-                  line.trim().startsWith("🌙") ||
+                  line.trim().startsWith("🌌") ||
+                  line.trim().startsWith("📘") ||
                   line.trim().startsWith("💛");
 
                 // 특정 단어만 강조하는 함수

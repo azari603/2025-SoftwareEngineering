@@ -115,33 +115,7 @@ export default function LoginPage() {
           onClick={() => navigate("/signup")}>회원가입</button>
         </div>
 
-        {/* SNS 계정 로그인 */}
-        <div className="sns-section">
-          <p>SNS 계정으로 로그인/가입</p>
-          <div className="sns-icons">
-            <img
-              src={naver_logo}
-              alt="naver login"
-              onClick={() => handleSocialLogin("naver")}
-              className="sns-icon"
-            />
-
-            <img
-              src={kakao_logo}
-              alt="kakao login"
-              onClick={() => handleSocialLogin("kakao")}
-              className="sns-icon"
-            />
-
-            <img
-              src={google_logo}
-              alt="google login"
-              onClick={() => handleSocialLogin("google")}
-              className="sns-icon"
-            />
-          </div>
-
-        </div>
+        
       </div>
       {showVerifyModal && (
   <CustomModal
