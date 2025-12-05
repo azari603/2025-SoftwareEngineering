@@ -1,0 +1,21 @@
+.sidebar-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    user-select: none;
+}
+
+.sidebar-layout .main-container {
+    display: flex; /*자식 요소를 가로로 정렬 */
+    flex-grow: 1; /* 남은 수직 공간을 모두 차지하도록 확장 */
+}
+
+.main-container .sidebar {
+    flex-shrink: 0; /* 크기가 줄어들지 않도록 방지 */
+
+}
+
+.main-container .content {
+    flex-grow: 1; /* 필수: 남은 가로 공간을 채우도록 확장 */
+    overflow-y: auto; /* 콘텐츠가 길어지면 스크롤바가 생기도록 */
+}

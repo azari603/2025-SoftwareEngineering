@@ -1,0 +1,56 @@
+.input-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  max-width: 400px;   
+  width: 100%;    
+  user-select: none;    
+}
+
+.input-field label {
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+  text-align: left;   
+  display: block;     
+  width: 100%;        
+}
+
+.input-field .required {
+  color: red;
+}
+
+.input-field input {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  transition:border-color 0.2s ease;
+}
+
+/* 경고문 */
+.error-input{
+  border:1px solid red;
+}
+
+.error-message{
+  color:red;
+  font-size: 12px;
+  margin-top:4px;
+  text-align:left;
+}
+
+/* 에러난 경우 입력창 */
+.input-field input.error-input{
+  border:1px solid red;
+  background-color: #fff5f5;
+
+}
+
+/* 성공 입력창 */
+.input-field input.success-input{
+  border:1px solid green;
+  background-color:#f6fff6;
+}

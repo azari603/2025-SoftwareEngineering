@@ -1,0 +1,174 @@
+.header {
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 30px;
+  padding-right: 30px;
+  background-color: #fff;
+  background: transparent !important;
+  user-select: none;
+  z-index: 10;
+}
+
+.header--transparent {
+  width: 100%;
+  background: transparent;
+  box-shadow: none;
+  position: absolute;
+  border-bottom: none;
+  top: 0;
+  left: 0;
+}
+
+.header-left{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0px;
+  text-decoration: none; 
+  flex: 0 0 auto;
+}
+
+.logo-icon {
+  width: 31px;
+  height: 36px;
+}
+
+.home-logo-text {
+  font-weight: bold;
+  color: #299159;
+  font-size: 24px;
+}
+
+.home-logo-text--transparent {
+  color: white;
+}
+
+.nav {
+  display: flex;
+  gap: 32px;
+  flex: 0 0 auto;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #000000;
+  font-size: 16px;
+  font-family: "Pretendard-Regular";
+}
+
+.nav a.active {
+  color: #299159;
+  font-weight: 600;
+}
+
+.nav--transparent a{
+  color: white;
+}
+
+.header .search-icon{
+  color: #a0a0a0;
+}
+
+.header--transparent .search-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+
+.header--transparent .search-bar {
+  background: rgba(255, 255, 255, 0.2); /* 배경 투명도 30% */
+  border: 1.5px solid rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.header--transparent .search-input::placeholder {
+  color: white;
+}
+
+.header--transparent .signup{
+  color: white;
+}
+
+.user-info{
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  text-decoration: none; 
+  flex: 0 0 auto;
+  font-size : 0;
+}
+
+.header--transparent .btn.filled {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1.5px solid rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  font-family: "Pretendard-Regular";
+  margin-right: 10px;
+  padding-block: 6px;
+}
+
+.header .btn.filled{
+  padding-block: 5px;
+}
+
+/* hover 스타일도 별도로 */
+.header--transparent .btn.filled:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+  color: #ffffff !important;
+}
+
+.auth {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.signup {
+  color: #111111;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.user-info .icon{
+  display: block;
+  cursor:pointer;
+  width: 20px;
+  height: 20px;
+}
+
+.header--transparent .user-info .icon{
+  color: white;
+}
+
+.notification-wrapper {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+}
+
+.bell-icon {
+  font-size: 28px;
+  color: #222;
+}
+
+.red-dot {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 10px;
+  height: 10px;
+  background: #ff3b3b;
+  border-radius: 50%;
+}

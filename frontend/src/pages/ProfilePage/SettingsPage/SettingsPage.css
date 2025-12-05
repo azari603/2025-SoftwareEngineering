@@ -1,0 +1,201 @@
+.settings-container {
+  width:100%;
+  padding: 40px 0 20px;
+  background-color: #fdfbf4;
+  font-family: "Pretendard", sans-serif;
+  min-height: 100vh;
+  user-select: none;
+  padding-bottom: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.settings-title {
+  font-size: 24px;
+  margin-bottom: 24px;
+}
+
+.settings-title-wrapper{
+  width: 800px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* 공통 카드 */
+.settings-card {
+  position: relative;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px 24px 40px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  width: 800px;
+  margin-top:0px;
+
+}
+
+
+/* 내 프로필 카드 */
+.profile-card .settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+  padding-bottom: 8px;
+}
+
+
+.profile-card .settings-header h3 {
+  font-size: 18px;
+}
+
+.settings-edit-btn {
+  font-size: 13px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+/* 내 프로필 섹션 */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-section .profile-item {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  background: none;
+  cursor: default;
+}
+
+.profile-section .profile-item p {
+  font-size: 16px;
+}
+
+/* 왼쪽 라벨 */
+.profile-section .label {
+  width: 100px;
+  text-align: left;
+  font-size: 14px;
+  color: #555;
+  font-weight: 600;
+  flex-shrink: 0;
+  padding-left: 10px;
+}
+
+.profile-section .value {
+  font-size: 14px;
+  color: #222;
+}
+
+.profile-thumb {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+  object-fit: cover;
+  background: #eee;
+}
+
+.background-preview {
+  width: 180px;
+  height: 50px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* 기본 정보 카드 */
+.info-card h3 {
+  font-size: 18px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.info-section {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 10px;
+
+}
+
+/* 각 행 */
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 10px;
+  padding-inline: 12px;
+}
+
+/* 왼쪽 라벨 */
+.info-row .label {
+  width: 120px;
+  font-size: 14px;
+  color: #1a1a1a;
+}
+
+/* 값 */
+.info-row .value {
+  flex: 1;
+  font-size: 14px;
+}
+
+
+.settings-container .small-btn {
+  font-size: 12px;
+  padding: 5px 12px;
+  background: #f6f6f6;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.settings-container .small-btn:hover {
+  background: #ececec;
+}
+
+.settings-container .delete-btn {
+  position: static !important;
+  background: #e53935;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-right: 30px;
+}
+
+.delete-btn-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 30px;
+  width: 800px;
+}
+
+.settings-container .delete-btn:hover {
+  background: #c62828;
+}
+
+.settings-container .settings-edit-btn {
+  font-size: 13px;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 4px 10px;
+  cursor: pointer;
+}

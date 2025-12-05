@@ -1,0 +1,153 @@
+.library-container {
+  display: flex;
+  background-color: #fdfbf4;
+  min-height: 100vh;
+  font-family: "Noto Sans KR", sans-serif;
+  user-select: none;
+}
+
+.library-sidebar {
+  width: 220px;
+  background-color: #fdfbf4;
+  display: flex;
+  flex-direction: column;
+  padding-top: 100px;
+  padding-left: 30px;
+  border-right: 1px solid #eee;
+}
+
+.library-sidebar-btn {
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 16px;
+  color: #333;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.library-sidebar-btn:hover {
+  color: #299159;
+}
+
+.library-sidebar-btn.active {
+  color: #fff;
+  background-color: #299159;
+  border-radius: 8px;
+  padding-left: 14px;
+  width: 130px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.library-main {
+  flex: 1;
+  padding: 80px 100px;
+}
+
+.library-header h2 {
+  font-size: 22px;
+  color: #222;
+  font-weight: 600;
+}
+
+.breadcrumb {
+  color: #299159;
+  margin-left: 4px;
+}
+
+.tab-wrapper {
+  margin-top: 25px;
+  background-color: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 25px 40px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tab-header-library {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #f0f0f0;
+  padding-bottom: 0;
+  margin-bottom: 20px;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 25px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  font-size: 17px;
+  color: #555;
+  cursor: pointer;
+  padding-bottom: 8px;
+  transition: all 0.2s;
+}
+
+.tab-btn.active {
+  font-weight: 600;
+  color: #299159;
+  border-bottom: 2px solid #299159;
+}
+
+.book-count {
+  font-size: 14px;
+  color: #777;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 30px;
+  padding-top: 10px;
+}
+
+
+
+.tab-wrapper .book-title {
+  font-weight: 500;
+  color: #000;
+  font-size: 14px;
+  margin: 0;
+}
+
+.tab-wrapper .book-author {
+  font-size: 13px;
+  color: #666;
+  margin: 2px 0 0;
+}
+
+.loading-text {
+  text-align: center;
+  padding: 30px 0;
+  color: #777;
+}
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* 한 줄에 5개씩 */
+  gap: 25px 30px; 
+  padding: 20px 0;
+  max-height: 700px;       
+  overflow-y: auto;      
+  padding-right: 10px; 
+}
+
+.book-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.book-grid::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.book-grid::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.35);
+}

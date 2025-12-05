@@ -1,0 +1,207 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  /*min-height: 100vh;*/
+  justify-content: center;
+  user-select: none;
+}
+
+.home-main {
+  flex: 1;
+  background-color: #FDFBF4;
+}
+
+.home-section {
+  margin: 0px auto;
+  margin-top: 50px;
+  margin-bottom: 28px;
+}
+
+
+.home-section .carousel-layout{
+  width: fit-content;
+  max-width: 100%;        
+  padding: 0;
+}
+.home-section .carousel-container{
+  width: fit-content;
+  max-width: 100%;       
+  padding-inline: 20px;
+}
+
+.home-section .wrapper{
+  width: fit-content;
+  margin: 0px auto;
+}
+
+.home-section .book.wrapper .book-card .book-info .book-author {
+  display: none;
+}
+
+.section-title {
+  width: fit-content;
+  font-size: 24px;
+  margin-bottom: 12px;
+  padding-left: 12px;
+  color: #111;
+}
+
+.section-title__nickname{
+  color: #299159;
+}
+
+.review-list {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.main-hero {
+  position: relative;
+  width: 100%;
+  height: 664px;
+  background: #FDFBF4;  
+  background-image:url("../../assets/home_img.png");
+  background-position: bottom;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  overflow: hidden; 
+  background-attachment: fixed;
+  border-bottom-right-radius: 120px;
+}
+
+.main-hero::before {
+  content: "";
+  position: absolute;
+  background: rgba(0,0,0,0.4);
+  inset: 0;
+  z-index: 1;
+}
+
+
+.main-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-block: 80px;
+  text-align: center;
+}
+
+.main-hero__title {
+  font-family: "GangwonEducationTteontteon";
+  font-size: 44px;
+  line-height: 1.4;
+  color: white;
+  margin: 0 0 14px;
+}
+
+.main-hero__actions {
+  display: inline-flex;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.main-hero__actions .btn.squareOutline{
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid;
+  color: white;
+}
+
+.main-hero__actions .btn.squareOutline:hover{
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid;
+  color: white;
+}
+
+
+.main-hero__actions .btn.filled{
+  background-color: white;
+  color: #1a1a1a;
+}
+
+.main-hero__actions .btn.filled:hover{
+  color: #299159;
+}
+
+.main-hero__actions .btn{
+  height: 40px;
+  margin-bottom: 30px;
+}
+
+/*.main-hero__ghost {
+  padding: 10px 20px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-size: 16px;
+}*/
+
+.main-hero__search {
+  display: flex;
+  justify-content: center;
+}
+
+.main-hero__search .search-bar {
+  background: rgba(255, 255, 255, 0.3);
+  padding-inline: 20px;
+  padding-block: 8px;
+}
+
+.main-hero__search .search-icon {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.main-hero__search .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.main-hero__search input {
+  color: white !important;
+}
+
+.main-hero__search .search-bar {
+  width: 560px;                      
+}
+
+.home-review-section {
+  position: relative;
+  width: 100%;
+  padding: 32px 0;
+  padding-bottom: 180px;
+  
+}
+
+
+
+/* 내부 콘텐츠는 오버레이 위로 */
+.home-review-section * {
+  position: relative;
+  z-index: 2;
+}
+
+
+/* wrapper는 중앙 정렬 유지 */
+.home-review-section .review.wrapper {
+  width: fit-content;
+  margin: 0 auto;
+}
+
+@keyframes gentleFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+.fade-smooth {
+  animation: gentleFadeUp 2.2s cubic-bezier(0.25, 0.60, 0.30, 1.00) forwards;
+}

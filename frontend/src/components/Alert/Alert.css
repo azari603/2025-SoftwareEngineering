@@ -1,0 +1,155 @@
+.alert-wrapper {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+  z-index: 9999;
+}
+
+.alert-popup {
+  position: absolute;
+  top: 35px;
+  right: 0;
+  width: 330px;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  overflow: hidden;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* 헤더 */
+.popup-header {
+  background: #fff;
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-header h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+.read-all {
+  font-size: 13px;
+  color: #299159;
+  cursor: pointer;
+}
+
+.alert-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px 0;
+  
+}
+
+/* 개별 알림 카드 */
+.alert-item {
+  background: #fff;
+  margin: 8px 12px;
+  padding: 14px 16px 16px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.alert-item:hover {
+  background: #f7f7f7;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+}
+
+.alert-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.alert-title-area {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.alert-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+.alert-time {
+  margin-top:0px;
+  font-size: 12px;
+  color: #777;
+}
+
+.alert-dot {
+  font-size: 12px;
+  color: #999;
+  margin-top: 1px;
+}
+
+
+/* 아이콘 */
+.icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 제목 (좋아요, 댓글 등) */
+.alert-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* 시간 */
+.alert-time {
+  margin-left: auto;
+  font-size: 11px;
+  color: #999;
+}
+
+/* 본문 메시지 */
+.alert-message {
+  margin-top: 6px;
+  color: #444;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* 삭제 버튼 X */
+.delete-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  font-size: 17px;
+  background: none;
+  border: none;
+  color: #999;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  color: #d33;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 20px;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}

@@ -1,0 +1,319 @@
+
+.profile-container {
+  width:100%;
+  background-color: #fdfbf4;
+  padding-bottom: 60px;
+  user-select: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-container .profile-card {
+  position: relative;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  padding-bottom:30px;
+  width: 1180px;
+  margin-top: 40px;
+}
+
+.profile-header-bg {
+  background-color: #D2E8CD;
+  width: 100%;
+  height: 400px;
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+/* 우측 상단 설정 버튼 */
+.settings-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  transition: transform 0.2s ease;
+}
+
+.settings-btn img {
+  width: 26px;
+  height: 26px;
+  opacity: 0.8;
+}
+
+.settings-btn:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+
+.profile-info {
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+
+.profile-img {
+  width: 100px;
+  height: 100px;
+  margin: -90px auto 4px;
+  border-radius: 50%;
+  overflow: hidden;        
+  border: 3px solid white;
+  background-color: #d9d9d9; 
+}
+
+/* 실제 이미지 */
+.profile-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;        
+  border-radius: 50%;       
+  display: block;       
+}
+
+.username {
+  margin-top: 8px;
+  font-size: 24px;
+}
+
+/* 프로필 이미지 밑의 아이디 */
+.userid {
+  color: #888;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+/* 하단 별점 목록 아이디 */
+.user-id {   
+  color: #299159;       
+  font-weight: 600;    
+}
+
+.follow-info {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.intro {
+  color: #888;
+  font-size: 16px;
+  margin-block: 8px;
+}
+
+.goal-section {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px 20px;
+  width: 95%;
+  margin: 20px auto;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  margin-top: 30px;
+}
+
+/* 상단 제목 + 숫자 */
+.goal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.goal-header h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  margin-bottom : 20px;
+}
+
+.goal-count {
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: -25px;
+}
+
+.goal-current {
+  color: #299159; 
+  font-weight: 600;
+}
+
+.goal-total {
+  color: #999; 
+  margin-left: 2px;
+}
+
+/* 게이지 바 */
+.goal-progress {
+  width: 100%;
+  background-color: #e4e4e4;
+  border-radius: 8px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.goal-fill {
+  background-color: #299159;
+  height: 100%;
+  border-radius: 8px;
+  transition: width 0.4s ease;
+}
+
+
+/* 별점 목록 부분 */
+.book-section {
+  background: white;
+  border-radius: 12px;
+  margin-top: 44px;
+  padding-inline: 60px;
+}
+
+.book-section h3 {
+  text-align: left;
+  width: 100%;        
+  padding-left: 10px;  
+  margin-bottom: 16px;
+  font-size: 20px;
+}
+
+
+.rating-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding-left: 10px;
+}
+
+.rating-tabs .star-icon{
+  width: 16px;
+  height: 16px;
+  color: #299159;
+}
+
+.tab {
+  padding: 4px 16px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+
+}
+
+.tab.active {
+  background: #299159;
+  color: white;
+  border-color: #299159;
+}
+
+.tab.active .star-icon{
+  color: white;
+}
+
+/* 별점 없는 경우 */
+.no-books {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-size: 14px;
+  gap: 10px;
+  padding: 40px 0;
+  width: 100%;
+}
+
+.no-books-image {
+  width: 150px;   /* 이미지 크기 조정 */
+  height: 150px;
+  opacity: 0.8;   /* 살짝 투명하게 */
+  object-fit: contain;
+}
+
+
+/* 전체 BookCard 영역 */
+.profile-container .book-card {     
+  transform-origin: top center; 
+}
+
+.profile-container .book-image {
+  width: 190px;
+  height: 260px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  object-fit: cover;
+}
+
+.profile-container .book-title-review {
+  font-size: 15px;
+  font-weight: bold;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.profile-container .book-author {
+  font-size: 13px;           
+  color: #666;
+}
+
+/* 리스트 간격 조정 */
+.profile-container .book-list {
+  gap: 12px;                    
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* 리뷰 카드 영역 */
+.review-section {
+    width: 100%;
+    padding-inline: 60px;
+    margin-top: 60px;
+    margin-bottom: 80px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.review-section h3{
+    text-align: left;
+    width: 100%;        
+}
+
+.review-section-title{
+  padding-left: 20px;
+  font-size: 20px;
+}
+
+ .review-list {
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  justify-items: center;
+  width: 100%;
+
+}
+.tab-wrapper .review-list .review-book-section{
+  padding: 16px 30px;
+}
+

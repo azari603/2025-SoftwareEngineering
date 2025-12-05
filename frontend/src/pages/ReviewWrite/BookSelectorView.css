@@ -1,0 +1,150 @@
+.book-selector-view{
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  background-color: #FDFBF4;
+  min-height: 100vh;
+  user-select: none;
+}
+.book-selector-card {
+ width:1000px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  margin-block: 60px;
+  padding: 40px 60px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+}
+
+
+.top-controls {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+.search-box {
+  display: flex;
+  width: 100%;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  transition: border-color 0.2s;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #299159;
+}
+
+
+.book-tabs {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 1px solid #ddd;
+  margin-top: 15px;
+  margin-bottom: 28px;
+}
+
+.book-tabs button {
+  flex: 1;
+  padding: 10px 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+  color: #444;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.book-tabs button:hover {
+  color: #299159;
+}
+
+.book-tabs button.active {
+  color: #299159;
+  border-bottom: 2px solid #299159;
+}
+
+
+.loading-text,
+.no-result {
+  text-align: center;
+  color: #777;
+  margin-top: 40px;
+  font-size: 0.95rem;
+}
+
+.book-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.book-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: 0.2s;
+}
+
+.book-item:hover {
+  background-color: #f9f9f9;
+}
+
+.book-thumbnail img {
+  width: 80px;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  background-color: #eee;
+}
+
+
+.book-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.book-title {
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 4px;
+  font-size: 0.95rem;
+}
+
+.book-author {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.book-publisher {
+  font-size: 0.85rem;
+  color: #999;
+}
