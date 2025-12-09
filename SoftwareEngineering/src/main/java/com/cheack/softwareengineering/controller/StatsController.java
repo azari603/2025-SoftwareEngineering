@@ -107,7 +107,26 @@ public class StatsController {
         Long userId = userService.getByUsername(username).getId();
         return statsService.getMyBooksByRating(userId, rating, pageable);
     }
+    /**
+     * [다른 사용자가 매긴 별점별 책 목록]
+     * GET /api/v1/stats/users/{username}/stars/books?rating=1~5&page=0&size=20
+     *
+     * - 공개 프로필에서 {username} 사용자의 별점별 도서 목록 조회
+     * - StatsService.getMyBooksByRating 를 재사용 (userId만 대상 유저로 변경)
+     */
+    @GetMapping("/users/{username}/stars/books")
+    public Page<BookCardDto> getUserBooksByRating(
+            @PathVariable String username,
+            @RequestParam("rating") Double rating,
+            org.springframework.data.domain.Pageable pageable
+    ) {
+        if (rating < 1 || rating > 5) {
+            throw new IllegalArgumentException("rating 은 1~5 사이여야 합니다.");
+        }
 
+        Long targetUserId = userService.getByUsername(username).getId();
+        return statsService.getMyBooksByRating(targetUserId, rating, pageable);
+    }
 
     // ======================= 타임라인 =======================
 
