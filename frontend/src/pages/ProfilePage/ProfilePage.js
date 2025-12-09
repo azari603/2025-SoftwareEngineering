@@ -8,7 +8,7 @@ import settings_btn from "../../assets/option.png";
 import { useContext, useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext"; 
 import { LayoutContext } from "../../context/LayoutContext";
-import { getProfile, getMyProfile, getMyStarredBooks } from "../../api/authApi";
+import { getProfile, getMyProfile, getMyStarredBooks, getUserStarredBooks } from "../../api/authApi";
 import { FaStar } from "react-icons/fa";
 
 const base=process.env.REACT_APP_BASE_URL;
@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   useEffect(()=>{
     async function loadStarredBooks(){
-      const res=await getMyStarredBooks(selectedRating,0,20);
+      const res=await getUserStarredBooks(targetUsername, selectedRating, 0, 20);
       const mapped=res.content.map((b)=>({
         id:b.bookId,
         name:b.name,
@@ -60,7 +60,7 @@ export default function ProfilePage() {
       setStarredBooks(mapped);
     }
     loadStarredBooks();
-  },[selectedRating]);
+  },[selectedRating, targetUsername]);
 
   const filteredBooks = starredBooks;
   if(loading){
