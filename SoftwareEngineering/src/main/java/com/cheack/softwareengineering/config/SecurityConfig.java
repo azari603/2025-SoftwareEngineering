@@ -89,6 +89,7 @@ public class SecurityConfig {
                                 "/api/v1/search/**",
                                 "/api/v1/recommendations/popular",
                                 "/api/v1/feed/latest",
+                                "api/v1/reviews/*/comments",
                                 "/api/v1/reviews/*/likes/count",
                                 "/api/v1/reviews/*/likes/status",
                                 "/avatars/**",
