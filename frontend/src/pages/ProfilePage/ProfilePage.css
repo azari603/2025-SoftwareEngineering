@@ -239,9 +239,9 @@
 }
 
 .no-books-image {
-  width: 150px;   /* 이미지 크기 조정 */
+  width: 150px;  
   height: 150px;
-  opacity: 0.8;   /* 살짝 투명하게 */
+  opacity: 0.8;   
   object-fit: contain;
 }
 

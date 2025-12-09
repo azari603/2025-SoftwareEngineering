@@ -115,21 +115,6 @@ export default function ProfilePage() {
               읽은책 <b>{profile.completedBookCount}</b>
             </span>
           </div>
-
-          
-
-          {/*<div className="goal-section">
-            <div className="goal-header">
-              <h4>이달의 목표</h4>
-              <p className="goal-count">
-                <span className="goal-current">0</span>
-                <span className="goal-total">/{profile.monthlyGoal||0}권</span>
-              </p>
-            </div>
-            <div className="goal-progress">
-              <div className="goal-fill" style={{ width: "80%" }}></div>
-            </div>
-          </div>*/}
         </div>
 
         {/* 별점 섹션 */}
