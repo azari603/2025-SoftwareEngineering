@@ -30,7 +30,6 @@ const ReviewDetail = () => {
   const { isLoggedIn} = useAuth();
   const { reviewId } = useParams();
   
-  /* Hook은 무조건 return보다 위! */
   const { setFooterColor } = useContext(LayoutContext);
 
   //리뷰 데이터
@@ -78,6 +77,25 @@ const ReviewDetail = () => {
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
+
+  // 댓글 목록 조회 (로그인 여부와 관계없이 항상 불러오기)
+  useEffect(() => {
+    async function loadCommentsData() {
+      const res = await reviewAPI.fetchComments(reviewId, {
+        page: currentPage - 1,
+        size: commentsPerPage,
+      });
+
+      if (res.ok) {
+        setComments(res.content);
+      } else {
+        if (res.error === "FORBIDDEN") setFetchError("FORBIDDEN");
+        if (res.error === "REVIEW_NOT_FOUND") setFetchError("REVIEW_NOT_FOUND");
+      }
+    }
+    loadCommentsData();
+  }, [reviewId, currentPage]);
+
 
   //서평 상세 조회 API 호출
   useEffect(()=>{
@@ -390,6 +408,7 @@ const handleFollowClick = async () => {
                       src={c.author.profileImageUrl || default_profile}
                       alt="user"
                       className="comment-user__img"
+                      onClick={() => navigate(`/profile/${c.author.username}`)}
                     />
                     <div className="comment-content">
                       <p className="comment-user__name">{c.author.nickname}</p>

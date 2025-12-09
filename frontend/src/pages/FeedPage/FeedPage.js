@@ -19,19 +19,19 @@ export default function FeedPage() {
     setFooterColor("#FDFBF4");
   }, []);
 
-   /** 1) 탭 변경 시 초기화 + 첫 페이지 로드 */
+   /** 탭 변경 시 초기화 + 첫 페이지 로드 */
   useEffect(() => {
     setReviews([]);
     setPage(0);
     setHasMore(true);
 
-    loadFeed(0); // ⭐ 첫 로딩은 항상 page=0
+    loadFeed(0); 
   }, [activeTab]);
 
 
-  /** 2) page가 증가할 때 추가 로딩 */
+  /** page가 증가할 때 추가 로딩 */
   useEffect(() => {
-    if (page === 0) return; // page=0은 탭 변경에서 이미 로딩함
+    if (page === 0) return; 
     if (!hasMore) return;
 
     loadMore(page);
@@ -83,7 +83,7 @@ export default function FeedPage() {
   };
 
 
-  /** 3) IntersectionObserver (무한스크롤) */
+  /** IntersectionObserver (무한스크롤) */
   useEffect(() => {
     if (!hasMore) return;
 

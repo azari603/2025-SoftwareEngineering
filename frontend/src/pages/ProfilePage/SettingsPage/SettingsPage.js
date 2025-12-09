@@ -119,7 +119,6 @@ export default function SettingsPage() {
           <div className="info-row">
             <p className="label">이메일</p>
             <p className="value">{email}</p>
-            <button className="small-btn">설정</button>
           </div>
 
           <div className="info-row">

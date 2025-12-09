@@ -176,7 +176,6 @@
 
 
 
-/* 내부 콘텐츠는 오버레이 위로 */
 .home-review-section * {
   position: relative;
   z-index: 2;
