@@ -13,11 +13,10 @@ function fullUrl(path) {
 
 const ReviewItem = ({review}) => {
   const navigate=useNavigate();
-  const {user}=useAuth();
   const handleClick=()=>{
     navigate(`/review/${review.id}`);
   };
-  const nickname=user.nickname??"작성자"
+  const nickname=review.nickname??"작성자";
   const profileImg=fullUrl(review.profileImage)??profile_img
 
   return (

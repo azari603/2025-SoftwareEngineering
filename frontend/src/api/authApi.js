@@ -275,6 +275,17 @@ export async function getMyStarredBooks(rating, page = 0, size = 20) {
   return res.data; 
 }
 
+//username 기반 별점별 책 목록 조회
+export async function getUserStarredBooks(username, rating, page = 0, size = 20) {
+  const res = await axiosInstance.get(
+    `/stats/users/${username}/stars/books`,
+    {
+      params: { rating, page, size }
+    }
+  );
+  return res.data;
+}
+
 // 테스트용 비밀번호 검증 api
 export async function verifyPassword(username, currentPassword) {
   console.log("Mock verifyPassword 호출", { username, currentPassword });
