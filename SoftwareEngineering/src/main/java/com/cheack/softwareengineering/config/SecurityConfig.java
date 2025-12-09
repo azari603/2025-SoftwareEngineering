@@ -82,6 +82,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,
                                 "/api/v1/reviews/*",
                                 "/api/v1/reviews/books/*",
+                                "/api/v1/reviews/*/comments",
                                 "/api/v1/books/search",
                                 "/api/v1/books/*",
                                 "/api/v1/books/*/similar",
