@@ -13,7 +13,7 @@
 }
 
 .review-card:hover {
-  transform: translateY(-5px); /* 살짝 더 올라가면 고급스러움 */
+  transform: translateY(-5px); 
   border-color: #299159;
   box-shadow: 0 8px 20px rgba(0,0,0,0.07);
 }

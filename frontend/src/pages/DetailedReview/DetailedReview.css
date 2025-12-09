@@ -370,6 +370,10 @@
   transform: rotate(90deg);
 }
 
+.comment-user__img {
+  cursor: pointer; 
+}
+
 .review-footer button:hover {
   background: #e7e7e7;
   background-color: #e5e5e5;
