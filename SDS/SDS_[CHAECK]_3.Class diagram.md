@@ -1,7 +1,6 @@
 # Service class diagram
 ## 1. AuthService
 ![2025_소공_usecase_diagram-0  AuthService Diagram](https://github.com/user-attachments/assets/e019a8ff-642f-4be1-b92c-d6baef6ce77a)
-
 ![AuthService](https://github.com/user-attachments/assets/54c3b1fa-248b-4531-9605-a58141bb49a1)
 
 
@@ -13,7 +12,8 @@
 ## 3. UserService
 ![2025_소공_usecase_diagram-3 UserService](https://github.com/user-attachments/assets/cfef1965-7f4c-43f5-886c-9714bc53ee8c)
 
-![LikeService](https://github.com/user-attachments/assets/bf1d30d5-4541-4b3d-be0f-3db4bba38d0b)
+![userService](https://github.com/user-attachments/assets/cb3983c9-6983-4f3c-90aa-d86747221af1)
+
 
 
 ## 4. ProfileService
@@ -67,11 +67,6 @@
 ![RecommendationService](https://github.com/user-attachments/assets/578a450e-2f72-462f-b3be-0716f40a59d0)
 
 
-## 13. BtiAiRecommendationService
-![BtiAiRecommendationService](https://github.com/user-attachments/assets/fbc2e9d1-dcda-4dfe-8725-8ff26e206ede)
-
-
-
 ## 13. StatsService
 ![2025_소공_usecase_diagram-13 StatsService](https://github.com/user-attachments/assets/7af26d9e-fe78-465f-bef8-86e65299e65b)
 ![StatsService](https://github.com/user-attachments/assets/2c461f08-cf4f-43b9-8f6f-27570a9f2ff4)
@@ -103,97 +98,95 @@
 
 ## 18. BtiAiRecommendationService
 ![2025_소공_usecase_diagram-17  BtiAiRecommendationService](https://github.com/user-attachments/assets/8f9f5f31-f8c3-4947-865c-2cc828657002)
-
+![BtiAiRecommendationService](https://github.com/user-attachments/assets/fbc2e9d1-dcda-4dfe-8725-8ff26e206ede)
 
 # 2. Controller class diagram
 ## 1. AuthController
 ![2025_소공_usecase_diagram-0  AuthController](https://github.com/user-attachments/assets/8e95e70a-836b-4074-bb17-16a8c3e3f6d0)
 
-![AccountController](https://github.com/user-attachments/assets/7e64b5f5-629e-403f-b454-da1bcc5ffbfc)
+![AuthController](https://github.com/user-attachments/assets/646bf398-3219-46ad-a20e-c1e716180605)
 
 
-## 2. UserController
-<img width="411" height="429" alt="image" src="https://github.com/user-attachments/assets/3e7fb393-fe54-4f79-b18a-e7c3a12d57e4" /><br>
-<img width="560" height="950" alt="image" src="https://github.com/user-attachments/assets/7420b6d5-6100-4e0e-8566-8b70ea640a3c" />
-
-## 3. ProfileController
+## 2. ProfileController
 ![2025_소공_usecase_diagram-3 ProfileController](https://github.com/user-attachments/assets/19f09943-87c9-453b-81c4-32943f7ccc2d)
 
 ![ProfileController](https://github.com/user-attachments/assets/b55751a6-4fe9-43ff-92ec-b6f83c5d0349)
 
 
-## 4. FollowController
+## 3. FollowController
 ![2025_소공_usecase_diagram-4  FollowController](https://github.com/user-attachments/assets/cedef062-5ef0-44d5-9a6e-94127008ac77)
 
 ![FollowController](https://github.com/user-attachments/assets/49515d6d-2c21-425d-b97d-657e87a16ae8)
 
 
-## 5. BookController
+## 4. BookController
 ![2025_소공_usecase_diagram-5  BookController](https://github.com/user-attachments/assets/40f09013-cb62-4482-a48b-b4270ec8b742)
 ![BookController](https://github.com/user-attachments/assets/beace2d2-60eb-4106-8070-388c23614dfb)
 
 
-## 6. SearchController
+## 5. SearchController
 ![2025_소공_usecase_diagram-6  SearchController](https://github.com/user-attachments/assets/0012ba91-958d-4b1b-a5a4-8500ea7df04a)
 
 ![SearchController](https://github.com/user-attachments/assets/d813a524-9d60-456f-9859-68372b96e18f)
 
 
-## 7. ReviewController
+## 6. ReviewController
 ![2025_소공_usecase_diagram-7  ReviewController](https://github.com/user-attachments/assets/b78ea065-0b32-4a11-9414-16221715ba47)
 
 ![ReviewContoller](https://github.com/user-attachments/assets/3940e45a-70fc-4d8b-a84c-9ca919d8b4e6)
 
 
-## 8. ReadingStatusController
+## 7. ReadingStatusController
 ![2025_소공_usecase_diagram-8 ReadingStatusController](https://github.com/user-attachments/assets/cfd23a2b-cbc4-4102-9957-678ef41e1def)
 ![ReadingStatusController](https://github.com/user-attachments/assets/fc3dd33e-b129-4709-8d9f-79e4a05a0a42)
 
 
 
-## 9. LikeController
+## 8. LikeController
 ![2025_소공_usecase_diagram-9 LikeController](https://github.com/user-attachments/assets/c0ecb9e4-7255-4141-b200-d69335d38736)
 ![LikeController](https://github.com/user-attachments/assets/743c6dd0-31e3-40b6-802c-75951e771b48)
 
 
 
-## 10. CommentController
+## 9. CommentController
 ![2025_소공_usecase_diagram-10 CommentController](https://github.com/user-attachments/assets/728fe54d-909c-4930-bc02-abbd8f906b5d)
 ![CommentController](https://github.com/user-attachments/assets/74cf2136-786d-42de-90fd-d64204fae57d)
 
 
 
-## 11. FeedController
+## 10. FeedController
 ![2025_소공_usecase_diagram-11 FeedController](https://github.com/user-attachments/assets/85a9817e-a958-4bf5-afd9-18d71763fcf4)
 
 ![FeedController](https://github.com/user-attachments/assets/523cac1a-4951-4177-8376-04f3c947fac0)
 
 
-## 12. RecommendationController
+## 11. RecommendationController
 ![2025_소공_usecase_diagram-12 RecommendationController](https://github.com/user-attachments/assets/b72c4e41-1c3f-4198-966f-71626933f1f0)
 
 ![RecommendationController](https://github.com/user-attachments/assets/ad40758b-efee-41a4-820b-9e68f09a6a43)
 
 
-## 13. NotificationController
+## 12. NotificationController
 ![2025_소공_usecase_diagram-13 NotificationController](https://github.com/user-attachments/assets/bfc90b52-7cda-4b6a-95a3-0d9618846913)
 
 ![NotificationController](https://github.com/user-attachments/assets/f0066387-fff0-4e93-ac8d-b51d9f49e893)
 
-## 14. StatsController
+## 13. StatsController
 ![2025_소공_usecase_diagram-14 StatsController](https://github.com/user-attachments/assets/4e0829cb-2142-41a7-b7d0-e0881807849e)
 
 ![StatsController](https://github.com/user-attachments/assets/654c6c9e-7b0a-4122-b9a6-a4e3833cf8d0)
 
 
-## 15. BookBtiController
+## 14. BookBtiController
 ![2025_소공_usecase_diagram-15 BookBtiController](https://github.com/user-attachments/assets/06edce58-4166-40a5-acbe-d3b3df43cab1)
 
 ![BookBtiController](https://github.com/user-attachments/assets/0062214c-328c-4a1b-9602-c9a15d5fa78b)
 
 
-## 16. AccountController
+## 15. AccountController
 ![2025_소공_usecase_diagram-1  AccountController](https://github.com/user-attachments/assets/56d8ba9c-e0f1-4b22-9f5d-9c8bb39b12cd)
+![AccountController](https://github.com/user-attachments/assets/dad86209-5808-46b9-84d7-908ebaf14765)
+
 
 ## 17. NaverBookApiClient
 ![2025_소공_usecase_diagram-19  NaverBookApiClient](https://github.com/user-attachments/assets/27dfbf79-a8d9-4e09-92c3-889f757f559d)
