@@ -1,138 +1,205 @@
 # Service class diagram
 ## 1. AuthService
-<img width="1281" height="499" alt="image" src="https://github.com/user-attachments/assets/3bb22e6e-6db1-4a50-b82c-2a596bcc1e8b" />
-<img width="560" height="1730" alt="image" src="https://github.com/user-attachments/assets/4c79b862-474d-4690-99a5-06e427eaf77a" />
+![2025_소공_usecase_diagram-0  AuthService Diagram](https://github.com/user-attachments/assets/e019a8ff-642f-4be1-b92c-d6baef6ce77a)
+
+![AuthService](https://github.com/user-attachments/assets/54c3b1fa-248b-4531-9605-a58141bb49a1)
+
 
 ## 2. AccountService
-<img width="1072" height="434" alt="image" src="https://github.com/user-attachments/assets/13c5f50e-a136-49fb-bbc0-1bfc0f028a5e" />
-<img width="560" height="1600" alt="image" src="https://github.com/user-attachments/assets/90588805-c0c3-47a7-ad40-83f7a5c57333" />
+![2025_소공_usecase_diagram-1  AccountService](https://github.com/user-attachments/assets/84f03abe-a129-4bfe-84e9-b19842278c4c)
+![AccountService](https://github.com/user-attachments/assets/e1823c4b-0c54-49c0-adf7-d3f15c7dd814)
+
 
 ## 3. UserService
-<img width="1501" height="411" alt="image" src="https://github.com/user-attachments/assets/16bc11b4-8948-4b38-ae37-10acc76588a1" />
-<img width="630" height="1570" alt="image" src="https://github.com/user-attachments/assets/05ee5935-a4e1-45ef-8ef8-8cde858f26f6" />
+![2025_소공_usecase_diagram-3 UserService](https://github.com/user-attachments/assets/cfef1965-7f4c-43f5-886c-9714bc53ee8c)
+
+![LikeService](https://github.com/user-attachments/assets/bf1d30d5-4541-4b3d-be0f-3db4bba38d0b)
+
 
 ## 4. ProfileService
-<img width="1451" height="529" alt="image" src="https://github.com/user-attachments/assets/fc083beb-592d-487a-814c-4c7787d5b040" />
-<img width="560" height="1590" alt="image" src="https://github.com/user-attachments/assets/186e7f96-f3ed-41c8-869f-4a3747b3212f" />
+![2025_소공_usecase_diagram-4 ProfileService](https://github.com/user-attachments/assets/797eba4a-f51a-445f-a097-b226c6d07c27)
+![ProfileService](https://github.com/user-attachments/assets/aabb512b-9a77-4377-aa8d-4335dc6fd78a)
+
 
 ## 5. BookService
-<img width="851" height="344" alt="image" src="https://github.com/user-attachments/assets/9e4d41ad-2803-40e5-9330-8258bd64420d" />
-<img width="560" height="1350" alt="image" src="https://github.com/user-attachments/assets/ad4e680f-db5a-48bd-9f25-87ac41287d87" />
+![2025_소공_usecase_diagram-5 BookService](https://github.com/user-attachments/assets/b74dd22e-4083-48c2-8c3f-50979d8db4fc)
+![BookService](https://github.com/user-attachments/assets/a9446a5f-3a4e-4da2-93b5-8c1ef9e1bcab)
+
 
 ## 6. ReadingStatusService
-<img width="1351" height="364" alt="image" src="https://github.com/user-attachments/assets/f331cbd0-e8b9-430b-b69f-3fa8cb8bef68" />
-<img width="580" height="1400" alt="image" src="https://github.com/user-attachments/assets/7e6f834f-db62-419e-ac5a-8f61fc376768" />
+![2025_소공_usecase_diagram-6  ReadingStatusService](https://github.com/user-attachments/assets/4a3624bc-b491-4aa8-bc1b-c1b2595d5ba2)
+
+![ReadingStatusService](https://github.com/user-attachments/assets/f032b3ea-2406-4aa1-adca-d8a61d9aa852)
+
 
 
 ## 7. ReviewService
-<img width="1661" height="524" alt="image" src="https://github.com/user-attachments/assets/73e24b0c-8d06-461c-97be-58f0a041d81d" />
-<img width="560" height="1780" alt="image" src="https://github.com/user-attachments/assets/09992da5-db7c-4208-91b1-b5a26b96dc22" />
+![2025_소공_usecase_diagram-7 ReviewService](https://github.com/user-attachments/assets/a4bcc900-0bfd-4e97-87c8-29869abf0436)
+
+![ReviewService](https://github.com/user-attachments/assets/0f1b6ef1-05e3-4555-81bf-277a46068943)
+
 
 ## 8. CommentService
-<img width="1731" height="538" alt="image" src="https://github.com/user-attachments/assets/554b5c5a-4d9a-41dd-ba9f-fc453b1ec78e" />
-<img width="560" height="1640" alt="image" src="https://github.com/user-attachments/assets/1a471b75-891e-41c2-ab92-1061313b9794" />
+![2025_소공_usecase_diagram-8  CommentService](https://github.com/user-attachments/assets/4f833e0e-b4d5-4fb4-a743-8d6d279cbec4)
+
+![CommentService](https://github.com/user-attachments/assets/73111e60-dc7f-446c-a3ba-0d0105a3de11)
+
 
 ## 9. LikeService
-<img width="1258" height="421" alt="image" src="https://github.com/user-attachments/assets/63e432dd-4cb8-436b-9111-455142c43065" />
-<img width="560" height="1590" alt="image" src="https://github.com/user-attachments/assets/8d8dbfb3-a29b-44a9-a3a5-f0256a1d4c12" />
+![2025_소공_usecase_diagram-9 LikeService](https://github.com/user-attachments/assets/26cd721a-7bd4-4b85-a123-e3e209dfaacb)
+
+![LikeService](https://github.com/user-attachments/assets/17cec7e9-a769-4ee8-bc5b-5ce99f87231e)
+
 
 ## 10. FollowService
-<img width="1181" height="466" alt="image" src="https://github.com/user-attachments/assets/94fd6d1b-e702-4b32-a00a-a716f64f5710" />
-<img width="560" height="1740" alt="image" src="https://github.com/user-attachments/assets/d82e1321-0a08-4068-b83d-46ade1f4fcbb" />
+![2025_소공_usecase_diagram-10  FollowService](https://github.com/user-attachments/assets/82dfb70a-7e29-41a4-a7f4-544a37160d09)
+![FollowService](https://github.com/user-attachments/assets/ce4ddd7d-d35b-411a-b152-97cae7e31390)
+
 
 ## 11. FeedService
-<img width="1611" height="454" alt="image" src="https://github.com/user-attachments/assets/450e16b4-f05f-4783-84e8-5a96cfdc44f1" />
-<img width="560" height="1430" alt="image" src="https://github.com/user-attachments/assets/97070fd5-14f4-465d-8a98-a1b1d02ed294" />
+![2025_소공_usecase_diagram-11  FeedService](https://github.com/user-attachments/assets/291a525c-ceb6-4ae7-92b6-d2ac77f12a6f)
+![FeedService](https://github.com/user-attachments/assets/4bfcdc67-fb64-4804-988d-7594ba5a1063)
+
 
 ## 12. RecommendationService
-<img width="1891" height="1024" alt="image" src="https://github.com/user-attachments/assets/a40dfd1c-6d21-407d-9ea2-16631a6580e4" />
-<img width="610" height="1410" alt="image" src="https://github.com/user-attachments/assets/b2a37813-aa37-400d-b376-a74722168299" />
+![2025_소공_usecase_diagram-12  RecommendationService](https://github.com/user-attachments/assets/b1ef1426-2744-498d-b14f-8c767aed463c)
+
+![RecommendationService](https://github.com/user-attachments/assets/578a450e-2f72-462f-b3be-0716f40a59d0)
+
+
+## 13. BtiAiRecommendationService
+![BtiAiRecommendationService](https://github.com/user-attachments/assets/fbc2e9d1-dcda-4dfe-8725-8ff26e206ede)
+
 
 
 ## 13. StatsService
-<img width="1521" height="424" alt="image" src="https://github.com/user-attachments/assets/5acf3e73-a3a4-4697-96c5-e028e8be342c" />
-<img width="588" height="1570" alt="image" src="https://github.com/user-attachments/assets/c0ba1faa-a0b5-422a-a038-5a0f61a941d8" />
+![2025_소공_usecase_diagram-13 StatsService](https://github.com/user-attachments/assets/7af26d9e-fe78-465f-bef8-86e65299e65b)
+![StatsService](https://github.com/user-attachments/assets/2c461f08-cf4f-43b9-8f6f-27570a9f2ff4)
+
 
 ## 14. NotificationService
-<img width="1581" height="414" alt="image" src="https://github.com/user-attachments/assets/36d0c46b-a4e5-4e2d-8bf6-2460ff07df2f" />
-<img width="560" height="1570" alt="image" src="https://github.com/user-attachments/assets/57ec1c12-3781-4cc7-a6e8-e44278e1b6a9" />
+![2025_소공_usecase_diagram-14  NotificationService](https://github.com/user-attachments/assets/9894bc47-43f3-484c-913f-e1123d2482c1)
+![NotificationService](https://github.com/user-attachments/assets/7089b0b5-d3ee-42e8-abc9-1aa3395d2985)
+
 
 ## 15. EmailService
-<img width="331" height="364" alt="image" src="https://github.com/user-attachments/assets/34e7f245-d492-47f5-8d96-161d01a14bc8" /><br>
-<img width="650" height="1300" alt="image" src="https://github.com/user-attachments/assets/10fd377d-7b93-43d7-a6d7-91268400bfbb" />
+![2025_소공_usecase_diagram-15 EmailService](https://github.com/user-attachments/assets/b06a7612-eed4-4124-9807-b4e5067b799f)
+
+![EmailService](https://github.com/user-attachments/assets/311f2b57-596a-4438-8e35-276381c2992e)
+
+
 
 ## 16. BookBtiService
-<img width="1241" height="454" alt="image" src="https://github.com/user-attachments/assets/ba65271c-c235-4500-98c7-527d2559d349" />
-<img width="570" height="1510" alt="image" src="https://github.com/user-attachments/assets/e4a0b641-40da-4834-8082-126113675494" />
+![2025_소공_usecase_diagram-16  BookBtiService](https://github.com/user-attachments/assets/1847d011-0074-4dac-b152-04ba5c1c7166)
+![BookBtiService](https://github.com/user-attachments/assets/287db7cf-7a9a-4608-8cde-d6be372cddcc)
+
+
 
 ## 17. BookIngestService
-<img width="711" height="344" alt="image" src="https://github.com/user-attachments/assets/002b9519-4f87-4ca0-872c-72736bfaf4d3" />
-<img width="560" height="1180" alt="image" src="https://github.com/user-attachments/assets/2336e4d2-42b8-4b80-a19a-30dfe8e96795" />
+![2025_소공_usecase_diagram-18  BookIngestService](https://github.com/user-attachments/assets/b0f01509-5050-4b09-8f5b-3d15641474b0)
+
+![BookIngestService](https://github.com/user-attachments/assets/b6dd0515-2dc1-43d8-84f1-ed7986e9e4de)
+
+
+## 18. BtiAiRecommendationService
+![2025_소공_usecase_diagram-17  BtiAiRecommendationService](https://github.com/user-attachments/assets/8f9f5f31-f8c3-4947-865c-2cc828657002)
+
 
 # 2. Controller class diagram
 ## 1. AuthController
-<img width="727" height="544" alt="image" src="https://github.com/user-attachments/assets/d8dbfef1-c865-40fc-b2dd-1d6b3e821acd" />
-<img width="560" height="1680" alt="image" src="https://github.com/user-attachments/assets/4852d5d8-31ee-4c7d-9822-75e9b1527f68" />
+![2025_소공_usecase_diagram-0  AuthController](https://github.com/user-attachments/assets/8e95e70a-836b-4074-bb17-16a8c3e3f6d0)
+
+![AccountController](https://github.com/user-attachments/assets/7e64b5f5-629e-403f-b454-da1bcc5ffbfc)
+
 
 ## 2. UserController
 <img width="411" height="429" alt="image" src="https://github.com/user-attachments/assets/3e7fb393-fe54-4f79-b18a-e7c3a12d57e4" /><br>
 <img width="560" height="950" alt="image" src="https://github.com/user-attachments/assets/7420b6d5-6100-4e0e-8566-8b70ea640a3c" />
 
 ## 3. ProfileController
-<img width="481" height="474" alt="image" src="https://github.com/user-attachments/assets/aed39560-ced0-47fc-865c-79b637a1239b" />
-<img width="560" height="1240" alt="image" src="https://github.com/user-attachments/assets/9668cc27-cd35-43ea-ac9b-3d1345c45207" />
+![2025_소공_usecase_diagram-3 ProfileController](https://github.com/user-attachments/assets/19f09943-87c9-453b-81c4-32943f7ccc2d)
+
+![ProfileController](https://github.com/user-attachments/assets/b55751a6-4fe9-43ff-92ec-b6f83c5d0349)
+
 
 ## 4. FollowController
-<img width="821" height="564" alt="image" src="https://github.com/user-attachments/assets/a281ad9a-bf45-4891-a751-1b8f5fb12d5f" />
-<img width="580" height="1750" alt="image" src="https://github.com/user-attachments/assets/edbc1870-b218-4247-89be-f1e186407f47" />
+![2025_소공_usecase_diagram-4  FollowController](https://github.com/user-attachments/assets/cedef062-5ef0-44d5-9a6e-94127008ac77)
+
+![FollowController](https://github.com/user-attachments/assets/49515d6d-2c21-425d-b97d-657e87a16ae8)
+
 
 ## 5. BookController
-<img width="801" height="444" alt="image" src="https://github.com/user-attachments/assets/d09abbd8-3d6c-4f9c-a184-4ea4e9ad77dc" />
-<img width="560" height="1080" alt="image" src="https://github.com/user-attachments/assets/93207e64-0c80-484b-b83f-0aa7f3aef04c" />
+![2025_소공_usecase_diagram-5  BookController](https://github.com/user-attachments/assets/40f09013-cb62-4482-a48b-b4270ec8b742)
+![BookController](https://github.com/user-attachments/assets/beace2d2-60eb-4106-8070-388c23614dfb)
+
 
 ## 6. SearchController
-<img width="491" height="374" alt="image" src="https://github.com/user-attachments/assets/49ebe237-254f-49f2-a056-937408b16778" />
-<img width="560" height="700" alt="image" src="https://github.com/user-attachments/assets/7b573a0a-e382-495f-8939-bf8a887b8198" />
+![2025_소공_usecase_diagram-6  SearchController](https://github.com/user-attachments/assets/0012ba91-958d-4b1b-a5a4-8500ea7df04a)
+
+![SearchController](https://github.com/user-attachments/assets/d813a524-9d60-456f-9859-68372b96e18f)
+
 
 ## 7. ReviewController
-<img width="531" height="604" alt="image" src="https://github.com/user-attachments/assets/9d17b3c6-ce22-4804-8b98-0838f8619057" />
-<img width="600" height="1690" alt="image" src="https://github.com/user-attachments/assets/13409836-0529-49fc-97a2-1b73cc59e7d4" />
+![2025_소공_usecase_diagram-7  ReviewController](https://github.com/user-attachments/assets/b78ea065-0b32-4a11-9414-16221715ba47)
+
+![ReviewContoller](https://github.com/user-attachments/assets/3940e45a-70fc-4d8b-a84c-9ca919d8b4e6)
+
 
 ## 8. ReadingStatusController
-<img width="601" height="384" alt="image" src="https://github.com/user-attachments/assets/925aa58f-7941-4945-9c3b-1661c2b696fd" />
-<img width="580" height="1250" alt="image" src="https://github.com/user-attachments/assets/f989e0bb-30f4-4b66-8585-a4ffeeac4062" />
+![2025_소공_usecase_diagram-8 ReadingStatusController](https://github.com/user-attachments/assets/cfd23a2b-cbc4-4102-9957-678ef41e1def)
+![ReadingStatusController](https://github.com/user-attachments/assets/fc3dd33e-b129-4709-8d9f-79e4a05a0a42)
+
 
 
 ## 9. LikeController
-<img width="411" height="424" alt="image" src="https://github.com/user-attachments/assets/db03fcea-06e7-4a9b-a8f3-f26e3c825707" /><br>
-<img width="560" height="950" alt="image" src="https://github.com/user-attachments/assets/debd0fa9-2a87-498e-99e2-83e24ae26ee0" />
+![2025_소공_usecase_diagram-9 LikeController](https://github.com/user-attachments/assets/c0ecb9e4-7255-4141-b200-d69335d38736)
+![LikeController](https://github.com/user-attachments/assets/743c6dd0-31e3-40b6-802c-75951e771b48)
+
 
 
 ## 10. CommentController
-<img width="601" height="394" alt="image" src="https://github.com/user-attachments/assets/e40c9c0b-0665-4372-bfb6-03bacbc0609e" />
-<img width="590" height="970" alt="image" src="https://github.com/user-attachments/assets/0c586318-9eaa-4d81-8a53-c105e6886cf6" />
+![2025_소공_usecase_diagram-10 CommentController](https://github.com/user-attachments/assets/728fe54d-909c-4930-bc02-abbd8f906b5d)
+![CommentController](https://github.com/user-attachments/assets/74cf2136-786d-42de-90fd-d64204fae57d)
+
 
 
 ## 11. FeedController
-<img width="441" height="349" alt="image" src="https://github.com/user-attachments/assets/751bf3bb-576e-4bb9-9c9b-cd7933263210" />br>
-<img width="560" height="820" alt="image" src="https://github.com/user-attachments/assets/10f8ecf6-da7a-45dd-9ff1-a2bba2c0a43f" />
+![2025_소공_usecase_diagram-11 FeedController](https://github.com/user-attachments/assets/85a9817e-a958-4bf5-afd9-18d71763fcf4)
+
+![FeedController](https://github.com/user-attachments/assets/523cac1a-4951-4177-8376-04f3c947fac0)
+
 
 ## 12. RecommendationController
-<img width="421" height="364" alt="image" src="https://github.com/user-attachments/assets/b6081162-9b89-4ee1-968a-18fd241c1681" /><br>
-<img width="600" height="1010" alt="image" src="https://github.com/user-attachments/assets/8c9b031f-da1a-4c5a-8f07-a8586fa64dba" />
+![2025_소공_usecase_diagram-12 RecommendationController](https://github.com/user-attachments/assets/b72c4e41-1c3f-4198-966f-71626933f1f0)
+
+![RecommendationController](https://github.com/user-attachments/assets/ad40758b-efee-41a4-820b-9e68f09a6a43)
 
 
 ## 13. NotificationController
-<img width="391" height="434" alt="image" src="https://github.com/user-attachments/assets/80eb5134-454f-47e6-93e9-5cf76c04b108" /><br>
-<img width="560" height="1180" alt="image" src="https://github.com/user-attachments/assets/b440b699-4f0a-4696-b20d-992bc2690c81" />
+![2025_소공_usecase_diagram-13 NotificationController](https://github.com/user-attachments/assets/bfc90b52-7cda-4b6a-95a3-0d9618846913)
+
+![NotificationController](https://github.com/user-attachments/assets/f0066387-fff0-4e93-ac8d-b51d9f49e893)
 
 ## 14. StatsController
-<img width="441" height="444" alt="image" src="https://github.com/user-attachments/assets/cc6a52f4-7df0-48ef-9f99-83b441e37ad1" /><br>
-<img width="560" height="1230" alt="image" src="https://github.com/user-attachments/assets/e03bfe18-3eaf-4999-8cca-44d9e651c619" />
+![2025_소공_usecase_diagram-14 StatsController](https://github.com/user-attachments/assets/4e0829cb-2142-41a7-b7d0-e0881807849e)
+
+![StatsController](https://github.com/user-attachments/assets/654c6c9e-7b0a-4122-b9a6-a4e3833cf8d0)
+
 
 ## 15. BookBtiController
-<img width="531" height="424" alt="image" src="https://github.com/user-attachments/assets/53507fee-8e11-4399-9979-83ab1e68c66c" />
-<img width="660" height="1390" alt="image" src="https://github.com/user-attachments/assets/60a32074-56f2-4847-8518-ab725262dd80" />
+![2025_소공_usecase_diagram-15 BookBtiController](https://github.com/user-attachments/assets/06edce58-4166-40a5-acbe-d3b3df43cab1)
+
+![BookBtiController](https://github.com/user-attachments/assets/0062214c-328c-4a1b-9602-c9a15d5fa78b)
+
+
+## 16. AccountController
+![2025_소공_usecase_diagram-1  AccountController](https://github.com/user-attachments/assets/56d8ba9c-e0f1-4b22-9f5d-9c8bb39b12cd)
+
+## 17. NaverBookApiClient
+![2025_소공_usecase_diagram-19  NaverBookApiClient](https://github.com/user-attachments/assets/27dfbf79-a8d9-4e09-92c3-889f757f559d)
+![NaverBookApiClient (1)](https://github.com/user-attachments/assets/c928e12f-51a8-4864-8856-69fa50cb81d0)
+
+
 
 
 
